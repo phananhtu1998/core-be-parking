@@ -1,5 +1,18 @@
 basePath: /v1/2025
 definitions:
+  model.AccountInput:
+    properties:
+      email:
+        type: string
+      images:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+      status:
+        type: boolean
+    type: object
   response.ErrorResponseData:
     properties:
       code:
@@ -22,9 +35,6 @@ definitions:
         description: Thông báo lỗi
         type: string
     type: object
-externalDocs:
-  description: OpenAPI
-  url: https://swagger.io/resources/open-api/
 host: localhost:8002
 info:
   contact:
@@ -39,6 +49,35 @@ info:
   title: API DOCUMENTATION PARKING BACKEND
   version: 1.0.0
 paths:
+  /admin/delete_account/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: API này xóa tài khoản dựa trên ID
+      parameters:
+      - description: ID của tài khoản cần xóa
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ResponseData'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponseData'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponseData'
+      summary: Xóa tài khoản
+      tags:
+      - account management
   /admin/get_account_by_id/{id}:
     get:
       consumes:
@@ -83,7 +122,54 @@ paths:
       summary: Lấy danh sách tất cả tài khoản
       tags:
       - account management
+  /admin/update_account/{id}:
+    put:
+      consumes:
+      - application/json
+      description: API này cập nhật thông tin tài khoản dựa trên ID
+      parameters:
+      - description: ID tài khoản cần cập nhật
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Dữ liệu cập nhật tài khoản
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/model.AccountInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ResponseData'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponseData'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponseData'
+      summary: Cập nhật tài khoản
+      tags:
+      - account management
+security:
+- "":
+  - BearerAuth
+  - ApiKeyAuth
 securityDefinitions:
-  BasicAuth:
-    type: basic
+  ApiKeyAuth:
+    description: Nhập API Key vào header để xác thực API
+    in: header
+    name: X-API-Key
+    type: apiKey
+  BearerAuth:
+    description: 'Nhập Bearer Token vào header. Ví dụ: "Bearer {token}"'
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

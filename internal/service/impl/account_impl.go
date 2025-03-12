@@ -39,15 +39,41 @@ func (s *sAccount) GetAccountById(ctx context.Context, id string) (codeResult in
 }
 
 // Cập nhật tài khoản
-func (s *sAccount) UpdateAccount(ctx context.Context, in *model.AccountInput) (codeResult int, out model.AccountOutput, err error) {
-	//err = s.r.EditAccountById(ctx, in)
-	return response.ErrCodeSucces, model.AccountOutput{}, nil
+func (s *sAccount) UpdateAccount(ctx context.Context, in *model.AccountInput, id string) (codeResult int, out model.AccountOutput, err error) {
+	err = s.r.EditAccountById(ctx, database.EditAccountByIdParams{
+		Name:     in.Name,
+		Email:    in.Email,
+		Password: in.Password,
+		Status:   in.Status,
+		Images:   in.Images,
+		ID:       id,
+	})
+
+	if err != nil {
+		return response.ErrInvalidOTP, model.AccountOutput{}, err
+	}
+	updatedAccount, err := s.r.GetAccountById(ctx, id)
+	if err != nil {
+		return response.ErrCodeParamInvalid, model.AccountOutput{}, err
+	}
+	accountOutput := model.AccountOutput{
+		ID:     updatedAccount.ID,
+		Name:   updatedAccount.Name,
+		Email:  updatedAccount.Email,
+		Status: updatedAccount.Status,
+		Images: updatedAccount.Images,
+	}
+	return response.ErrCodeSucces, accountOutput, nil
 }
 
 // Xóa tài khoản
 func (s *sAccount) DeleteAccount(ctx context.Context, id string) (codeResult int, err error) {
 	// TODO: Thêm logic xóa tài khoản
-	return response.ErrCodeSucces, nil
+	err = s.r.DeleteAccountById(ctx, id)
+	if err != nil {
+		return response.ErrInvalidOTP, err
+	}
+	return response.ErrCodeSucces, err
 }
 
 // Lấy danh sách tất cả tài khoản

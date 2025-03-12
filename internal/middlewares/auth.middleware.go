@@ -35,3 +35,46 @@ func AuthenMiddleware() gin.HandlerFunc {
 		c.Next()
 	}
 }
+
+// // AuthMiddleware kiểm tra Bearer Token và X-API-Key
+// func AuthMiddleware() gin.HandlerFunc {
+// 	return func(c *gin.Context) {
+// 		// Lấy Bearer Token từ Header
+// 		authHeader := c.GetHeader("Authorization")
+// 		if authHeader == "" || !strings.HasPrefix(authHeader, "Bearer ") {
+// 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Missing or invalid Bearer token"})
+// 			c.Abort()
+// 			return
+// 		}
+
+// 		// Lấy token sau "Bearer "
+// 		token := strings.TrimPrefix(authHeader, "Bearer ")
+// 		if !validateToken(token) {
+// 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid Bearer token"})
+// 			c.Abort()
+// 			return
+// 		}
+
+// 		// Lấy X-API-Key từ Header
+// 		apiKey := c.GetHeader("X-API-Key")
+// 		if apiKey == "" || !validateAPIKey(apiKey) {
+// 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid API Key"})
+// 			c.Abort()
+// 			return
+// 		}
+
+// 		c.Next()
+// 	}
+// }
+
+// // validateToken kiểm tra tính hợp lệ của Bearer Token
+// func validateToken(token string) bool {
+// 	// Thay "valid-token" bằng logic xác thực thực tế (VD: JWT)
+// 	return token == "valid-token"
+// }
+
+// // validateAPIKey kiểm tra tính hợp lệ của X-API-Key
+// func validateAPIKey(key string) bool {
+// 	// Thay "valid-api-key" bằng API Key thực tế từ DB hoặc file cấu hình
+// 	return key == "valid-api-key"
+// }

@@ -1,6 +1,7 @@
 package account
 
 import (
+	"go-backend-api/internal/model"
 	"go-backend-api/internal/service"
 	"go-backend-api/pkg/response"
 	"log"
@@ -53,4 +54,54 @@ func (ac *cAccount) GetAccountById(ctx *gin.Context) {
 	}
 
 	response.SuccessResponse(ctx, code, account)
+}
+
+// UpdateAccount
+// @Summary      Cập nhật tài khoản
+// @Description  API này cập nhật thông tin tài khoản dựa trên ID
+// @Tags         account management
+// @Accept       json
+// @Produce      json
+// @Param        id   path   string  true  "ID tài khoản cần cập nhật"
+// @Param        body body   model.AccountInput true "Dữ liệu cập nhật tài khoản"
+// @Success      200  {object}  response.ResponseData
+// @Failure      400  {object}  response.ErrorResponseData
+// @Failure      500  {object}  response.ErrorResponseData
+// @Router       /admin/update_account/{id} [PUT]
+func (ac *cAccount) UpdateAccount(ctx *gin.Context) {
+	id := ctx.Param("id")
+	var modelAccount model.AccountInput
+	if err := ctx.ShouldBindJSON(&modelAccount); err != nil {
+		ctx.JSON(response.ErrCodeParamInvalid, gin.H{"error": "Invalid input data"})
+		return
+	}
+	code, account, err := service.AccountItem().UpdateAccount(ctx, &modelAccount, id)
+	if err != nil {
+		log.Printf("Error getting account: %v", err)
+		response.ErrorResponse(ctx, code, err.Error())
+		return
+	}
+	response.SuccessResponse(ctx, code, account)
+}
+
+// DeleteAccount
+// @Summary      Xóa tài khoản
+// @Description  API này xóa tài khoản dựa trên ID
+// @Tags         account management
+// @Accept       json
+// @Produce      json
+// @Param        id   path   string  true  "ID của tài khoản cần xóa"
+// @Success      200  {object}  response.ResponseData
+// @Failure      400  {object}  response.ErrorResponseData
+// @Failure      500  {object}  response.ErrorResponseData
+// @Router       /admin/delete_account/{id} [DELETE]
+func (ac *cAccount) DeleteAccount(ctx *gin.Context) {
+	id := ctx.Param("id")
+	codeResult, err := service.AccountItem().DeleteAccount(ctx, id)
+	if err != nil {
+		log.Printf("Error getting account: %v", err)
+		response.ErrorResponse(ctx, codeResult, err.Error())
+		return
+	}
+	response.SuccessResponse(ctx, codeResult, err)
 }

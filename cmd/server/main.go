@@ -23,11 +23,21 @@ import (
 
 // @host      localhost:8002
 // @BasePath  /v1/2025
-// @schema http
-// @securityDefinitions.basic  BasicAuth
+// @schema    http
 
-// @externalDocs.description  OpenAPI
-// @externalDocs.url          https://swagger.io/resources/open-api/
+// @securityDefinitions.apikey BearerAuth
+// @type apiKey
+// @in header
+// @name Authorization
+// @description Nhập Bearer Token vào header. Ví dụ: "Bearer {token}"
+
+// @securityDefinitions.apikey ApiKeyAuth
+// @type apiKey
+// @in header
+// @name X-API-Key
+// @description Nhập API Key vào header để xác thực API
+
+// @security [BearerAuth, ApiKeyAuth]
 
 func main() {
 	r := initialize.Run()
