@@ -16,6 +16,7 @@ func (ar *AdminRouter) InitAdminRouter(Router *gin.RouterGroup) {
 		adminRouterPublic.GET("/get_account_by_id/:id", account.Accounts.GetAccountById)
 		adminRouterPublic.PUT("/update_account/:id", account.Accounts.UpdateAccount)
 		adminRouterPublic.DELETE("/delete_account/:id", account.Accounts.DeleteAccount)
+		adminRouterPublic.POST("/create_account/", account.Accounts.CreateAccount)
 
 	}
 	// private router

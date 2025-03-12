@@ -43,4 +43,5 @@ type JWTSettings struct {
 	TOKEN_HOUR_LIFESPAN int    `mapstructure:"TOKEN_HOUR_LIFESPAN"`
 	API_SECRET_KEY      string `mapstructure:"API_SECRET_KEY"`
 	JWT_EXPIRATION      string `mapstructure:"JWT_EXPIRATION"`
+	SECRET_KEY          string `mapstructure:"SECRET_KEY"`
 }

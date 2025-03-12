@@ -2,10 +2,15 @@ package impl
 
 import (
 	"context"
+	"fmt"
+	"go-backend-api/global"
 	"go-backend-api/internal/database"
 	"go-backend-api/internal/model"
+	"go-backend-api/internal/utils/crypto"
 	"go-backend-api/pkg/response"
 	"log"
+
+	"github.com/google/uuid"
 )
 
 type sAccount struct {
@@ -17,9 +22,48 @@ func NewAccountImpl(r *database.Queries) *sAccount {
 }
 
 // Tạo tài khoản mới
-func (s *sAccount) CreateAccount(ctx context.Context, in *model.AccountInput) (codeResult int, err error) {
-	// TODO: Thêm logic tạo tài khoản
-	return response.ErrCodeSucces, nil
+func (s *sAccount) CreateAccount(ctx context.Context, in *model.AccountInput) (codeResult int, out model.AccountOutput, err error) {
+	// TODO: check Email
+	accountFound, err := s.r.CheckAccountBaseExists(ctx, in.Email)
+	if err != nil {
+		return response.ErrCodeUserHasExists, model.AccountOutput{}, err
+	}
+	if accountFound > 0 {
+		return response.ErrCodeUserHasExists, model.AccountOutput{}, fmt.Errorf("Email has already registered")
+	}
+	// TODO: hash Password
+	accountBase := database.Account{}
+	userSalt, err := crypto.GenerateSalt(16)
+	if err != nil {
+		return response.ErrCodeUserOtpNotExists, model.AccountOutput{}, err
+	}
+	accountBase.Password = crypto.HashPassword(in.Password, userSalt, global.Config.JWT.SECRET_KEY)
+	newUUID := uuid.New().String()
+	_, err = s.r.InsertAccount(ctx, database.InsertAccountParams{
+		ID:       newUUID,
+		Name:     in.Name,
+		Email:    in.Email,
+		Password: accountBase.Password,
+		Salt:     userSalt,
+		Status:   in.Status,
+		Images:   in.Images,
+	})
+	if err != nil {
+		log.Printf("Lỗi khi chèn tài khoản: %v", err)
+		return response.ErrCodeParamInvalid, model.AccountOutput{}, err
+	}
+	createdAccount, err := s.r.GetAccountById(ctx, newUUID)
+	accountOutput := model.AccountOutput{
+		ID:     createdAccount.ID,
+		Name:   createdAccount.Name,
+		Email:  createdAccount.Email,
+		Status: createdAccount.Status,
+		Images: createdAccount.Images,
+	}
+	if err != nil {
+		return response.ErrCodeUserOtpNotExists, model.AccountOutput{}, err
+	}
+	return response.ErrCodeSucces, accountOutput, err
 }
 
 // Lấy thông tin tài khoản theo ID
@@ -29,6 +73,10 @@ func (s *sAccount) GetAccountById(ctx context.Context, id string) (codeResult in
 	if err != nil {
 		return response.ErrCodeOtpNotExists, out, err
 	}
+	// truyền password đã hash trong db,password input, salt trong db
+	checkpass := crypto.MatchingPassword("fca10a2c4d80b0151fd49bf277ee1447d2d67f2ddf0b0066a174833fc92f4f7f", "123", "e404cc8042ede7884b7d9464ad262221")
+	//log.Println("hashpass: ", hashpass)
+	log.Println("checkpass: ", checkpass)
 	return response.ErrCodeSucces, model.AccountOutput{
 		ID:     accountItem.ID,
 		Name:   accountItem.Name,

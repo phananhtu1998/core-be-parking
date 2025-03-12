@@ -23,6 +23,7 @@ redis:
   password:
   database: 0
 jwt:
+  SECRET_KEY: "THACO@1234"
   TOKEN_HOUR_LIFESPAN: 1
   JWT_EXPIRATION: 1h
   API_SECRET: "xxx.yyy.zzz"

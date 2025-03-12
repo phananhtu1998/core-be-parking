@@ -14,6 +14,7 @@ type Account struct {
 	Name     string
 	Email    string
 	Password string
+	Salt     string
 	// [active,inactive]
 	Status    bool
 	Images    string

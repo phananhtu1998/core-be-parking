@@ -5,6 +5,7 @@ CREATE TABLE `account` (
     `name` VARCHAR(255) NOT NULL,
     `email` VARCHAR(255) NOT NULL,
     `password` VARCHAR(255) NOT NULL,
+    `salt` VARCHAR(255) NOT NULL,
     `status` BOOLEAN NOT NULL COMMENT '[active,inactive]',
     `images` VARCHAR(255) NOT NULL,
     `is_deleted` BOOLEAN NOT NULL DEFAULT '0',

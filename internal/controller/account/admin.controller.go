@@ -105,3 +105,35 @@ func (ac *cAccount) DeleteAccount(ctx *gin.Context) {
 	}
 	response.SuccessResponse(ctx, codeResult, err)
 }
+
+// CreateAccount
+// @Summary      Tạo tài khoản mới
+// @Description  API này cho phép tạo tài khoản mới
+// @Tags         account management
+// @Accept       json
+// @Produce      json
+// @Param        body  body   model.AccountInput  true  "Thông tin tài khoản cần tạo"
+// @Success      200   {object}  response.ResponseData
+// @Failure      400   {object}  response.ErrorResponseData
+// @Failure      500   {object}  response.ErrorResponseData
+// @Router       /admin/create_account [POST]
+func (ac *cAccount) CreateAccount(ctx *gin.Context) {
+	var modelAccount model.AccountInput
+
+	// check valid
+	if err := ctx.ShouldBindJSON(&modelAccount); err != nil {
+		ctx.JSON(response.ErrCodeParamInvalid, gin.H{"error": "Invalid input data"})
+		return
+	}
+
+	// call service CreateAccount
+	code, account, err := service.AccountItem().CreateAccount(ctx, &modelAccount)
+	if err != nil {
+		log.Printf("Error creating account: %v", err)
+		response.ErrorResponse(ctx, code, err.Error())
+		return
+	}
+
+	// respone data
+	response.SuccessResponse(ctx, code, account)
+}

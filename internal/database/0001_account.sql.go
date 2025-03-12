@@ -10,6 +10,19 @@ import (
 	"database/sql"
 )
 
+const checkAccountBaseExists = `-- name: CheckAccountBaseExists :one
+SELECT COUNT(*)
+FROM ` + "`" + `account` + "`" + `
+WHERE email = ?
+`
+
+func (q *Queries) CheckAccountBaseExists(ctx context.Context, email string) (int64, error) {
+	row := q.db.QueryRowContext(ctx, checkAccountBaseExists, email)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
 const deleteAccountById = `-- name: DeleteAccountById :exec
 UPDATE account 
 SET
@@ -57,18 +70,17 @@ func (q *Queries) EditAccountById(ctx context.Context, arg EditAccountByIdParams
 }
 
 const getAccountById = `-- name: GetAccountById :one
-SELECT id, name, email,password, status,images
+SELECT id, name, email, status,images
 FROM ` + "`" + `account` + "`" + `
 WHERE id = ? AND is_deleted = false
 `
 
 type GetAccountByIdRow struct {
-	ID       string
-	Name     string
-	Email    string
-	Password string
-	Status   bool
-	Images   string
+	ID     string
+	Name   string
+	Email  string
+	Status bool
+	Images string
 }
 
 func (q *Queries) GetAccountById(ctx context.Context, id string) (GetAccountByIdRow, error) {
@@ -78,7 +90,6 @@ func (q *Queries) GetAccountById(ctx context.Context, id string) (GetAccountById
 		&i.ID,
 		&i.Name,
 		&i.Email,
-		&i.Password,
 		&i.Status,
 		&i.Images,
 	)
@@ -86,18 +97,17 @@ func (q *Queries) GetAccountById(ctx context.Context, id string) (GetAccountById
 }
 
 const getAllAccounts = `-- name: GetAllAccounts :many
-SELECT id, name, email, password, status, images
+SELECT id, name, email, status, images
 FROM ` + "`" + `account` + "`" + `
 WHERE is_deleted = false
 `
 
 type GetAllAccountsRow struct {
-	ID       string
-	Name     string
-	Email    string
-	Password string
-	Status   bool
-	Images   string
+	ID     string
+	Name   string
+	Email  string
+	Status bool
+	Images string
 }
 
 func (q *Queries) GetAllAccounts(ctx context.Context) ([]GetAllAccountsRow, error) {
@@ -113,7 +123,6 @@ func (q *Queries) GetAllAccounts(ctx context.Context) ([]GetAllAccountsRow, erro
 			&i.ID,
 			&i.Name,
 			&i.Email,
-			&i.Password,
 			&i.Status,
 			&i.Images,
 		); err != nil {
@@ -136,13 +145,14 @@ INSERT INTO ` + "`" + `account` + "`" + ` (
     name,
     email,
     password,
+    salt,
     status,
     images,
     is_deleted,
     create_at,
     update_at
 )
-VALUES(?,?,?,?,?,?,false,NOW(),NOW())
+VALUES(?,?,?,?,?,?,?,false,NOW(),NOW())
 `
 
 type InsertAccountParams struct {
@@ -150,6 +160,7 @@ type InsertAccountParams struct {
 	Name     string
 	Email    string
 	Password string
+	Salt     string
 	Status   bool
 	Images   string
 }
@@ -160,6 +171,7 @@ func (q *Queries) InsertAccount(ctx context.Context, arg InsertAccountParams) (s
 		arg.Name,
 		arg.Email,
 		arg.Password,
+		arg.Salt,
 		arg.Status,
 		arg.Images,
 	)

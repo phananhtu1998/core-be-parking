@@ -4,6 +4,7 @@ import (
 	"crypto/rand"
 	"crypto/sha256"
 	"encoding/hex"
+	"go-backend-api/global"
 )
 
 func GetHash(key string) string {
@@ -24,13 +25,13 @@ func GenerateSalt(length int) (string, error) {
 }
 
 // hash password hash
-func HashPassword(password string, salt string) string {
-	saltedPassword := password + salt
+func HashPassword(password string, salt string, secretKey string) string {
+	saltedPassword := password + salt + secretKey
 	hashPasword := sha256.Sum256(([]byte(saltedPassword)))
 	return hex.EncodeToString(hashPasword[:])
 }
 
 func MatchingPassword(storeHash string, password string, salt string) bool {
-	hashPassword := HashPassword(password, salt)
+	hashPassword := HashPassword(password, salt, global.Config.JWT.SECRET_KEY)
 	return storeHash == hashPassword
 }
