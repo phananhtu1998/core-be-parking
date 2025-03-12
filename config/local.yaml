@@ -1,0 +1,28 @@
+server:
+  port: 8082
+  mode: "dev"
+mysql:
+  host: 127.0.0.1 #nếu build dự án trong docker compose thì sửa lại tên của container
+  port: 3306
+  username: root
+  password: root1234
+  dbname: parkingdevgo
+  maxIdleconns: 10 # số lương kết nối Idle trong poolconnect
+  maxOpenConns: 100 # số lượng tối đa kết nối
+  connMaxLifetime: 3600
+logger:
+  log_level: debug
+  file_log_name: "./storages/logs/dev.log"
+  max_size: 500
+  max_backups: 3
+  max_age: 28 
+  compress: true
+redis:
+  host: 127.0.0.1
+  port: 6379
+  password:
+  database: 0
+jwt:
+  TOKEN_HOUR_LIFESPAN: 1
+  JWT_EXPIRATION: 1h
+  API_SECRET: "xxx.yyy.zzz"
