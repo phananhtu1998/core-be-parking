@@ -52,16 +52,12 @@ func (s *sAccount) CreateAccount(ctx context.Context, in *model.AccountInput) (c
 		log.Printf("Lỗi khi chèn tài khoản: %v", err)
 		return response.ErrCodeParamInvalid, model.AccountOutput{}, err
 	}
-	createdAccount, err := s.r.GetAccountById(ctx, newUUID)
 	accountOutput := model.AccountOutput{
-		ID:     createdAccount.ID,
-		Name:   createdAccount.Name,
-		Email:  createdAccount.Email,
-		Status: createdAccount.Status,
-		Images: createdAccount.Images,
-	}
-	if err != nil {
-		return response.ErrCodeUserOtpNotExists, model.AccountOutput{}, err
+		ID:     newUUID,
+		Name:   in.Name,
+		Email:  in.Email,
+		Status: in.Status,
+		Images: in.Images,
 	}
 	return response.ErrCodeSucces, accountOutput, err
 }
