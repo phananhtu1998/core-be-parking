@@ -8,6 +8,7 @@ package database
 import (
 	"context"
 	"database/sql"
+	"time"
 )
 
 const checkAccountBaseExists = `-- name: CheckAccountBaseExists :one
@@ -137,6 +138,41 @@ func (q *Queries) GetAllAccounts(ctx context.Context) ([]GetAllAccountsRow, erro
 		return nil, err
 	}
 	return items, nil
+}
+
+const getOneAccountInfoAdmin = `-- name: GetOneAccountInfoAdmin :one
+SELECT id, name, email, password,salt,status,create_at,update_at, images
+FROM ` + "`" + `account` + "`" + `
+WHERE email = ? AND is_deleted = false
+`
+
+type GetOneAccountInfoAdminRow struct {
+	ID       string
+	Name     string
+	Email    string
+	Password string
+	Salt     string
+	Status   bool
+	CreateAt time.Time
+	UpdateAt time.Time
+	Images   string
+}
+
+func (q *Queries) GetOneAccountInfoAdmin(ctx context.Context, email string) (GetOneAccountInfoAdminRow, error) {
+	row := q.db.QueryRowContext(ctx, getOneAccountInfoAdmin, email)
+	var i GetOneAccountInfoAdminRow
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Email,
+		&i.Password,
+		&i.Salt,
+		&i.Status,
+		&i.CreateAt,
+		&i.UpdateAt,
+		&i.Images,
+	)
+	return i, err
 }
 
 const insertAccount = `-- name: InsertAccount :execresult

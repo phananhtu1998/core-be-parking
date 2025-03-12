@@ -1,0 +1,27 @@
+package service
+
+import (
+	"context"
+	"go-backend-api/internal/model"
+)
+
+type (
+	ILogin interface {
+		Login(ctx context.Context, in *model.LoginInput) (codeResult int, out model.LoginOutput, err error)
+	}
+)
+
+var (
+	localLogin ILogin
+)
+
+func LoginItem() ILogin {
+	if localLogin == nil {
+		panic("implement localUserLogin not found for interface ILogin")
+	}
+	return localLogin
+}
+
+func InitLoginItem(i ILogin) {
+	localLogin = i
+}

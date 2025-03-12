@@ -3,6 +3,12 @@ SELECT id, name, email, status,images
 FROM `account`
 WHERE id = ? AND is_deleted = false;
 
+-- name: GetOneAccountInfoAdmin :one
+SELECT id, name, email, password,salt,status,create_at,update_at, images
+FROM `account`
+WHERE email = ? AND is_deleted = false;
+
+
 -- name: GetAllAccounts :many
 SELECT id, name, email, status, images
 FROM `account`
