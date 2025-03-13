@@ -14,10 +14,10 @@ type cLogin struct {
 	loginService service.ILogin
 }
 
-// Login
+// Authenticate
 // @Summary      Login
 // @Description  Login
-// @Tags         Login
+// @Tags         Authenticate
 // @Accept       json
 // @Produce      json
 // @Param        payload body model.LoginInput true "payload"

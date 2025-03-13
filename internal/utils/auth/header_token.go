@@ -1,16 +1,18 @@
 package auth
 
 import (
-	"strings"
-
 	"github.com/gin-gonic/gin"
 )
 
 func ExtracBearerToken(c *gin.Context) (string, bool) {
-	//   Authorization: bearer token
 	authHeader := c.GetHeader("Authorization")
-	if strings.HasPrefix(authHeader, "Bearer ") {
-		return strings.TrimPrefix(authHeader, "Bearer "), true
+	if authHeader == "" {
+		return "", false
 	}
-	return "", false
+	// Kiểm tra nếu token có dạng "Bearer {token}"
+	// if strings.HasPrefix(authHeader, "Bearer ") {
+	// 	return strings.TrimPrefix(authHeader, "Bearer "), true
+	// }
+	// Trả về token thô nếu không có "Bearer "
+	return authHeader, true
 }

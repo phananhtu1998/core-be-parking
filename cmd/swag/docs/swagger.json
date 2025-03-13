@@ -148,6 +148,11 @@
         },
         "/admin/get_all_account": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "API này trả về danh sách tất cả tài khoản trong hệ thống",
                 "consumes": [
                     "application/json"
@@ -156,7 +161,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "account management"
+                    "Account management"
                 ],
                 "summary": "Lấy danh sách tất cả tài khoản",
                 "responses": {
@@ -238,7 +243,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "Login"
+                    "Authenticate"
                 ],
                 "summary": "Login",
                 "parameters": [

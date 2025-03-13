@@ -154,6 +154,11 @@ const docTemplate = `{
         },
         "/admin/get_all_account": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "API này trả về danh sách tất cả tài khoản trong hệ thống",
                 "consumes": [
                     "application/json"
@@ -162,7 +167,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "account management"
+                    "Account management"
                 ],
                 "summary": "Lấy danh sách tất cả tài khoản",
                 "responses": {
@@ -244,7 +249,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Login"
+                    "Authenticate"
                 ],
                 "summary": "Login",
                 "parameters": [

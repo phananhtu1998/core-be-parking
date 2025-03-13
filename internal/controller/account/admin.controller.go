@@ -18,9 +18,10 @@ type cAccount struct {
 // GetAllAccount
 // @Summary      Lấy danh sách tất cả tài khoản
 // @Description  API này trả về danh sách tất cả tài khoản trong hệ thống
-// @Tags         account management
+// @Tags         Account management
 // @Accept       json
 // @Produce      json
+// @Security     BearerAuth
 // @Success      200  {object}  response.ResponseData
 // @Failure      500  {object}  response.ErrorResponseData
 // @Router       /admin/get_all_account [GET]
@@ -137,5 +138,3 @@ func (ac *cAccount) CreateAccount(ctx *gin.Context) {
 	// respone data
 	response.SuccessResponse(ctx, code, account)
 }
-
-
