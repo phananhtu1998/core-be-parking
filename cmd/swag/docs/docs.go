@@ -234,7 +234,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/login/token": {
+        "/auth/login": {
             "post": {
                 "description": "Login",
                 "consumes": [

@@ -10,8 +10,8 @@ type LoginRouter struct{}
 
 func (ar *LoginRouter) InitLoginRouter(Router *gin.RouterGroup) {
 	// public router
-	adminRouterPublic := Router.Group("/login")
+	adminRouterPublic := Router.Group("/auth")
 	{
-		adminRouterPublic.POST("/token", login.Logins.Login)
+		adminRouterPublic.POST("/login", login.Logins.Login)
 	}
 }
