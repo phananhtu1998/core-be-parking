@@ -11,3 +11,8 @@ type LoginOutput struct {
 	Token        string `json:"token"`
 	RefreshToken string `json:"refreshToken"`
 }
+
+type GetCacheToken struct {
+	ID    string `json:"id"`
+	Email string `json:"email"`
+}

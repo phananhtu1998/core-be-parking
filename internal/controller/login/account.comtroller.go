@@ -39,3 +39,22 @@ func (c *cLogin) Login(ctx *gin.Context) {
 	}
 	response.SuccessResponse(ctx, codeRs, dataRs)
 }
+
+// Authenticate
+// @Summary      Logout
+// @Description  Logout
+// @Tags         Authenticate
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Success      200  {object}  response.ResponseData
+// @Failure      500  {object}  response.ErrorResponseData
+// @Router       /auth/logout [post]
+func (c *cLogin) Logout(ctx *gin.Context) {
+	codeRs, err := service.LoginItem().Logout(ctx.Request.Context()) // truyền ctx.Request.Context để truyền giá trị subjectUUID
+	if err != nil {
+		response.ErrorResponse(ctx, response.ErrCodeParamInvalid, err.Error())
+		return
+	}
+	response.SuccessResponse(ctx, codeRs, nil)
+}

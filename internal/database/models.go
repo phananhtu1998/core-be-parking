@@ -5,6 +5,7 @@
 package database
 
 import (
+	"encoding/json"
 	"time"
 )
 
@@ -22,4 +23,14 @@ type Account struct {
 	IsDeleted bool
 	CreateAt  time.Time
 	UpdateAt  time.Time
+}
+
+// keytoken
+type Keytoken struct {
+	ID                string
+	AccountID         string
+	RefreshToken      string
+	RefreshTokensUsed json.RawMessage
+	CreateAt          time.Time
+	UpdateAt          time.Time
 }

@@ -2,6 +2,7 @@ package login
 
 import (
 	"go-backend-api/internal/controller/login"
+	"go-backend-api/internal/middlewares"
 
 	"github.com/gin-gonic/gin"
 )
@@ -13,5 +14,10 @@ func (ar *LoginRouter) InitLoginRouter(Router *gin.RouterGroup) {
 	adminRouterPublic := Router.Group("/auth")
 	{
 		adminRouterPublic.POST("/login", login.Logins.Login)
+	}
+	adminRouterPrivate := Router.Group("/auth")
+	adminRouterPrivate.Use(middlewares.AuthenMiddleware())
+	{
+		adminRouterPrivate.POST("/logout", login.Logins.Logout)
 	}
 }

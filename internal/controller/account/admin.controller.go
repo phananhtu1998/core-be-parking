@@ -38,7 +38,7 @@ func (ac *cAccount) GetAllAccount(ctx *gin.Context) {
 // GetAccountById
 // @Summary      Lấy tài khoản theo ID
 // @Description  API này trả về tài khoản theo ID
-// @Tags         account management
+// @Tags         Account management
 // @Accept       json
 // @Produce      json
 // @Param        id   path   string  true  "ID tài khoản cần lấy"
@@ -60,7 +60,7 @@ func (ac *cAccount) GetAccountById(ctx *gin.Context) {
 // UpdateAccount
 // @Summary      Cập nhật tài khoản
 // @Description  API này cập nhật thông tin tài khoản dựa trên ID
-// @Tags         account management
+// @Tags         Account management
 // @Accept       json
 // @Produce      json
 // @Param        id   path   string  true  "ID tài khoản cần cập nhật"
@@ -88,7 +88,7 @@ func (ac *cAccount) UpdateAccount(ctx *gin.Context) {
 // DeleteAccount
 // @Summary      Xóa tài khoản
 // @Description  API này xóa tài khoản dựa trên ID
-// @Tags         account management
+// @Tags         Account management
 // @Accept       json
 // @Produce      json
 // @Param        id   path   string  true  "ID của tài khoản cần xóa"
@@ -110,7 +110,7 @@ func (ac *cAccount) DeleteAccount(ctx *gin.Context) {
 // CreateAccount
 // @Summary      Tạo tài khoản mới
 // @Description  API này cho phép tạo tài khoản mới
-// @Tags         account management
+// @Tags         Account management
 // @Accept       json
 // @Produce      json
 // @Param        body  body   model.AccountInput  true  "Thông tin tài khoản cần tạo"

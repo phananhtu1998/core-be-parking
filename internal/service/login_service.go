@@ -8,6 +8,7 @@ import (
 type (
 	ILogin interface {
 		Login(ctx context.Context, in *model.LoginInput) (codeResult int, out model.LoginOutput, err error)
+		Logout(ctx context.Context) (codeResult int, err error)
 	}
 )
 

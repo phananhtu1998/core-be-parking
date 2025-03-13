@@ -85,7 +85,7 @@ paths:
             $ref: '#/definitions/response.ErrorResponseData'
       summary: Tạo tài khoản mới
       tags:
-      - account management
+      - Account management
   /admin/delete_account/{id}:
     delete:
       consumes:
@@ -114,7 +114,7 @@ paths:
             $ref: '#/definitions/response.ErrorResponseData'
       summary: Xóa tài khoản
       tags:
-      - account management
+      - Account management
   /admin/get_account_by_id/{id}:
     get:
       consumes:
@@ -139,7 +139,7 @@ paths:
             $ref: '#/definitions/response.ErrorResponseData'
       summary: Lấy tài khoản theo ID
       tags:
-      - account management
+      - Account management
   /admin/get_all_account:
     get:
       consumes:
@@ -195,7 +195,7 @@ paths:
             $ref: '#/definitions/response.ErrorResponseData'
       summary: Cập nhật tài khoản
       tags:
-      - account management
+      - Account management
   /auth/login:
     post:
       consumes:
@@ -220,6 +220,27 @@ paths:
           schema:
             $ref: '#/definitions/response.ErrorResponseData'
       summary: Login
+      tags:
+      - Authenticate
+  /auth/logout:
+    post:
+      consumes:
+      - application/json
+      description: Logout
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ResponseData'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponseData'
+      security:
+      - BearerAuth: []
+      summary: Logout
       tags:
       - Authenticate
 security:

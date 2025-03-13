@@ -10,6 +10,7 @@ import (
 	"go-backend-api/internal/model"
 	"go-backend-api/internal/utils"
 	"go-backend-api/internal/utils/auth"
+	"go-backend-api/internal/utils/cache"
 	"go-backend-api/internal/utils/crypto"
 	"go-backend-api/pkg/response"
 	"log"
@@ -55,4 +56,18 @@ func (s *sLogin) Login(ctx context.Context, in *model.LoginInput) (codeResult in
 		return response.ErrCodeAuthFailed, out, fmt.Errorf("lỗi ở phần tạo token: %v", err)
 	}
 	return response.ErrCodeSucces, out, err
+}
+func (s *sLogin) Logout(ctx context.Context) (codeResult int, err error) {
+	// Lấy subjectUUID từ context
+	subjectUUID := ctx.Value("subjectUUID")
+	if subjectUUID == nil {
+		return response.ErrCodeAuthFailed, fmt.Errorf("subjectUUID not found in context")
+	}
+	// Lấy thông tin user từ cache
+	var infoUser model.GetCacheToken
+	if err := cache.GetCache(ctx, subjectUUID.(string), &infoUser); err != nil {
+		return 0, err
+	}
+	log.Println("User info from cache:", infoUser.ID)
+	return response.ErrCodeSucces, err
 }

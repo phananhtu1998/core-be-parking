@@ -14,12 +14,14 @@ CREATE TABLE `account` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='account';
 
 -- bảng lưu trữ refresh token theo id account
-CREATE TABLE `key` (
+CREATE TABLE `keytoken` (
     `id` CHAR(36) NOT NULL,
     `account_id` CHAR(36) NOT NULL,
     `refresh_token` VARCHAR(255) NOT NULL,
     `refresh_tokens_used` JSON DEFAULT NULL,
     `create_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `update_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='key';
+    PRIMARY KEY (`id`),
+    INDEX idx_account_id (`account_id`) -- Thêm index cho account_id
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='keytoken';
+
