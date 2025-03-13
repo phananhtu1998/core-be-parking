@@ -19,9 +19,9 @@ func GenTokenJWT(payload jwt.Claims) (string, error) {
 
 func CreateToken(uuidToken string) (string, error) {
 	// 1. Set time expiration
-	timeEx := global.Config.JWT.JWT_EXPIRATION
+	timeEx := global.Config.JWT.ACCESS_TOKEN
 	if timeEx == "" {
-		timeEx = "1h"
+		timeEx = "72h"
 	}
 	expiration, err := time.ParseDuration(timeEx)
 	if err != nil {
@@ -39,7 +39,28 @@ func CreateToken(uuidToken string) (string, error) {
 		},
 	})
 }
-
+func CreateRefreshToken(uuidToken string) (string, error) {
+	// 1. Set time expiration
+	timeEx := global.Config.JWT.REFRESH_TOKEN
+	if timeEx == "" {
+		timeEx = "168h"
+	}
+	expiration, err := time.ParseDuration(timeEx)
+	if err != nil {
+		return "", err
+	}
+	now := time.Now()
+	expiresAt := now.Add(expiration)
+	return GenTokenJWT(&PayloadClaims{
+		StandardClaims: jwt.StandardClaims{
+			Id:        uuid.New().String(),
+			ExpiresAt: expiresAt.Unix(),
+			IssuedAt:  now.Unix(),
+			Issuer:    "parkingdevgo",
+			Subject:   uuidToken,
+		},
+	})
+}
 func ParseJwtTokenSubject(token string) (*jwt.StandardClaims, error) {
 	tokenClaims, err := jwt.ParseWithClaims(token, &jwt.StandardClaims{}, func(jwtToken *jwt.Token) (interface{}, error) {
 		return []byte(global.Config.JWT.API_SECRET_KEY), nil

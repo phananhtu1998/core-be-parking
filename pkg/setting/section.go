@@ -44,4 +44,6 @@ type JWTSettings struct {
 	API_SECRET_KEY      string `mapstructure:"API_SECRET_KEY"`
 	JWT_EXPIRATION      string `mapstructure:"JWT_EXPIRATION"`
 	SECRET_KEY          string `mapstructure:"SECRET_KEY"`
+	ACCESS_TOKEN        string `mapstructure:"ACCESS_TOKEN"`
+	REFRESH_TOKEN       string `mapstructure:"REFRESH_TOKEN"`
 }

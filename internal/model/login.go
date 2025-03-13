@@ -6,6 +6,8 @@ type LoginInput struct {
 }
 
 type LoginOutput struct {
+	ID           string `json:"id"`
+	Email        string `json:"email"`
 	Token        string `json:"token"`
 	RefreshToken string `json:"refreshToken"`
 }

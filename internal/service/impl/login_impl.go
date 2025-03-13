@@ -29,6 +29,8 @@ func (s *sLogin) Login(ctx context.Context, in *model.LoginInput) (codeResult in
 	if err != nil {
 		return response.ErrCodeAuthFailed, out, err
 	}
+	out.ID = accountBase.ID
+	out.Email = accountBase.Email
 	log.Println("matching pass: ", crypto.MatchingPassword(accountBase.Password, in.Password, accountBase.Salt))
 	if !crypto.MatchingPassword(accountBase.Password, in.Password, accountBase.Salt) {
 		return response.ErrCodeAuthFailed, out, fmt.Errorf("does not match password")
@@ -43,11 +45,12 @@ func (s *sLogin) Login(ctx context.Context, in *model.LoginInput) (codeResult in
 	if err != nil {
 		return response.ErrCodeAuthFailed, out, fmt.Errorf("convert to json failed: %v", err)
 	}
-	err = global.Rdb.Set(ctx, subToken, infoAccountJson, time.Duration(consts.TIME_2FA_OTP_REGISTER)*time.Minute).Err()
+	err = global.Rdb.Set(ctx, subToken, infoAccountJson, time.Duration(consts.REFRESH_TOKEN)*time.Hour).Err()
 	if err != nil {
 		return response.ErrCodeAuthFailed, out, fmt.Errorf("lỗi ở phần set vào redis")
 	}
 	out.Token, err = auth.CreateToken(subToken)
+	out.RefreshToken, err = auth.CreateRefreshToken(subToken)
 	if err != nil {
 		return response.ErrCodeAuthFailed, out, fmt.Errorf("lỗi ở phần tạo token: %v", err)
 	}

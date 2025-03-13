@@ -17,8 +17,6 @@ CREATE TABLE `account` (
 CREATE TABLE `key` (
     `id` CHAR(36) NOT NULL,
     `account_id` CHAR(36) NOT NULL,
-    `public_key` VARCHAR(255) NOT NULL,
-    `private_key` VARCHAR(255) NOT NULL,
     `refresh_token` VARCHAR(255) NOT NULL,
     `refresh_tokens_used` JSON DEFAULT NULL,
     `create_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
