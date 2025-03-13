@@ -194,7 +194,7 @@ paths:
       summary: Cập nhật tài khoản
       tags:
       - account management
-  /login/login:
+  /login/token:
     post:
       consumes:
       - application/json

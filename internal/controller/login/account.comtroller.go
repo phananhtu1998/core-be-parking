@@ -23,7 +23,7 @@ type cLogin struct {
 // @Param        payload body model.LoginInput true "payload"
 // @Success      200  {object}  response.ResponseData
 // @Failure      500  {object}  response.ErrorResponseData
-// @Router       /login/login [post]
+// @Router       /login/token [post]
 func (c *cLogin) Login(ctx *gin.Context) {
 	// Implement logic for login
 	var params model.LoginInput
