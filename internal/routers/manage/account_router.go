@@ -11,6 +11,7 @@ type AdminRouter struct{}
 func (ar *AdminRouter) InitAdminRouter(Router *gin.RouterGroup) {
 	// public router
 	adminRouterPublic := Router.Group("/admin")
+	//adminRouterPublic.Use(middlewares.AuthenMiddleware())
 	{
 		adminRouterPublic.GET("/get_all_account", account.Accounts.GetAllAccount)
 		adminRouterPublic.GET("/get_account_by_id/:id", account.Accounts.GetAccountById)
