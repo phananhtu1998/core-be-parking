@@ -71,13 +71,14 @@ func (q *Queries) EditAccountById(ctx context.Context, arg EditAccountByIdParams
 }
 
 const getAccountById = `-- name: GetAccountById :one
-SELECT id, name, email, status,images
+SELECT id, number, name, email, status,images
 FROM ` + "`" + `account` + "`" + `
 WHERE id = ? AND is_deleted = false
 `
 
 type GetAccountByIdRow struct {
 	ID     string
+	Number int32
 	Name   string
 	Email  string
 	Status bool
@@ -89,6 +90,7 @@ func (q *Queries) GetAccountById(ctx context.Context, id string) (GetAccountById
 	var i GetAccountByIdRow
 	err := row.Scan(
 		&i.ID,
+		&i.Number,
 		&i.Name,
 		&i.Email,
 		&i.Status,
@@ -98,13 +100,14 @@ func (q *Queries) GetAccountById(ctx context.Context, id string) (GetAccountById
 }
 
 const getAllAccounts = `-- name: GetAllAccounts :many
-SELECT id, name, email, status, images
+SELECT id, number, name, email, status, images
 FROM ` + "`" + `account` + "`" + `
 WHERE is_deleted = false
 `
 
 type GetAllAccountsRow struct {
 	ID     string
+	Number int32
 	Name   string
 	Email  string
 	Status bool
@@ -122,6 +125,7 @@ func (q *Queries) GetAllAccounts(ctx context.Context) ([]GetAllAccountsRow, erro
 		var i GetAllAccountsRow
 		if err := rows.Scan(
 			&i.ID,
+			&i.Number,
 			&i.Name,
 			&i.Email,
 			&i.Status,
@@ -141,13 +145,14 @@ func (q *Queries) GetAllAccounts(ctx context.Context) ([]GetAllAccountsRow, erro
 }
 
 const getOneAccountInfoAdmin = `-- name: GetOneAccountInfoAdmin :one
-SELECT id, name, email, password,salt,status,create_at,update_at, images
+SELECT id, number, name, email, password,salt,status,create_at,update_at, images
 FROM ` + "`" + `account` + "`" + `
 WHERE email = ? AND is_deleted = false
 `
 
 type GetOneAccountInfoAdminRow struct {
 	ID       string
+	Number   int32
 	Name     string
 	Email    string
 	Password string
@@ -163,6 +168,7 @@ func (q *Queries) GetOneAccountInfoAdmin(ctx context.Context, email string) (Get
 	var i GetOneAccountInfoAdminRow
 	err := row.Scan(
 		&i.ID,
+		&i.Number,
 		&i.Name,
 		&i.Email,
 		&i.Password,
@@ -178,6 +184,7 @@ func (q *Queries) GetOneAccountInfoAdmin(ctx context.Context, email string) (Get
 const insertAccount = `-- name: InsertAccount :execresult
 INSERT INTO ` + "`" + `account` + "`" + ` (
     id,
+    number,
     name,
     email,
     password,
@@ -188,11 +195,12 @@ INSERT INTO ` + "`" + `account` + "`" + ` (
     create_at,
     update_at
 )
-VALUES(?,?,?,?,?,?,?,false,NOW(),NOW())
+VALUES(?,?,?,?,?,?,?,?,false,NOW(),NOW())
 `
 
 type InsertAccountParams struct {
 	ID       string
+	Number   int32
 	Name     string
 	Email    string
 	Password string
@@ -204,6 +212,7 @@ type InsertAccountParams struct {
 func (q *Queries) InsertAccount(ctx context.Context, arg InsertAccountParams) (sql.Result, error) {
 	return q.db.ExecContext(ctx, insertAccount,
 		arg.ID,
+		arg.Number,
 		arg.Name,
 		arg.Email,
 		arg.Password,

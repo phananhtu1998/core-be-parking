@@ -13,11 +13,12 @@ type PayloadClaims struct {
 }
 
 func GenTokenJWT(payload jwt.Claims) (string, error) {
-	token := jwt.NewWithClaims(jwt.SigningMethodES256, payload)
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, payload)
 	return token.SignedString([]byte(global.Config.JWT.API_SECRET_KEY))
 }
 
 func CreateToken(uuidToken string) (string, error) {
+	// 1. Set time expiration
 	timeEx := global.Config.JWT.JWT_EXPIRATION
 	if timeEx == "" {
 		timeEx = "1h"
@@ -27,11 +28,11 @@ func CreateToken(uuidToken string) (string, error) {
 		return "", err
 	}
 	now := time.Now()
-	expireAt := now.Add(expiration)
+	expiresAt := now.Add(expiration)
 	return GenTokenJWT(&PayloadClaims{
 		StandardClaims: jwt.StandardClaims{
 			Id:        uuid.New().String(),
-			ExpiresAt: expireAt.Unix(),
+			ExpiresAt: expiresAt.Unix(),
 			IssuedAt:  now.Unix(),
 			Issuer:    "parkingdevgo",
 			Subject:   uuidToken,
@@ -39,21 +40,23 @@ func CreateToken(uuidToken string) (string, error) {
 	})
 }
 
-// parse
 func ParseJwtTokenSubject(token string) (*jwt.StandardClaims, error) {
 	tokenClaims, err := jwt.ParseWithClaims(token, &jwt.StandardClaims{}, func(jwtToken *jwt.Token) (interface{}, error) {
 		return []byte(global.Config.JWT.API_SECRET_KEY), nil
 	})
+
 	if tokenClaims != nil {
-		if Claims, ok := tokenClaims.Claims.(*jwt.StandardClaims); ok && tokenClaims.Valid {
-			return Claims, nil
+		if claims, ok := tokenClaims.Claims.(*jwt.StandardClaims); ok && tokenClaims.Valid {
+			return claims, nil
 		}
 	}
+
 	return nil, err
 }
 
 // validate token
-func VerifyToken(token string) (*jwt.StandardClaims, error) {
+
+func VerifyTokenSubject(token string) (*jwt.StandardClaims, error) {
 	claims, err := ParseJwtTokenSubject(token)
 	if err != nil {
 		return nil, err

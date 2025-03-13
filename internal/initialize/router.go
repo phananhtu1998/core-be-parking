@@ -22,12 +22,14 @@ func InitRouter() *gin.Engine {
 	r.Use() //cross
 	r.Use() //limiter global
 	manageRouter := routers.RouterGroupApp.Manage
+	loginRouter := routers.RouterGroupApp.Login
 	MainGroup := r.Group("/v1/2025")
 	{
 		MainGroup.GET("/checkstatus") //tracking monitor
 	}
 	{
 		manageRouter.InitAdminRouter(MainGroup)
+		loginRouter.InitLoginRouter(MainGroup)
 	}
 	return r
 }

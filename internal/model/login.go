@@ -7,6 +7,5 @@ type LoginInput struct {
 
 type LoginOutput struct {
 	Token        string `json:"token"`
-	RefreshToken string `json:"Rrfreshtoken"`
-	Message      string `json:"message"`
+	RefreshToken string `json:"refreshToken"`
 }

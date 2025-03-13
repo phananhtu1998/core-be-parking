@@ -11,6 +11,7 @@ import (
 // account
 type Account struct {
 	ID       string
+	Number   int32
 	Name     string
 	Email    string
 	Password string

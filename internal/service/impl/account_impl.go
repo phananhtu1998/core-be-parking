@@ -9,6 +9,8 @@ import (
 	"go-backend-api/internal/utils/crypto"
 	"go-backend-api/pkg/response"
 	"log"
+	"math/rand"
+	"time"
 
 	"github.com/google/uuid"
 )
@@ -38,9 +40,11 @@ func (s *sAccount) CreateAccount(ctx context.Context, in *model.AccountInput) (c
 		return response.ErrCodeUserOtpNotExists, model.AccountOutput{}, err
 	}
 	accountBase.Password = crypto.HashPassword(in.Password, userSalt, global.Config.JWT.SECRET_KEY)
+	rand.Seed(time.Now().UnixNano())
 	newUUID := uuid.New().String()
 	_, err = s.r.InsertAccount(ctx, database.InsertAccountParams{
 		ID:       newUUID,
+		Number:   rand.Int31(),
 		Name:     in.Name,
 		Email:    in.Email,
 		Password: accountBase.Password,

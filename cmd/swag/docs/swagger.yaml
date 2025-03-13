@@ -13,6 +13,13 @@ definitions:
       status:
         type: boolean
     type: object
+  model.LoginInput:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
   response.ErrorResponseData:
     properties:
       code:
@@ -187,6 +194,32 @@ paths:
       summary: Cập nhật tài khoản
       tags:
       - account management
+  /login/login:
+    post:
+      consumes:
+      - application/json
+      description: Login
+      parameters:
+      - description: payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/model.LoginInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ResponseData'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponseData'
+      summary: Login
+      tags:
+      - Login
 security:
 - "":
   - BearerAuth

@@ -22,7 +22,7 @@ func AuthenMiddleware() gin.HandlerFunc {
 			return
 		}
 		// validate jwt token
-		claims, err := auth.VerifyToken(jwtToken)
+		claims, err := auth.VerifyTokenSubject(jwtToken)
 		if err != nil {
 			log.Println("Invalid token")
 			c.AbortWithStatusJSON(401, gin.H{"code": response.ErrUnauthorized, "err": "invalid token", "description": ""})
