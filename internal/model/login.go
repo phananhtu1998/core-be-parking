@@ -8,7 +8,7 @@ type LoginInput struct {
 type LoginOutput struct {
 	ID           string `json:"id"`
 	Email        string `json:"email"`
-	AccessToken  string `json:"token"`
+	AccessToken  string `json:"accesstoken"`
 	RefreshToken string `json:"refreshToken"`
 }
 
