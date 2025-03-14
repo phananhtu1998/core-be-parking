@@ -140,3 +140,9 @@ Cài đặt jwt
 ```
 go get github.com/golang-jwt/jwt
 ```
+
+Test độ chịu tải của server
+
+```
+artillery run load-test.yml
+```

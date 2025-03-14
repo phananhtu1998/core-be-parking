@@ -1,0 +1,10 @@
+config:
+  target: "http://localhost:8002/v1/2025/admin/get_all_account"
+  phases:
+    - duration: 6  # Chạy trong 30 giây
+      arrivalRate: 1000  # 1000 requests mỗi giây (RPS)
+
+scenarios:
+  - flow:
+      - get:
+          url: "/"
