@@ -58,3 +58,22 @@ func (c *cLogin) Logout(ctx *gin.Context) {
 	}
 	response.SuccessResponse(ctx, codeRs, nil)
 }
+
+// Authenticate
+// @Summary      RefreshToken
+// @Description  RefreshToken
+// @Tags         Authenticate
+// @Accept       json
+// @Produce      json
+// @Param        RefreshToken  header  string  true  "Refresh Token"
+// @Success      200  {object}  response.ResponseData
+// @Failure      500  {object}  response.ErrorResponseData
+// @Router       /auth/refreshtoken [post]
+func (c *cLogin) RefreshTokens(ctx *gin.Context) {
+	codeRs, data, err := service.LoginItem().RefreshTokens(ctx.Request.Context()) // truyền ctx.Request.Context để truyền giá trị subjectUUID
+	if err != nil {
+		response.ErrorResponse(ctx, response.ErrCodeParamInvalid, err.Error())
+		return
+	}
+	response.SuccessResponse(ctx, codeRs, data)
+}

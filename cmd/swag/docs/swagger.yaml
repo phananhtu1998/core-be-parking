@@ -243,6 +243,31 @@ paths:
       summary: Logout
       tags:
       - Authenticate
+  /auth/refreshtoken:
+    post:
+      consumes:
+      - application/json
+      description: RefreshToken
+      parameters:
+      - description: Refresh Token
+        in: header
+        name: RefreshToken
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ResponseData'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponseData'
+      summary: RefreshToken
+      tags:
+      - Authenticate
 security:
 - "":
   - BearerAuth

@@ -16,3 +16,10 @@ func ExtracBearerToken(c *gin.Context) (string, bool) {
 	// Trả về token thô nếu không có "Bearer "
 	return authHeader, true
 }
+func ExtractRefreshToken(c *gin.Context) (string, bool) {
+	refreshToken := c.GetHeader("RefreshToken")
+	if refreshToken == "" {
+		return "", false
+	}
+	return refreshToken, true
+}
