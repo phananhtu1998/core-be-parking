@@ -55,7 +55,7 @@ func AuthenMiddlewareV2() gin.HandlerFunc {
 			return
 		}
 		// update claims to context
-		log.Println("claims::: UUID::", claims.Subject)
+		//log.Println("claims::: UUID::", claims.Subject)
 		newCtx := context.WithValue(c.Request.Context(), "subjectUUID", claims.Subject)
 		newCtx = context.WithValue(newCtx, "refreshToken", refreshToken)
 		c.Request = c.Request.WithContext(newCtx)

@@ -105,8 +105,8 @@ func (s *sLogin) RefreshTokens(ctx context.Context) (codeResult int, out model.L
 	}
 	// Ép kiểu sang string
 	refreshTokenStr, ok := refresToken.(string)
+	log.Println("RefreshToken kiểm tra:", refreshTokenStr)
 	if !ok {
-		log.Println("Lỗi: refreshToken không phải kiểu string")
 		return response.ErrCodeAuthFailed, out, errors.New("invalid refresh token format")
 	}
 	// lấy Id của account
@@ -119,22 +119,22 @@ func (s *sLogin) RefreshTokens(ctx context.Context) (codeResult int, out model.L
 	if err := cache.GetCache(ctx, subjectUUID.(string), &infoUser); err != nil {
 		return 0, out, err
 	}
-	log.Println("refresToken service: ", refresToken)
+	log.Println("info user Id", infoUser.ID)
 	// Kiểm tra trong db coi có sử dụng chưa
 	getRefreshTokenUsed, err := s.r.CountByTokenAndAccount(ctx, database.CountByTokenAndAccountParams{
 		AccountID:    infoUser.ID,
-		JSONCONTAINS: refreshTokenStr,
+		JSONCONTAINS: fmt.Sprintf("[\"%s\"]", refreshTokenStr),
 	})
 	if getRefreshTokenUsed > 0 {
 		err := s.r.DeleteKey(ctx, infoUser.ID)
 		return response.ErrCodeAuthFailed, out, err
 	}
+	log.Println("count token used: ", getRefreshTokenUsed)
 	accountBase, err := s.r.GetOneAccountInfoAdmin(ctx, infoUser.Email)
 	if err != nil {
 		return response.ErrCodeAuthFailed, out, fmt.Errorf("Lỗi lấy thông tin tài khoản")
 	}
 	subToken := utils.GenerateCliTokenUUID(int(accountBase.Number))
-	log.Println("subtoken:", subToken)
 	infoAccount, err := s.r.GetAccountById(ctx, accountBase.ID)
 	if err != nil {
 		return response.ErrCodeAuthFailed, out, fmt.Errorf("lỗi ở phần lấy thông tin tài khoản")
@@ -157,13 +157,11 @@ func (s *sLogin) RefreshTokens(ctx context.Context) (codeResult int, out model.L
 		AccountID:       accountBase.ID,
 		RefreshToken:    out.RefreshToken,
 		JSONARRAY:       out.RefreshToken, // Đảm bảo kiểu string
-		JSONARRAYAPPEND: out.RefreshToken, // Ép kiểu đúng khi truyền vào
+		JSONARRAYAPPEND: refreshTokenStr,  // Ép kiểu đúng khi truyền vào
 	})
 	if err != nil {
 		return response.ErrInvalidToken, out, fmt.Errorf("lỗi update key: %v", err)
 
 	}
-	log.Println("User info from cache:", infoUser.Email)
-
 	return codeResult, out, err
 }
