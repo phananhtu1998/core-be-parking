@@ -31,6 +31,38 @@ func (q *Queries) AddUsedToken(ctx context.Context, arg AddUsedTokenParams) erro
 	return err
 }
 
+const countByAccount = `-- name: CountByAccount :one
+SELECT COUNT(*) AS total_count
+FROM keytoken
+WHERE account_id = ?
+`
+
+func (q *Queries) CountByAccount(ctx context.Context, accountID string) (int64, error) {
+	row := q.db.QueryRowContext(ctx, countByAccount, accountID)
+	var total_count int64
+	err := row.Scan(&total_count)
+	return total_count, err
+}
+
+const countByTokenAndAccount = `-- name: CountByTokenAndAccount :one
+SELECT COUNT(*) AS total_count
+FROM keytoken
+WHERE JSON_CONTAINS(refresh_tokens_used, ?, '$') 
+AND account_id = ?
+`
+
+type CountByTokenAndAccountParams struct {
+	JSONCONTAINS string
+	AccountID    string
+}
+
+func (q *Queries) CountByTokenAndAccount(ctx context.Context, arg CountByTokenAndAccountParams) (int64, error) {
+	row := q.db.QueryRowContext(ctx, countByTokenAndAccount, arg.JSONCONTAINS, arg.AccountID)
+	var total_count int64
+	err := row.Scan(&total_count)
+	return total_count, err
+}
+
 const deleteKey = `-- name: DeleteKey :exec
 DELETE FROM ` + "`" + `keytoken` + "`" + ` WHERE account_id = ?
 `

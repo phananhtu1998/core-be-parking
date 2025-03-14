@@ -15,6 +15,7 @@ services:
       - MYSQL_PASSWORD=root1234
     networks:
       - go_network  
+    command: --log-bin-trust-function-creators=1
 
 
   phpmyadmin:

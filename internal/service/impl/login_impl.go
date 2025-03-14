@@ -15,6 +15,8 @@ import (
 	"go-backend-api/pkg/response"
 	"log"
 	"time"
+
+	"github.com/google/uuid"
 )
 
 type sLogin struct {
@@ -43,6 +45,8 @@ func (s *sLogin) Login(ctx context.Context, in *model.LoginInput) (codeResult in
 		return response.ErrCodeAuthFailed, out, fmt.Errorf("lỗi ở phần lấy thông tin tài khoản")
 	}
 	infoAccountJson, err := json.Marshal(infoAccount)
+	// check bảng keytoken có tồn tại hay chưa
+	// Nếu chưa thì insert
 	if err != nil {
 		return response.ErrCodeAuthFailed, out, fmt.Errorf("convert to json failed: %v", err)
 	}
@@ -52,6 +56,26 @@ func (s *sLogin) Login(ctx context.Context, in *model.LoginInput) (codeResult in
 	}
 	out.Token, err = auth.CreateToken(subToken)
 	out.RefreshToken, err = auth.CreateRefreshToken(subToken)
+	getAccountKT, err := s.r.CountByAccount(ctx, accountBase.ID)
+	if getAccountKT > 0 {
+		err := s.r.UpdateRefreshTokenAndUsedTokens(ctx, database.UpdateRefreshTokenAndUsedTokensParams{
+			AccountID:    accountBase.ID,
+			RefreshToken: out.RefreshToken,
+		})
+		if err != nil {
+			return response.ErrInvalidToken, out, fmt.Errorf("lỗi update key: %v", err)
+
+		}
+	} else {
+		err := s.r.InsertKey(ctx, database.InsertKeyParams{
+			ID:           uuid.NewString(),
+			AccountID:    accountBase.ID,
+			RefreshToken: out.RefreshToken,
+		})
+		if err != nil {
+			return response.ErrInvalidToken, out, fmt.Errorf("lỗi insert key: %v", err)
+		}
+	}
 	if err != nil {
 		return response.ErrCodeAuthFailed, out, fmt.Errorf("lỗi ở phần tạo token: %v", err)
 	}
@@ -69,5 +93,8 @@ func (s *sLogin) Logout(ctx context.Context) (codeResult int, err error) {
 		return 0, err
 	}
 	log.Println("User info from cache:", infoUser.ID)
+	err = s.r.DeleteKey(ctx, infoUser.ID)
 	return response.ErrCodeSucces, err
 }
+
+

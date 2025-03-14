@@ -34,5 +34,17 @@ WHERE account_id = ?;
 -- name: DeleteKey :exec
 DELETE FROM `keytoken` WHERE account_id = ?;
 
+-- name: CountByTokenAndAccount :one
+SELECT COUNT(*) AS total_count
+FROM keytoken
+WHERE JSON_CONTAINS(refresh_tokens_used, ?, '$') 
+AND account_id = ?;
+
+-- name: CountByAccount :one
+SELECT COUNT(*) AS total_count
+FROM keytoken
+WHERE account_id = ?;
+
+
 
 
