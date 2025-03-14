@@ -45,6 +45,11 @@ SELECT COUNT(*) AS total_count
 FROM keytoken
 WHERE account_id = ?;
 
+-- name: CountRefreshTokenByAccount :one
+SELECT COUNT(*) AS total_count
+FROM keytoken
+WHERE refresh_token = ?;
+
 
 
 

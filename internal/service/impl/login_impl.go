@@ -109,6 +109,12 @@ func (s *sLogin) RefreshTokens(ctx context.Context) (codeResult int, out model.L
 	if !ok {
 		return response.ErrCodeAuthFailed, out, errors.New("invalid refresh token format")
 	}
+	// kiểm tra refresh trong db
+	countRefreshToken, err := s.r.CountRefreshTokenByAccount(ctx, refreshTokenStr)
+	if countRefreshToken == 0 {
+		return response.ErrCodeAuthFailed, out, fmt.Errorf("Tài khoản chưa được đăng ký hoặc đã đăng nhập ở nơi khác vui lòng đăng nhập lại")
+	}
+	log.Println("countRefreshToken: ", countRefreshToken)
 	// lấy Id của account
 	subjectUUID := ctx.Value("subjectUUID")
 	if subjectUUID == nil {
@@ -119,7 +125,6 @@ func (s *sLogin) RefreshTokens(ctx context.Context) (codeResult int, out model.L
 	if err := cache.GetCache(ctx, subjectUUID.(string), &infoUser); err != nil {
 		return 0, out, err
 	}
-	log.Println("info user Id", infoUser.ID)
 	// Kiểm tra trong db coi có sử dụng chưa
 	getRefreshTokenUsed, err := s.r.CountByTokenAndAccount(ctx, database.CountByTokenAndAccountParams{
 		AccountID:    infoUser.ID,
@@ -129,7 +134,6 @@ func (s *sLogin) RefreshTokens(ctx context.Context) (codeResult int, out model.L
 		err := s.r.DeleteKey(ctx, infoUser.ID)
 		return response.ErrCodeAuthFailed, out, err
 	}
-	log.Println("count token used: ", getRefreshTokenUsed)
 	accountBase, err := s.r.GetOneAccountInfoAdmin(ctx, infoUser.Email)
 	if err != nil {
 		return response.ErrCodeAuthFailed, out, fmt.Errorf("Lỗi lấy thông tin tài khoản")

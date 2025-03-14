@@ -63,6 +63,19 @@ func (q *Queries) CountByTokenAndAccount(ctx context.Context, arg CountByTokenAn
 	return total_count, err
 }
 
+const countRefreshTokenByAccount = `-- name: CountRefreshTokenByAccount :one
+SELECT COUNT(*) AS total_count
+FROM keytoken
+WHERE refresh_token = ?
+`
+
+func (q *Queries) CountRefreshTokenByAccount(ctx context.Context, refreshToken string) (int64, error) {
+	row := q.db.QueryRowContext(ctx, countRefreshTokenByAccount, refreshToken)
+	var total_count int64
+	err := row.Scan(&total_count)
+	return total_count, err
+}
+
 const deleteKey = `-- name: DeleteKey :exec
 DELETE FROM ` + "`" + `keytoken` + "`" + ` WHERE account_id = ?
 `
