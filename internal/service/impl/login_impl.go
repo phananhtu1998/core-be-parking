@@ -154,9 +154,10 @@ func (s *sLogin) RefreshTokens(ctx context.Context) (codeResult int, out model.L
 	out.AccessToken, err = auth.CreateToken(subToken)
 	out.RefreshToken, err = auth.CreateRefreshToken(subToken)
 	err = s.r.UpdateRefreshTokenAndUsedTokens(ctx, database.UpdateRefreshTokenAndUsedTokensParams{
-		AccountID:         accountBase.ID,
-		RefreshToken:      out.RefreshToken,
-		refresh_tokens_used: out.RefreshToken,
+		AccountID:       accountBase.ID,
+		RefreshToken:    out.RefreshToken,
+		JSONARRAY:       out.RefreshToken, // Đảm bảo kiểu string
+		JSONARRAYAPPEND: out.RefreshToken, // Ép kiểu đúng khi truyền vào
 	})
 	if err != nil {
 		return response.ErrInvalidToken, out, fmt.Errorf("lỗi update key: %v", err)
