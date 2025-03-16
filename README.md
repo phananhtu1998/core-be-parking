@@ -146,3 +146,9 @@ Test độ chịu tải của server
 ```
 artillery run load-test.yml
 ```
+
+Lớp bảo vệ bên ngoài (global)
+
+```
+Resilience4j
+```
