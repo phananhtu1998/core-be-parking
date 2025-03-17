@@ -350,6 +350,51 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/menu/create_menu": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Menu",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Menu"
+                ],
+                "summary": "Menu",
+                "parameters": [
+                    {
+                        "description": "payload",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.MenuInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResponseData"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponseData"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -380,6 +425,32 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.MenuInput": {
+            "type": "object",
+            "properties": {
+                "menu_group_name": {
+                    "type": "string"
+                },
+                "menu_icon": {
+                    "type": "string"
+                },
+                "menu_level": {
+                    "type": "integer"
+                },
+                "menu_name": {
+                    "type": "string"
+                },
+                "menu_number_order": {
+                    "type": "number"
+                },
+                "menu_parent_id": {
+                    "type": "string"
+                },
+                "menu_url": {
                     "type": "string"
                 }
             }

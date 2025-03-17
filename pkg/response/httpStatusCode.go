@@ -17,7 +17,10 @@ const (
 	//  Two Factor Authentication
 	ErrCodeTwoFactorAuthSetupFailed  = 80001
 	ErrCodeTwoFactorAuthVerifyFailed = 80002
-	// account
+	// error code Menu
+	ErrCodeMenuNotFound  = 90001 // menu not found
+	ErrCodeMenuHasExists = 90002 // menu already exists
+	ErrCodeMenuErrror    = 90003
 )
 
 // message
@@ -33,4 +36,7 @@ var msg = map[int]string{
 	ErrCodeTwoFactorAuthSetupFailed:  "Failed to setup Two Factor Authentication",
 	ErrUnauthorized:                  "Unauthorized",
 	ErrCodeTwoFactorAuthVerifyFailed: "Two Factor Authentication setup failed",
+	ErrCodeMenuNotFound:              "menu not found",
+	ErrCodeMenuHasExists:             "menu already exists",
+	ErrCodeMenuErrror:                "menu error",
 }

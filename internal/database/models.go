@@ -5,6 +5,7 @@
 package database
 
 import (
+	"database/sql"
 	"encoding/json"
 	"time"
 )
@@ -33,4 +34,18 @@ type Keytoken struct {
 	RefreshTokensUsed json.RawMessage
 	CreateAt          time.Time
 	UpdateAt          time.Time
+}
+
+type Menu struct {
+	ID              string
+	MenuName        string
+	MenuIcon        string
+	MenuUrl         string
+	MenuParentID    sql.NullString
+	MenuLevel       int32
+	MenuNumberOrder float64
+	MenuGroupName   string
+	IsDeleted       bool
+	CreateAt        time.Time
+	UpdateAt        time.Time
 }
