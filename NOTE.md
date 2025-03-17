@@ -84,8 +84,18 @@ DELIMITER;
 
 Nhằm mục đích phân biệt logout cho 1 tài trên từng thiết bị
 
-Solution architecture tính nhất quán dữ liệu trong localcache
+**Solution architecture tính nhất quán dữ liệu trong localcache**
 
 ```
 Tạo 1 trường version để so sánh nếu 2 version không giống nhau dữ liệu đã thay đổi còn nếu version giống nhau thì dữ liệu được nhất quán.
+```
+
+Lập trình LUA trong redis tương tự như transaction trong mysql.Các lệnh LUA trong redis
+
+```
+MULTI: mở 1 giao dịch đánh dấu mở 1 transaction trong redis lệnh này không thực thi ngay lập tức mà đưa vào queues cho đến khi chúng ta EXEC và tất cả câu lệnh thực thi.
+DISCARD: hủy giao dịch 
+EXEC: thực thi tất cả câu lệnh trong hàm đợi 
+WATCH  
+UNWATCH 
 ```
