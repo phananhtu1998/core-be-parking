@@ -83,3 +83,9 @@ DELIMITER;
 **jit đại diện cho 1 token riêng biệt**
 
 Nhằm mục đích phân biệt logout cho 1 tài trên từng thiết bị
+
+Solution architecture tính nhất quán dữ liệu trong localcache
+
+```
+Tạo 1 trường version để so sánh nếu 2 version không giống nhau dữ liệu đã thay đổi còn nếu version giống nhau thì dữ liệu được nhất quán.
+```
