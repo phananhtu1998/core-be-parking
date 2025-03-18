@@ -28,6 +28,13 @@ func AuthenMiddleware() gin.HandlerFunc {
 			c.AbortWithStatusJSON(401, gin.H{"code": response.ErrUnauthorized, "err": "invalid token", "description": ""})
 			return
 		}
+		// check blacklist
+		isblacklisted := auth.CheckBlacklist(claims.Subject)
+		if isblacklisted {
+			log.Println("Token is blacklisted")
+			c.AbortWithStatusJSON(401, gin.H{"code": response.ErrUnauthorized, "err": "Unauthorized", "description": "Token đã bị thu hồi"})
+			return
+		}
 		// update claims to context
 		log.Println("claims::: UUID::", claims.Subject)
 		ctx := context.WithValue(c.Request.Context(), "subjectUUID", claims.Subject)
@@ -52,6 +59,13 @@ func AuthenMiddlewareV2() gin.HandlerFunc {
 		if err != nil {
 			log.Println("Invalid token")
 			c.AbortWithStatusJSON(401, gin.H{"code": response.ErrUnauthorized, "err": "invalid token", "description": ""})
+			return
+		}
+		// check blacklist
+		isblacklisted := auth.CheckBlacklist(claims.Subject)
+		if isblacklisted {
+			log.Println("Token is blacklisted")
+			c.AbortWithStatusJSON(401, gin.H{"code": response.ErrUnauthorized, "err": "Unauthorized", "description": "Token đã bị thu hồi"})
 			return
 		}
 		// update claims to context

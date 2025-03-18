@@ -1,11 +1,14 @@
 package auth
 
 import (
+	"context"
+	"fmt"
 	"go-backend-api/global"
 	"time"
 
 	"github.com/golang-jwt/jwt"
 	"github.com/google/uuid"
+	"github.com/redis/go-redis/v9"
 )
 
 type PayloadClaims struct {
@@ -76,7 +79,6 @@ func ParseJwtTokenSubject(token string) (*jwt.StandardClaims, error) {
 }
 
 // validate token
-
 func VerifyTokenSubject(token string) (*jwt.StandardClaims, error) {
 	claims, err := ParseJwtTokenSubject(token)
 	if err != nil {
@@ -86,4 +88,25 @@ func VerifyTokenSubject(token string) (*jwt.StandardClaims, error) {
 		return nil, err
 	}
 	return claims, nil
+}
+
+// CheckBlacklist kiểm tra xem token có trong danh sách đen không
+func CheckBlacklist(key string) bool {
+	// Tạo key Redis đúng định dạng
+	redisKey := fmt.Sprintf("TOKEN_BLACK_LIST_%s", key)
+
+	// Kiểm tra key trong Redis
+	_, err := global.Rdb.Get(context.Background(), redisKey).Result()
+
+	// Nếu không có lỗi => key tồn tại (token bị blacklist)
+	if err == nil {
+		return true
+	}
+	// Nếu lỗi là "key not found" => token chưa bị blacklist
+	if err == redis.Nil {
+		return false
+	}
+	// Nếu có lỗi khác => log lỗi (tuỳ chỉnh nếu cần)
+	fmt.Println("Lỗi khi kiểm tra Redis:", err)
+	return false
 }

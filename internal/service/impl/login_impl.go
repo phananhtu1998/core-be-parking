@@ -93,6 +93,13 @@ func (s *sLogin) Logout(ctx context.Context) (codeResult int, err error) {
 	if err := cache.GetCache(ctx, subjectUUID.(string), &infoUser); err != nil {
 		return 0, err
 	}
+	// đưa vào danh sách blacklist
+	redisKey := fmt.Sprintf("TOKEN_BLACK_LIST_%s", subjectUUID)
+	err = global.Rdb.Set(ctx, redisKey, 1, 0).Err()
+	if err != nil {
+		return response.ErrCodeAuthFailed, fmt.Errorf("lỗi ở phần set vào redis")
+	}
+	//
 	log.Println("User info from cache:", infoUser.ID)
 	err = s.r.DeleteKey(ctx, infoUser.ID)
 	return response.ErrCodeSucces, err
