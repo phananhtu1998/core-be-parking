@@ -26,6 +26,11 @@ const docTemplate = `{
     "paths": {
         "/admin/create_account": {
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "API này cho phép tạo tài khoản mới",
                 "consumes": [
                     "application/json"
@@ -72,6 +77,11 @@ const docTemplate = `{
         },
         "/admin/delete_account/{id}": {
             "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "API này xóa tài khoản dựa trên ID",
                 "consumes": [
                     "application/json"
@@ -116,6 +126,11 @@ const docTemplate = `{
         },
         "/admin/get_account_by_id/{id}": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "API này trả về tài khoản theo ID",
                 "consumes": [
                     "application/json"
@@ -188,6 +203,11 @@ const docTemplate = `{
         },
         "/admin/update_account/{id}": {
             "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "API này cập nhật thông tin tài khoản dựa trên ID",
                 "consumes": [
                     "application/json"

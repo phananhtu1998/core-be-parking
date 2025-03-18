@@ -105,6 +105,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/response.ErrorResponseData'
+      security:
+      - BearerAuth: []
       summary: Tạo tài khoản mới
       tags:
       - Account management
@@ -134,6 +136,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/response.ErrorResponseData'
+      security:
+      - BearerAuth: []
       summary: Xóa tài khoản
       tags:
       - Account management
@@ -159,6 +163,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/response.ErrorResponseData'
+      security:
+      - BearerAuth: []
       summary: Lấy tài khoản theo ID
       tags:
       - Account management
@@ -215,6 +221,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/response.ErrorResponseData'
+      security:
+      - BearerAuth: []
       summary: Cập nhật tài khoản
       tags:
       - Account management

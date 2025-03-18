@@ -41,6 +41,7 @@ func (ac *cAccount) GetAllAccount(ctx *gin.Context) {
 // @Tags         Account management
 // @Accept       json
 // @Produce      json
+// @Security     BearerAuth
 // @Param        id   path   string  true  "ID tài khoản cần lấy"
 // @Success      200  {object}  response.ResponseData
 // @Failure      500  {object}  response.ErrorResponseData
@@ -63,6 +64,7 @@ func (ac *cAccount) GetAccountById(ctx *gin.Context) {
 // @Tags         Account management
 // @Accept       json
 // @Produce      json
+// @Security     BearerAuth
 // @Param        id   path   string  true  "ID tài khoản cần cập nhật"
 // @Param        body body   model.AccountInput true "Dữ liệu cập nhật tài khoản"
 // @Success      200  {object}  response.ResponseData
@@ -91,6 +93,7 @@ func (ac *cAccount) UpdateAccount(ctx *gin.Context) {
 // @Tags         Account management
 // @Accept       json
 // @Produce      json
+// @Security     BearerAuth
 // @Param        id   path   string  true  "ID của tài khoản cần xóa"
 // @Success      200  {object}  response.ResponseData
 // @Failure      400  {object}  response.ErrorResponseData
@@ -113,6 +116,7 @@ func (ac *cAccount) DeleteAccount(ctx *gin.Context) {
 // @Tags         Account management
 // @Accept       json
 // @Produce      json
+// @Security     BearerAuth
 // @Param        body  body   model.AccountInput  true  "Thông tin tài khoản cần tạo"
 // @Success      200   {object}  response.ResponseData
 // @Failure      400   {object}  response.ErrorResponseData
