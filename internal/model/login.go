@@ -16,3 +16,13 @@ type GetCacheToken struct {
 	ID    string `json:"id"`
 	Email string `json:"email"`
 }
+
+type ChangePasswordInput struct {
+	Password string `json:"password"`
+}
+
+type GetCacheTokenForChangePassword struct {
+	ID     string `json:"id"`
+	Email  string `json:"email"`
+	Number int64  `json:"number"`
+}

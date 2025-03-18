@@ -35,6 +35,17 @@ func AuthenMiddleware() gin.HandlerFunc {
 			c.AbortWithStatusJSON(401, gin.H{"code": response.ErrUnauthorized, "err": "Unauthorized", "description": "Token đã bị thu hồi"})
 			return
 		}
+		// Kiểm tra token bị thu hồi do thay đổi mật khẩu
+		isRevoked, err := auth.CheckTokenRevoked(claims.Subject, claims.IssuedAt)
+		if err != nil {
+			log.Println("Token is revoked")
+			c.AbortWithStatusJSON(401, gin.H{"code": response.ErrUnauthorized, "err": "Unauthorized", "description": "Token đã bị thu hồi"})
+			return
+		}
+		if isRevoked {
+			c.AbortWithStatusJSON(401, gin.H{"message": "Token revoked: token invalidated due to password change"})
+			return
+		}
 		// update claims to context
 		log.Println("claims::: UUID::", claims.Subject)
 		ctx := context.WithValue(c.Request.Context(), "subjectUUID", claims.Subject)

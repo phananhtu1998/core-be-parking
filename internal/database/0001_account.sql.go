@@ -11,6 +11,24 @@ import (
 	"time"
 )
 
+const changPasswordById = `-- name: ChangPasswordById :exec
+UPDATE account 
+SET
+    password = ?,
+    update_at = NOW()
+WHERE id = ?
+`
+
+type ChangPasswordByIdParams struct {
+	Password string
+	ID       string
+}
+
+func (q *Queries) ChangPasswordById(ctx context.Context, arg ChangPasswordByIdParams) error {
+	_, err := q.db.ExecContext(ctx, changPasswordById, arg.Password, arg.ID)
+	return err
+}
+
 const checkAccountBaseExists = `-- name: CheckAccountBaseExists :one
 SELECT COUNT(*)
 FROM ` + "`" + `account` + "`" + `

@@ -10,6 +10,7 @@ type (
 		Login(ctx context.Context, in *model.LoginInput) (codeResult int, out model.LoginOutput, err error)
 		Logout(ctx context.Context) (codeResult int, err error)
 		RefreshTokens(ctx context.Context) (codeResult int, out model.LoginOutput, err error)
+		ChangePassword(ctx context.Context, in *model.ChangePasswordInput) (codeResult int, out model.LoginOutput, err error)
 	}
 )
 

@@ -41,6 +41,12 @@ SET
     update_at = NOW()
 WHERE id = ?;
 
+-- name: ChangPasswordById :exec
+UPDATE account 
+SET
+    password = ?,
+    update_at = NOW()
+WHERE id = ?;
 
 -- name: DeleteAccountById :exec
 UPDATE account 

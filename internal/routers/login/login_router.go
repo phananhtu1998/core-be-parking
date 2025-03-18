@@ -19,6 +19,7 @@ func (ar *LoginRouter) InitLoginRouter(Router *gin.RouterGroup) {
 	adminRouterPrivate.Use(middlewares.AuthenMiddleware())
 	{
 		adminRouterPrivate.POST("/logout", login.Logins.Logout)
+		adminRouterPrivate.POST("/change_password", login.Logins.ChangePassword)
 	}
 	adminRouterRefreshToken := Router.Group("/auth")
 	adminRouterRefreshToken.Use(middlewares.AuthenMiddlewareV2())

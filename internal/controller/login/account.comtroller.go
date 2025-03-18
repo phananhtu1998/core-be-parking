@@ -77,3 +77,24 @@ func (c *cLogin) RefreshTokens(ctx *gin.Context) {
 	}
 	response.SuccessResponse(ctx, codeRs, data)
 }
+
+// Authenticate
+// @Summary      ChangePassword
+// @Description  ChangePassword
+// @Tags         Authenticate
+// @Accept       json
+// @Produce      json
+// @Param        payload body model.ChangePasswordInput true "payload"
+// @Security     BearerAuth
+// @Success      200  {object}  response.ResponseData
+// @Failure      500  {object}  response.ErrorResponseData
+// @Router       /auth/change_password [post]
+func (c *cLogin) ChangePassword(ctx *gin.Context) {
+	var params model.ChangePasswordInput
+	codeRs, dataRs, err := service.LoginItem().ChangePassword(ctx.Request.Context(), &params) // truyền ctx.Request.Context để truyền giá trị subjectUUID
+	if err != nil {
+		response.ErrorResponse(ctx, response.ErrCodeParamInvalid, err.Error())
+		return
+	}
+	response.SuccessResponse(ctx, codeRs, dataRs)
+}

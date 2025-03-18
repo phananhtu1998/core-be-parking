@@ -13,6 +13,11 @@ definitions:
       status:
         type: boolean
     type: object
+  model.ChangePasswordInput:
+    properties:
+      password:
+        type: string
+    type: object
   model.LoginInput:
     properties:
       email:
@@ -213,6 +218,34 @@ paths:
       summary: Cập nhật tài khoản
       tags:
       - Account management
+  /auth/change_password:
+    post:
+      consumes:
+      - application/json
+      description: ChangePassword
+      parameters:
+      - description: payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/model.ChangePasswordInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ResponseData'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponseData'
+      security:
+      - BearerAuth: []
+      summary: ChangePassword
+      tags:
+      - Authenticate
   /auth/login:
     post:
       consumes:

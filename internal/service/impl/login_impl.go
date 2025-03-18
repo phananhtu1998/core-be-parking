@@ -176,3 +176,59 @@ func (s *sLogin) RefreshTokens(ctx context.Context) (codeResult int, out model.L
 	}
 	return codeResult, out, err
 }
+
+// ChangePassword
+func (s *sLogin) ChangePassword(ctx context.Context, in *model.ChangePasswordInput) (codeResult int, out model.LoginOutput, err error) {
+	subjectUUID := ctx.Value("subjectUUID")
+	log.Println("subjectUUID:", subjectUUID)
+	if subjectUUID == nil {
+		return response.ErrCodeAuthFailed, out, fmt.Errorf("subjectUUID not found in context")
+	}
+	// Lấy thông tin user từ cache
+	var infoUser model.GetCacheTokenForChangePassword
+	if err := cache.GetCache(ctx, subjectUUID.(string), &infoUser); err != nil {
+		return 0, out, err
+	}
+	log.Println("infoUser", infoUser)
+	// lưu thông tin password vào db
+	err = s.r.ChangPasswordById(ctx, database.ChangPasswordByIdParams{
+		ID:       infoUser.ID,
+		Password: in.Password,
+	})
+	if err != nil {
+		return response.ErrCodeAuthFailed, out, fmt.Errorf("Lỗi update password: %v", err)
+	}
+	// set giá trị vào redis
+	invalidationKey := fmt.Sprintf("TOKEN_IAT_AVAILABLE_%s", infoUser.ID)
+	changpasswordDate := time.Now()
+	err = global.Rdb.Set(ctx, invalidationKey, changpasswordDate.Unix(), time.Duration(consts.REFRESH_TOKEN)*time.Hour).Err()
+	if err != nil {
+		return response.ErrCodeAuthFailed, out, fmt.Errorf("Lỗi khi set redis")
+	}
+	out.ID = infoUser.ID
+	out.Email = infoUser.Email
+	subToken := utils.GenerateCliTokenUUID(int(infoUser.Number))
+	out.AccessToken, err = auth.CreateToken(subToken)
+	out.RefreshToken, err = auth.CreateRefreshToken(subToken)
+	getAccountKT, err := s.r.CountByAccount(ctx, infoUser.ID)
+	if getAccountKT > 0 {
+		err := s.r.UpdateRefreshTokenAndUsedTokens(ctx, database.UpdateRefreshTokenAndUsedTokensParams{
+			AccountID:    infoUser.ID,
+			RefreshToken: out.RefreshToken,
+		})
+		if err != nil {
+			return response.ErrInvalidToken, out, fmt.Errorf("lỗi update key: %v", err)
+
+		}
+	} else {
+		err := s.r.InsertKey(ctx, database.InsertKeyParams{
+			ID:           uuid.NewString(),
+			AccountID:    infoUser.ID,
+			RefreshToken: out.RefreshToken,
+		})
+		if err != nil {
+			return response.ErrInvalidToken, out, fmt.Errorf("lỗi insert key: %v", err)
+		}
+	}
+	return response.ErrCodeSucces, out, err
+}
