@@ -4,6 +4,7 @@ import (
 	"go-backend-api/internal/model"
 	"go-backend-api/internal/service"
 	"go-backend-api/pkg/response"
+	"log"
 
 	"github.com/gin-gonic/gin"
 )
@@ -31,7 +32,6 @@ func (c *cLogin) Login(ctx *gin.Context) {
 		response.ErrorResponse(ctx, response.ErrCodeParamInvalid, err.Error())
 		return
 	}
-
 	codeRs, dataRs, err := service.LoginItem().Login(ctx, &params)
 	if err != nil {
 		response.ErrorResponse(ctx, response.ErrCodeParamInvalid, err.Error())
@@ -91,6 +91,12 @@ func (c *cLogin) RefreshTokens(ctx *gin.Context) {
 // @Router       /auth/change_password [post]
 func (c *cLogin) ChangePassword(ctx *gin.Context) {
 	var params model.ChangePasswordInput
+	// ✅ Thêm dòng này để đọc JSON từ request body vào struct
+	if err := ctx.ShouldBindJSON(&params); err != nil {
+		response.ErrorResponse(ctx, response.ErrCodeParamInvalid, err.Error())
+		return
+	}
+	log.Println("params:", &params)
 	codeRs, dataRs, err := service.LoginItem().ChangePassword(ctx.Request.Context(), &params) // truyền ctx.Request.Context để truyền giá trị subjectUUID
 	if err != nil {
 		response.ErrorResponse(ctx, response.ErrCodeParamInvalid, err.Error())

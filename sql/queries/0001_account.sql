@@ -1,5 +1,5 @@
 -- name: GetAccountById :one
-SELECT id, number, name, email, status,images
+SELECT id, number, name, email, status,images,salt
 FROM `account`
 WHERE id = ? AND is_deleted = false;
 

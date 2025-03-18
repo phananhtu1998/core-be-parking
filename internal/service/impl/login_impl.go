@@ -189,11 +189,13 @@ func (s *sLogin) ChangePassword(ctx context.Context, in *model.ChangePasswordInp
 	if err := cache.GetCache(ctx, subjectUUID.(string), &infoUser); err != nil {
 		return 0, out, err
 	}
-	log.Println("infoUser", infoUser)
+	log.Println("in.Password", in.Password)
 	// lưu thông tin password vào db
+	outUser, err := s.r.GetAccountById(ctx, infoUser.ID)
+	Password := crypto.HashPassword(in.Password, outUser.Salt, global.Config.JWT.SECRET_KEY)
 	err = s.r.ChangPasswordById(ctx, database.ChangPasswordByIdParams{
+		Password: Password,
 		ID:       infoUser.ID,
-		Password: in.Password,
 	})
 	if err != nil {
 		return response.ErrCodeAuthFailed, out, fmt.Errorf("Lỗi update password: %v", err)
@@ -205,30 +207,20 @@ func (s *sLogin) ChangePassword(ctx context.Context, in *model.ChangePasswordInp
 	if err != nil {
 		return response.ErrCodeAuthFailed, out, fmt.Errorf("Lỗi khi set redis")
 	}
+	// set lại thông tin cho output
 	out.ID = infoUser.ID
 	out.Email = infoUser.Email
 	subToken := utils.GenerateCliTokenUUID(int(infoUser.Number))
 	out.AccessToken, err = auth.CreateToken(subToken)
 	out.RefreshToken, err = auth.CreateRefreshToken(subToken)
-	getAccountKT, err := s.r.CountByAccount(ctx, infoUser.ID)
-	if getAccountKT > 0 {
-		err := s.r.UpdateRefreshTokenAndUsedTokens(ctx, database.UpdateRefreshTokenAndUsedTokensParams{
-			AccountID:    infoUser.ID,
-			RefreshToken: out.RefreshToken,
-		})
-		if err != nil {
-			return response.ErrInvalidToken, out, fmt.Errorf("lỗi update key: %v", err)
+	// kiểm tra và cập nhật keytoken
+	err = s.r.UpdateRefreshTokenAndUsedTokens(ctx, database.UpdateRefreshTokenAndUsedTokensParams{
+		AccountID:    infoUser.ID,
+		RefreshToken: out.RefreshToken,
+	})
+	if err != nil {
+		return response.ErrInvalidToken, out, fmt.Errorf("lỗi update key: %v", err)
 
-		}
-	} else {
-		err := s.r.InsertKey(ctx, database.InsertKeyParams{
-			ID:           uuid.NewString(),
-			AccountID:    infoUser.ID,
-			RefreshToken: out.RefreshToken,
-		})
-		if err != nil {
-			return response.ErrInvalidToken, out, fmt.Errorf("lỗi insert key: %v", err)
-		}
 	}
 	return response.ErrCodeSucces, out, err
 }
