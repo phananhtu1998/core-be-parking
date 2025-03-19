@@ -9,6 +9,7 @@ type (
 	IMenu interface {
 		CreateMenu(ctx context.Context, in *model.MenuInput) (codeResult int, out model.MenuOutput, err error)
 		GetAllMenu(ctx context.Context) (codeResult int, out []model.MenuOutput, err error)
+		GetMenuById(ctx context.Context, id string) (codeResult int, out model.MenuOutput, err error)
 	}
 )
 

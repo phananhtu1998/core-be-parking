@@ -476,9 +476,52 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Account management"
+                    "Menu"
                 ],
                 "summary": "Lấy danh sách tất cả menu",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResponseData"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponseData"
+                        }
+                    }
+                }
+            }
+        },
+        "/menu/get_menu_by_id/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "API này trả về menu theo ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Menu"
+                ],
+                "summary": "Lấy menu theo ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID menu cần lấy",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -539,6 +582,9 @@ const docTemplate = `{
         "model.MenuInput": {
             "type": "object",
             "properties": {
+                "id": {
+                    "type": "string"
+                },
                 "menu_group_name": {
                     "type": "string"
                 },

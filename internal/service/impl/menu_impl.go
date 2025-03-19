@@ -84,3 +84,31 @@ func (s *sMenu) GetAllMenu(ctx context.Context) (codeResult int, out []model.Men
 	}
 	return response.ErrCodeSucces, out, err
 }
+
+func (s *sMenu) GetMenuById(ctx context.Context, id string) (codeResult int, out model.MenuOutput, err error) {
+	// Lấy menu từ repository
+	menubyid, err := s.r.GetMenuById(ctx, id)
+	if err != nil {
+		return response.ErrCodeMenuErrror, model.MenuOutput{}, err
+	}
+	var children []model.MenuOutput
+	if menubyid.Children != nil {
+		if data, ok := menubyid.Children.([]byte); ok {
+			if err := json.Unmarshal(data, &children); err != nil {
+				children = []model.MenuOutput{}
+			}
+		}
+	}
+	out = model.MenuOutput{
+		Id:                menubyid.ID,
+		Menu_name:         menubyid.MenuName,
+		Menu_icon:         menubyid.MenuIcon,
+		Menu_url:          menubyid.MenuUrl,
+		Menu_Number_order: menubyid.MenuNumberOrder,
+		Menu_parent_id:    menubyid.MenuParentID.String,
+		Menu_level:        int(menubyid.MenuLevel),
+		Children:          children,
+	}
+
+	return response.ErrCodeSucces, out, err
+}

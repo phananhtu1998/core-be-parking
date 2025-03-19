@@ -16,8 +16,8 @@ type cMenu struct {
 }
 
 // Menu
-// @Summary      Menu
-// @Description  Menu
+// @Summary      Tạo menu
+// @Description  API tạo menu trong hệ thống
 // @Tags         Menu
 // @Accept       json
 // @Produce      json
@@ -45,7 +45,7 @@ func (c *cMenu) CreateMenu(ctx *gin.Context) {
 // Menu
 // @Summary      Lấy danh sách tất cả menu
 // @Description  API này trả về danh sách tất cả menu trong hệ thống
-// @Tags         Account management
+// @Tags         Menu
 // @Accept       json
 // @Produce      json
 // @Security     BearerAuth
@@ -60,4 +60,27 @@ func (ac *cMenu) GetAllMenu(ctx *gin.Context) {
 		return
 	}
 	response.SuccessResponse(ctx, code, menus)
+}
+
+// Menu
+// @Summary      Lấy menu theo ID
+// @Description  API này trả về menu theo ID
+// @Tags         Menu
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Param        id   path   string  true  "ID menu cần lấy"
+// @Success      200  {object}  response.ResponseData
+// @Failure      500  {object}  response.ErrorResponseData
+// @Router       /menu/get_menu_by_id/{id} [GET]
+func (ac *cMenu) GetMenuById(ctx *gin.Context) {
+	id := ctx.Param("id")
+	code, menu, err := service.MenuItem().GetMenuById(ctx, id)
+	if err != nil {
+		log.Printf("Error getting menu: %v", err)
+		response.ErrorResponse(ctx, code, err.Error())
+		return
+	}
+
+	response.SuccessResponse(ctx, code, menu)
 }
