@@ -3,6 +3,7 @@ package impl
 import (
 	"context"
 	"database/sql"
+	"encoding/json"
 	"go-backend-api/internal/database"
 	"go-backend-api/internal/model"
 	"go-backend-api/pkg/response"
@@ -57,4 +58,29 @@ func (s *sMenu) CreateMenu(ctx context.Context, in *model.MenuInput) (int, model
 
 	// Trả về kết quả thành công
 	return response.ErrCodeSucces, output, nil
+}
+func (s *sMenu) GetAllMenu(ctx context.Context) (codeResult int, out []model.MenuOutput, err error) {
+	lstMenu, err := s.r.GetAllMenus(ctx)
+	if err != nil {
+		return response.ErrCodeMenuErrror, nil, err
+	}
+	var children []model.MenuOutput
+	for _, item := range lstMenu {
+		if data, ok := item.Children.([]byte); ok {
+			if err := json.Unmarshal(data, &children); err != nil {
+				children = []model.MenuOutput{}
+			}
+		}
+		out = append(out, model.MenuOutput{
+			Id:                item.ID,
+			Menu_name:         item.MenuName,
+			Menu_icon:         item.MenuIcon,
+			Menu_url:          item.MenuUrl,
+			Menu_Number_order: item.MenuNumberOrder,
+			Menu_parent_id:    item.MenuParentID.String,
+			Menu_level:        int(item.MenuLevel),
+			Children:          children,
+		})
+	}
+	return response.ErrCodeSucces, out, err
 }

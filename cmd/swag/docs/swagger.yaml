@@ -354,6 +354,27 @@ paths:
       summary: Menu
       tags:
       - Menu
+  /menu/get_all_menu:
+    get:
+      consumes:
+      - application/json
+      description: API này trả về danh sách tất cả menu trong hệ thống
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ResponseData'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponseData'
+      security:
+      - BearerAuth: []
+      summary: Lấy danh sách tất cả menu
+      tags:
+      - Account management
 security:
 - "":
   - BearerAuth

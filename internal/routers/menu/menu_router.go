@@ -15,6 +15,7 @@ func (ar *MenuRouter) InitAdminRouter(Router *gin.RouterGroup) {
 	menuRouterPrivate.Use(middlewares.AuthenMiddleware())
 	{
 		menuRouterPrivate.POST("/create_menu", menu.Menus.CreateMenu)
+		menuRouterPrivate.GET("/get_all_menu", menu.Menus.GetAllMenu)
 	}
 
 }

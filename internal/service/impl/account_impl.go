@@ -126,14 +126,10 @@ func (s *sAccount) DeleteAccount(ctx context.Context, id string) (codeResult int
 
 // Lấy danh sách tất cả tài khoản
 func (s *sAccount) GetAllAccount(ctx context.Context) (codeResult int, out []model.AccountOutput, err error) {
-	log.Println("Starting GetAllAccount...") // Log để kiểm tra
-
 	lst, err := s.r.GetAllAccounts(ctx)
 	if err != nil {
-		log.Println("Error fetching accounts:", err)
 		return response.ErrCodeAuthFailed, nil, err
 	}
-
 	var accounts []model.AccountOutput
 	for _, item := range lst {
 		accounts = append(accounts, model.AccountOutput{
