@@ -214,11 +214,9 @@ func (s *sLogin) ChangePassword(ctx context.Context, in *model.ChangePasswordInp
 	out.RefreshToken, err = auth.CreateRefreshToken(subToken)
 	log.Println("RefreshToken")
 	// kiểm tra và cập nhật keytoken
-	err = s.r.UpdateRefreshTokenAndUsedTokens(ctx, database.UpdateRefreshTokenAndUsedTokensParams{
-		AccountID:       infoUser.ID,
-		RefreshToken:    out.RefreshToken,
-		JSONARRAY:       out.RefreshToken, // Đảm bảo kiểu string
-		JSONARRAYAPPEND: out.RefreshToken, // Ép kiểu đúng khi truyền vào
+	err = s.r.UpdateRefreshToken(ctx, database.UpdateRefreshTokenParams{
+		AccountID:    infoUser.ID,
+		RefreshToken: out.RefreshToken,
 	})
 	if err != nil {
 		return response.ErrInvalidToken, out, fmt.Errorf("lỗi update key: %v", err)
