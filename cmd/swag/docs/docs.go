@@ -653,7 +653,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "menu_number_order": {
-                    "type": "number"
+                    "type": "integer"
                 },
                 "menu_parent_id": {
                     "type": "string"

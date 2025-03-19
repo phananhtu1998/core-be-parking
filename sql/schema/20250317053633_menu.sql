@@ -7,7 +7,7 @@ CREATE TABLE `menu`(
     `menu_url` VARCHAR(255) NOT NULL,
     `menu_parent_Id` CHAR(36) DEFAULT NULL,
     `menu_level` INT NOT NULL,
-    `menu_number_order` FLOAT(53) NOT NULL,
+    `menu_number_order` INT NOT NULL,
     `menu_group_name` VARCHAR(255) NOT NULL,
     `is_deleted` BOOLEAN NOT NULL,
     `create_at` TIMESTAMP NOT NULL,

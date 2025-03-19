@@ -24,76 +24,9 @@ func (q *Queries) CountMenuByURL(ctx context.Context, menuUrl string) (int64, er
 	return total_count, err
 }
 
-const deleteMenuById = `-- name: DeleteMenuById :exec
-
-WITH RECURSIVE to_delete AS (
-    SELECT m.id FROM menu m WHERE m.id = ? 
-    UNION ALL
-    SELECT m.id FROM menu m
-    INNER JOIN to_delete td ON m.menu_parent_Id = td.id
-)
-UPDATE menu 
-SET is_deleted = true, update_at = NOW()
-WHERE id IN (SELECT td.id FROM to_delete td)
-`
-
-// Đánh dấu xóa menu cha + con
-func (q *Queries) DeleteMenuById(ctx context.Context, id string) error {
-	_, err := q.db.ExecContext(ctx, deleteMenuById, id)
-	return err
-}
-
-const editMenuById = `-- name: EditMenuById :exec
-WITH old_values AS (
-    SELECT menu_parent_Id, menu_number_order 
-    FROM menu 
-    WHERE menu.id = ?
-),
-new_order AS (
-    SELECT COALESCE(MAX(menu.menu_number_order), 0) + 1 AS max_order 
-    FROM menu 
-    WHERE menu.menu_parent_Id = ?
-)
-UPDATE menu
-SET 
-    menu.menu_name = ?, 
-    menu.menu_icon = ?, 
-    menu.menu_url = ?, 
-    menu.menu_parent_Id = ?, 
-    menu.menu_number_order = (SELECT max_order FROM new_order),
-    menu.menu_group_name = ?,
-    menu.update_at = NOW()
-WHERE menu.id = ?
-`
-
-type EditMenuByIdParams struct {
-	ID             string
-	MenuParentID   sql.NullString
-	MenuName       string
-	MenuIcon       string
-	MenuUrl        string
-	MenuParentID_2 sql.NullString
-	MenuGroupName  string
-	ID_2           string
-}
-
-func (q *Queries) EditMenuById(ctx context.Context, arg EditMenuByIdParams) error {
-	_, err := q.db.ExecContext(ctx, editMenuById,
-		arg.ID,
-		arg.MenuParentID,
-		arg.MenuName,
-		arg.MenuIcon,
-		arg.MenuUrl,
-		arg.MenuParentID_2,
-		arg.MenuGroupName,
-		arg.ID_2,
-	)
-	return err
-}
-
 const getAllMenus = `-- name: GetAllMenus :many
 SELECT 
-    m1.id, m1.menu_name, m1.menu_icon, m1.menu_url, m1.menu_parent_Id, 
+    m1.id, m1.menu_name, m1.menu_icon, m1.menu_url, m1.menu_parent_id, 
     m1.menu_level, m1.menu_number_order, m1.menu_group_name, m1.is_deleted, 
     m1.create_at, m1.update_at,
     COALESCE(
@@ -116,8 +49,8 @@ SELECT
         ), ']'), '[]'
     ) AS children
 FROM menu m1
-LEFT JOIN menu m2 ON m1.id = m2.menu_parent_Id AND m2.is_deleted = false
-WHERE m1.menu_parent_Id = '' AND m1.is_deleted = false
+LEFT JOIN menu m2 ON m1.id = m2.menu_parent_id AND m2.is_deleted = false
+WHERE (m1.menu_parent_id IS NULL OR m1.menu_parent_id = '') AND m1.is_deleted = false
 GROUP BY m1.id 
 ORDER BY m1.menu_number_order ASC
 `
@@ -129,7 +62,7 @@ type GetAllMenusRow struct {
 	MenuUrl         string
 	MenuParentID    sql.NullString
 	MenuLevel       int32
-	MenuNumberOrder float64
+	MenuNumberOrder int32
 	MenuGroupName   string
 	IsDeleted       bool
 	CreateAt        time.Time
@@ -159,6 +92,94 @@ func (q *Queries) GetAllMenus(ctx context.Context) ([]GetAllMenusRow, error) {
 			&i.CreateAt,
 			&i.UpdateAt,
 			&i.Children,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getChildMenus = `-- name: GetChildMenus :many
+WITH RECURSIVE submenus AS (
+    SELECT 
+        m.id, 
+        m.menu_name, 
+        m.menu_icon, 
+        m.menu_url, 
+        m.menu_number_order, 
+        m.menu_group_name, 
+        m.menu_level, 
+        m.menu_parent_id,  -- Chỉ định rõ từ ` + "`" + `menu` + "`" + `
+        m.update_at
+    FROM menu m
+    WHERE m.menu_parent_id = ?
+
+    UNION ALL
+
+    SELECT 
+        m.id, 
+        m.menu_name, 
+        m.menu_icon, 
+        m.menu_url, 
+        m.menu_number_order, 
+        m.menu_group_name, 
+        m.menu_level, 
+        m.menu_parent_id,  -- Chỉ định rõ từ ` + "`" + `menu` + "`" + `
+        m.update_at
+    FROM menu m
+    JOIN submenus s ON m.menu_parent_id = s.id  -- Chỉ định rõ từ ` + "`" + `submenus` + "`" + `
+)
+SELECT 
+    s.id, 
+    s.menu_name, 
+    s.menu_icon, 
+    s.menu_url, 
+    s.menu_number_order, 
+    s.menu_group_name, 
+    s.menu_level, 
+    s.menu_parent_id,  -- Chỉ định rõ từ ` + "`" + `submenus` + "`" + `
+    s.update_at
+FROM submenus s
+`
+
+type GetChildMenusRow struct {
+	ID              string
+	MenuName        string
+	MenuIcon        string
+	MenuUrl         string
+	MenuNumberOrder int32
+	MenuGroupName   string
+	MenuLevel       int32
+	MenuParentID    sql.NullString
+	UpdateAt        time.Time
+}
+
+func (q *Queries) GetChildMenus(ctx context.Context, id sql.NullString) ([]GetChildMenusRow, error) {
+	rows, err := q.db.QueryContext(ctx, getChildMenus, id)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []GetChildMenusRow
+	for rows.Next() {
+		var i GetChildMenusRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.MenuName,
+			&i.MenuIcon,
+			&i.MenuUrl,
+			&i.MenuNumberOrder,
+			&i.MenuGroupName,
+			&i.MenuLevel,
+			&i.MenuParentID,
+			&i.UpdateAt,
 		); err != nil {
 			return nil, err
 		}
@@ -211,7 +232,7 @@ type GetMenuByIdRow struct {
 	MenuUrl         string
 	MenuParentID    sql.NullString
 	MenuLevel       int32
-	MenuNumberOrder float64
+	MenuNumberOrder int32
 	MenuGroupName   string
 	IsDeleted       bool
 	CreateAt        time.Time
@@ -254,7 +275,7 @@ type InsertMenuParams struct {
 	MenuUrl         string
 	MenuParentID    sql.NullString
 	MenuLevel       int32
-	MenuNumberOrder float64
+	MenuNumberOrder int32
 	MenuGroupName   string
 }
 
@@ -269,4 +290,43 @@ func (q *Queries) InsertMenu(ctx context.Context, arg InsertMenuParams) (sql.Res
 		arg.MenuNumberOrder,
 		arg.MenuGroupName,
 	)
+}
+
+const updateMenu = `-- name: UpdateMenu :exec
+UPDATE menu
+SET 
+    menu_name = ?,
+    menu_icon = ?,
+    menu_url = ?,
+    menu_number_order = ?,
+    menu_group_name = ?,
+    menu_level = ?,
+    menu_parent_id = ?,
+    update_at = NOW()
+WHERE id = ?
+`
+
+type UpdateMenuParams struct {
+	MenuName        string
+	MenuIcon        string
+	MenuUrl         string
+	MenuNumberOrder int32
+	MenuGroupName   string
+	MenuLevel       int32
+	MenuParentID    sql.NullString
+	ID              string
+}
+
+func (q *Queries) UpdateMenu(ctx context.Context, arg UpdateMenuParams) error {
+	_, err := q.db.ExecContext(ctx, updateMenu,
+		arg.MenuName,
+		arg.MenuIcon,
+		arg.MenuUrl,
+		arg.MenuNumberOrder,
+		arg.MenuGroupName,
+		arg.MenuLevel,
+		arg.MenuParentID,
+		arg.ID,
+	)
+	return err
 }

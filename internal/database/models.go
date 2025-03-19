@@ -43,7 +43,7 @@ type Menu struct {
 	MenuUrl         string
 	MenuParentID    sql.NullString
 	MenuLevel       int32
-	MenuNumberOrder float64
+	MenuNumberOrder int32
 	MenuGroupName   string
 	IsDeleted       bool
 	CreateAt        time.Time
