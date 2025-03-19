@@ -423,7 +423,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Menu",
+                "description": "API tạo menu trong hệ thống",
                 "consumes": [
                     "application/json"
                 ],
@@ -433,7 +433,7 @@ const docTemplate = `{
                 "tags": [
                     "Menu"
                 ],
-                "summary": "Menu",
+                "summary": "Tạo menu",
                 "parameters": [
                     {
                         "description": "payload",
@@ -537,6 +537,64 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/menu/update_menu/{id}": {
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "API này cập nhật thông tin menu dựa trên ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Menu"
+                ],
+                "summary": "Cập nhật menu",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID menu cần cập nhật",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Dữ liệu cập nhật menu",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.MenuInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResponseData"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponseData"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponseData"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -582,9 +640,6 @@ const docTemplate = `{
         "model.MenuInput": {
             "type": "object",
             "properties": {
-                "id": {
-                    "type": "string"
-                },
                 "menu_group_name": {
                     "type": "string"
                 },

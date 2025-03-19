@@ -67,36 +67,60 @@ INSERT INTO menu (
 VALUES (?, ?, ?, ?, ?, ?, ?, ?, false, NOW(), NOW());
 
 
--- name: EditMenuById :exec 
--- Bước 1: Lưu giá trị menu_parent_Id và menu_number_order hiện tại
-SET @old_parent_Id = (SELECT menu_parent_Id FROM menu WHERE id = ?);
-SET @old_order = (SELECT menu_number_order FROM menu WHERE id = ?);
-
--- Bước 2: Nếu menu_parent_Id thay đổi, cập nhật lại thứ tự của menu cũ
-UPDATE menu
-SET menu_number_order = menu_number_order - 1
-WHERE menu_parent_Id = @old_parent_Id
-AND menu_number_order > @old_order;
-
--- Bước 3: Lấy số thứ tự lớn nhất trong menu cha mới
-SET @new_order = (
-    SELECT COALESCE(MAX(menu_number_order), 0) + 1 
+-- name: EditMenuById :exec
+WITH old_values AS (
+    SELECT menu_parent_Id, menu_number_order 
     FROM menu 
-    WHERE menu_parent_Id = ?
-);
+    WHERE menu.id = ?
+),
+new_order AS (
+    SELECT COALESCE(MAX(menu.menu_number_order), 0) + 1 AS max_order 
+    FROM menu 
+    WHERE menu.menu_parent_Id = ?
+)
+UPDATE menu
+SET 
+    menu.menu_name = ?, 
+    menu.menu_icon = ?, 
+    menu.menu_url = ?, 
+    menu.menu_parent_Id = ?, 
+    menu.menu_number_order = (SELECT max_order FROM new_order),
+    menu.menu_group_name = ?,
+    menu.update_at = NOW()
+WHERE menu.id = ?;
 
--- Bước 4: Cập nhật thông tin menu
-UPDATE menu 
-SET menu_name = ?, 
-    menu_icon = ?, 
-    menu_url = ?, 
-    menu_parent_Id = ?, 
-    menu_level = ?, 
-    menu_number_order = IF(menu_parent_Id <> @old_parent_Id, @new_order, menu_number_order),
-    menu_group_name = ?, 
+-- name: UpdateMenu :exec
+WITH updated_parent AS (
+    SELECT id, menu_level
+    FROM menu
+    WHERE id = ?
+),
+updated_children AS (
+    SELECT id
+    FROM menu
+    WHERE menu_parent_id = (SELECT id FROM updated_parent)
+)
+UPDATE menu
+SET 
+    menu_name = CASE WHEN ? THEN ? ELSE menu_name END,
+    menu_icon = CASE WHEN ? THEN ? ELSE menu_icon END,
+    menu_url = CASE WHEN ? THEN ? ELSE menu_url END,
+    menu_group_name = CASE WHEN ? THEN ? ELSE menu_group_name END,
+    menu_level = CASE WHEN ? THEN ? ELSE menu_level END,
     update_at = NOW()
 WHERE id = ?;
 
+UPDATE menu
+SET 
+    menu_level = (SELECT menu_level FROM updated_parent WHERE id = ?),
+    update_at = NOW()
+WHERE menu_parent_id = ?;
+
+UPDATE menu
+SET 
+    menu_number_order = ROW_NUMBER() OVER (ORDER BY menu_number_order ASC),
+    update_at = NOW()
+WHERE menu_parent_id IN (SELECT id FROM updated_children);
 
 -- name: DeleteMenuById :exec 
 

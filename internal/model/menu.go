@@ -1,7 +1,6 @@
 package model
 
 type MenuInput struct {
-	Menu_id           string  `json:"id"`
 	Menu_name         string  `json:"menu_name"`
 	Menu_icon         string  `json:"menu_icon"`
 	Menu_url          string  `json:"menu_url"`

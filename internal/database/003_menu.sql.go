@@ -43,6 +43,54 @@ func (q *Queries) DeleteMenuById(ctx context.Context, id string) error {
 	return err
 }
 
+const editMenuById = `-- name: EditMenuById :exec
+WITH old_values AS (
+    SELECT menu_parent_Id, menu_number_order 
+    FROM menu 
+    WHERE menu.id = ?
+),
+new_order AS (
+    SELECT COALESCE(MAX(menu.menu_number_order), 0) + 1 AS max_order 
+    FROM menu 
+    WHERE menu.menu_parent_Id = ?
+)
+UPDATE menu
+SET 
+    menu.menu_name = ?, 
+    menu.menu_icon = ?, 
+    menu.menu_url = ?, 
+    menu.menu_parent_Id = ?, 
+    menu.menu_number_order = (SELECT max_order FROM new_order),
+    menu.menu_group_name = ?,
+    menu.update_at = NOW()
+WHERE menu.id = ?
+`
+
+type EditMenuByIdParams struct {
+	ID             string
+	MenuParentID   sql.NullString
+	MenuName       string
+	MenuIcon       string
+	MenuUrl        string
+	MenuParentID_2 sql.NullString
+	MenuGroupName  string
+	ID_2           string
+}
+
+func (q *Queries) EditMenuById(ctx context.Context, arg EditMenuByIdParams) error {
+	_, err := q.db.ExecContext(ctx, editMenuById,
+		arg.ID,
+		arg.MenuParentID,
+		arg.MenuName,
+		arg.MenuIcon,
+		arg.MenuUrl,
+		arg.MenuParentID_2,
+		arg.MenuGroupName,
+		arg.ID_2,
+	)
+	return err
+}
+
 const getAllMenus = `-- name: GetAllMenus :many
 SELECT 
     m1.id, m1.menu_name, m1.menu_icon, m1.menu_url, m1.menu_parent_Id, 

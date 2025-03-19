@@ -27,8 +27,6 @@ definitions:
     type: object
   model.MenuInput:
     properties:
-      id:
-        type: string
       menu_group_name:
         type: string
       menu_icon:
@@ -332,7 +330,7 @@ paths:
     post:
       consumes:
       - application/json
-      description: Menu
+      description: API tạo menu trong hệ thống
       parameters:
       - description: payload
         in: body
@@ -353,7 +351,7 @@ paths:
             $ref: '#/definitions/response.ErrorResponseData'
       security:
       - BearerAuth: []
-      summary: Menu
+      summary: Tạo menu
       tags:
       - Menu
   /menu/get_all_menu:
@@ -402,6 +400,43 @@ paths:
       security:
       - BearerAuth: []
       summary: Lấy menu theo ID
+      tags:
+      - Menu
+  /menu/update_menu/{id}:
+    put:
+      consumes:
+      - application/json
+      description: API này cập nhật thông tin menu dựa trên ID
+      parameters:
+      - description: ID menu cần cập nhật
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Dữ liệu cập nhật menu
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/model.MenuInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ResponseData'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponseData'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponseData'
+      security:
+      - BearerAuth: []
+      summary: Cập nhật menu
       tags:
       - Menu
 security:

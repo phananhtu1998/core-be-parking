@@ -112,3 +112,37 @@ func (s *sMenu) GetMenuById(ctx context.Context, id string) (codeResult int, out
 
 	return response.ErrCodeSucces, out, err
 }
+
+func (s *sMenu) EditMenuById(ctx context.Context, in *model.MenuInput, id string) (codeResult int, out model.MenuOutput, err error) {
+	// Thực hiện cập nhật menu
+	err = s.r.EditMenuById(ctx, database.EditMenuByIdParams{
+		ID:           id,
+		MenuName:     in.Menu_name,
+		MenuIcon:     in.Menu_icon,
+		MenuUrl:      in.Menu_url,
+		MenuParentID: sql.NullString{String: in.Menu_parent_id, Valid: in.Menu_parent_id != ""},
+	})
+
+	if err != nil {
+		return response.ErrCodeMenuErrror, out, err
+	}
+
+	// Lấy lại dữ liệu menu sau khi cập nhật
+	menu, err := s.r.GetMenuById(ctx, id)
+	if err != nil {
+		return response.ErrCodeMenuErrror, out, err
+	}
+
+	// Gán dữ liệu vào output
+	out = model.MenuOutput{
+		Id:                menu.ID,
+		Menu_name:         menu.MenuName,
+		Menu_icon:         menu.MenuIcon,
+		Menu_url:          menu.MenuUrl,
+		Menu_parent_id:    menu.MenuParentID.String,
+		Menu_Number_order: menu.MenuNumberOrder,
+		Menu_level:        int(menu.MenuLevel),
+	}
+
+	return response.ErrCodeSucces, out, err
+}

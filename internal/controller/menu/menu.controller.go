@@ -84,3 +84,32 @@ func (ac *cMenu) GetMenuById(ctx *gin.Context) {
 
 	response.SuccessResponse(ctx, code, menu)
 }
+
+// UpdateMenu
+// @Summary      Cập nhật menu
+// @Description  API này cập nhật thông tin menu dựa trên ID
+// @Tags         Menu
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Param        id   path   string  true  "ID menu cần cập nhật"
+// @Param        body body   model.MenuInput true "Dữ liệu cập nhật menu"
+// @Success      200  {object}  response.ResponseData
+// @Failure      400  {object}  response.ErrorResponseData
+// @Failure      500  {object}  response.ErrorResponseData
+// @Router       /menu/update_menu/{id} [PUT]
+func (ac *cMenu) EditMenuById(ctx *gin.Context) {
+	id := ctx.Param("id")
+	var modelMenu model.MenuInput
+	if err := ctx.ShouldBindJSON(&modelMenu); err != nil {
+		ctx.JSON(response.ErrCodeParamInvalid, gin.H{"error": "Invalid input data"})
+		return
+	}
+	code, menu, err := service.MenuItem().EditMenuById(ctx, &modelMenu, id)
+	if err != nil {
+		log.Printf("Error getting menu: %v", err)
+		response.ErrorResponse(ctx, code, err.Error())
+		return
+	}
+	response.SuccessResponse(ctx, code, menu)
+}
