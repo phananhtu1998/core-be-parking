@@ -55,7 +55,7 @@ SELECT
     ) AS children
 FROM menu m1
 LEFT JOIN menu m2 ON m1.id = m2.menu_parent_id AND m2.is_deleted = false
-WHERE (m1.menu_parent_id IS NULL OR m1.menu_parent_id = '') AND m1.is_deleted = false
+WHERE m1.menu_parent_id IS NULL  AND m1.is_deleted = false
 GROUP BY m1.id 
 ORDER BY m1.menu_number_order ASC;
 

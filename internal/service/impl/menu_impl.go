@@ -37,7 +37,7 @@ func (s *sMenu) CreateMenu(ctx context.Context, in *model.MenuInput) (int, model
 		MenuName:        in.Menu_name,
 		MenuIcon:        in.Menu_icon,
 		MenuUrl:         in.Menu_url,
-		MenuParentID:    sql.NullString{String: in.Menu_parent_id, Valid: true},
+		MenuParentID:    sql.NullString{String: in.Menu_parent_id, Valid: false},
 		MenuLevel:       int32(in.Menu_level),
 		MenuNumberOrder: int32(in.Menu_Number_order),
 		MenuGroupName:   in.Menu_group_name,
