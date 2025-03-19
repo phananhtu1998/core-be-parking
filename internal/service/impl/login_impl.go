@@ -65,7 +65,6 @@ func (s *sLogin) Login(ctx context.Context, in *model.LoginInput) (codeResult in
 		})
 		if err != nil {
 			return response.ErrInvalidToken, out, fmt.Errorf("lỗi update key: %v", err)
-
 		}
 	} else {
 		err := s.r.InsertKey(ctx, database.InsertKeyParams{
@@ -213,10 +212,13 @@ func (s *sLogin) ChangePassword(ctx context.Context, in *model.ChangePasswordInp
 	subToken := utils.GenerateCliTokenUUID(int(infoUser.Number))
 	out.AccessToken, err = auth.CreateToken(subToken)
 	out.RefreshToken, err = auth.CreateRefreshToken(subToken)
+	log.Println("RefreshToken")
 	// kiểm tra và cập nhật keytoken
 	err = s.r.UpdateRefreshTokenAndUsedTokens(ctx, database.UpdateRefreshTokenAndUsedTokensParams{
-		AccountID:    infoUser.ID,
-		RefreshToken: out.RefreshToken,
+		AccountID:       infoUser.ID,
+		RefreshToken:    out.RefreshToken,
+		JSONARRAY:       out.RefreshToken, // Đảm bảo kiểu string
+		JSONARRAYAPPEND: out.RefreshToken, // Ép kiểu đúng khi truyền vào
 	})
 	if err != nil {
 		return response.ErrInvalidToken, out, fmt.Errorf("lỗi update key: %v", err)
