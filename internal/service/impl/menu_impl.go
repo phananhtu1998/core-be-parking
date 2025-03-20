@@ -7,17 +7,21 @@ import (
 	"fmt"
 	"go-backend-api/internal/database"
 	"go-backend-api/internal/model"
+	"go-backend-api/internal/repo"
 	"go-backend-api/pkg/response"
+	"log"
 
 	"github.com/google/uuid"
 )
 
 type sMenu struct {
-	r *database.Queries
+	r   *database.Queries
+	qTx *sql.Tx
+	db  *sql.DB
 }
 
-func NewMenuImpl(r *database.Queries) *sMenu {
-	return &sMenu{r: r}
+func NewMenuImpl(r *database.Queries, qTx *sql.Tx) *sMenu {
+	return &sMenu{r: r, qTx: qTx}
 }
 
 func (s *sMenu) CreateMenu(ctx context.Context, in *model.MenuInput) (int, model.MenuOutput, error) {
@@ -60,30 +64,34 @@ func (s *sMenu) CreateMenu(ctx context.Context, in *model.MenuInput) (int, model
 	// Trả về kết quả thành công
 	return response.ErrCodeSucces, output, nil
 }
-func (s *sMenu) GetAllMenu(ctx context.Context) (codeResult int, out []model.MenuOutput, err error) {
+func (s *sMenu) GetAllMenu(ctx context.Context) (int, []model.MenuOutput, error) {
+	// Lấy danh sách menu từ database
 	lstMenu, err := s.r.GetAllMenus(ctx)
 	if err != nil {
 		return response.ErrCodeMenuErrror, nil, err
 	}
-	var children []model.MenuOutput
-	for _, item := range lstMenu {
-		if data, ok := item.Children.([]byte); ok {
-			if err := json.Unmarshal(data, &children); err != nil {
-				children = []model.MenuOutput{}
-			}
-		}
-		out = append(out, model.MenuOutput{
-			Id:                item.ID,
-			Menu_name:         item.MenuName,
-			Menu_icon:         item.MenuIcon,
-			Menu_url:          item.MenuUrl,
-			Menu_Number_order: int(item.MenuNumberOrder),
-			Menu_parent_id:    item.MenuParentID.String,
-			Menu_level:        int(item.MenuLevel),
-			Children:          children,
+	// Nhóm menu theo parent_id và lấy danh sách menu gốc
+	// Convert lstMenu to []model.MenuOutput
+	var menuOutputs []model.MenuOutput
+	for _, menu := range lstMenu {
+		menuOutputs = append(menuOutputs, model.MenuOutput{
+			Id:                menu.ID,
+			Menu_name:         menu.MenuName,
+			Menu_icon:         menu.MenuIcon,
+			Menu_url:          menu.MenuUrl,
+			Menu_parent_id:    menu.MenuParentID.String,
+			Menu_level:        int(menu.MenuLevel),
+			Menu_Number_order: int(menu.MenuNumberOrder),
+			Menu_group_name:   menu.MenuGroupName,
 		})
 	}
-	return response.ErrCodeSucces, out, err
+
+	menuMap, rootMenus := repo.GroupMenusByParent(menuOutputs)
+
+	// Xây dựng cây menu từ danh sách đã nhóm
+	finalMenu := repo.BuildMenuTree(rootMenus, menuMap)
+
+	return response.ErrCodeSucces, finalMenu, nil
 }
 
 func (s *sMenu) GetMenuById(ctx context.Context, id string) (codeResult int, out model.MenuOutput, err error) {
@@ -114,102 +122,47 @@ func (s *sMenu) GetMenuById(ctx context.Context, id string) (codeResult int, out
 	return response.ErrCodeSucces, out, err
 }
 
-func (s *sMenu) EditMenuById(ctx context.Context, in *model.MenuInput, id string) (codeResult int, out model.MenuOutput, err error) {
-	// Lấy thông tin menu cũ
-	oldMenu, err := s.r.GetMenuById(ctx, id)
-	if err != nil {
-		return response.ErrCodeMenuErrror, out, fmt.Errorf("lỗi check menu cũ %v", err)
-	}
+func (s *sMenu) EditMenuById(ctx context.Context, menuUpdates []model.MenuInput) (int, model.MenuOutput, error) {
+	// Bắt đầu transaction mới
+	tx := s.qTx
+	defer tx.Rollback()
 
-	// Kiểm tra xem menu_level hoặc menu_parent_id có thay đổi không
-	levelChanged := oldMenu.MenuLevel != int32(in.Menu_level)
-	//parentChanged := oldMenu.MenuParentID.Valid && oldMenu.MenuParentID.String != in.Menu_parent_id
-
-	// Nếu không thay đổi cha hoặc level, chỉ cập nhật thông tin cơ bản
-	if !levelChanged {
-		err = s.r.UpdateMenu(ctx, database.UpdateMenuParams{
-			ID:              id,
-			MenuName:        in.Menu_name,
-			MenuIcon:        in.Menu_icon,
-			MenuUrl:         in.Menu_url,
-			MenuNumberOrder: int32(in.Menu_Number_order),
-			MenuGroupName:   in.Menu_group_name,
-			MenuLevel:       int32(in.Menu_level),
-			MenuParentID: sql.NullString{
-				String: in.Menu_parent_id,
-				Valid:  in.Menu_parent_id != "",
-			},
+	var lastUpdatedMenu model.MenuOutput
+	for _, menu := range menuUpdates {
+		// Thực hiện truy vấn cập nhật trong transaction
+		err := s.r.UpdateSingleMenu(ctx, database.UpdateSingleMenuParams{
+			MenuName:        menu.Menu_name,
+			MenuIcon:        menu.Menu_icon,
+			MenuUrl:         menu.Menu_url,
+			MenuParentID:    sql.NullString{String: menu.Menu_parent_id, Valid: menu.Menu_parent_id != ""},
+			MenuLevel:       int32(menu.Menu_level),
+			MenuNumberOrder: int32(menu.Menu_Number_order),
+			MenuGroupName:   menu.Menu_group_name,
+			ID:              menu.Id,
 		})
 		if err != nil {
-			return response.ErrCodeMenuErrror, out, fmt.Errorf("lỗi check menu cha thay đổi %v", err)
-		}
-	} else {
-		// Nếu menu_parent_id thay đổi, cập nhật tất cả menu con
-		oldLevel := oldMenu.MenuLevel
-		newLevel := int32(in.Menu_level)
-		levelDiff := newLevel - oldLevel
-
-		// Cập nhật menu cha
-		err = s.r.UpdateMenu(ctx, database.UpdateMenuParams{
-			ID:              id,
-			MenuName:        in.Menu_name,
-			MenuIcon:        in.Menu_icon,
-			MenuUrl:         in.Menu_url,
-			MenuNumberOrder: int32(in.Menu_Number_order),
-			MenuGroupName:   in.Menu_group_name,
-			MenuLevel:       newLevel,
-			MenuParentID: sql.NullString{
-				String: in.Menu_parent_id,
-				Valid:  in.Menu_parent_id != "",
-			},
-		})
-		if err != nil {
-			return response.ErrCodeMenuErrror, out, fmt.Errorf("lỗi cập nhật menu %v", err)
+			log.Printf("Lỗi cập nhật menu ID %s: %v", menu.Id, err)
+			return response.ErrCodeMenuErrror, model.MenuOutput{}, fmt.Errorf("failed to update menu ID %s: %w", menu.Id, err)
 		}
 
-		// Nếu có thay đổi menu_level, cập nhật tất cả menu con
-		if levelChanged {
-			// Lấy danh sách menu con
-			subMenus, err := s.r.GetChildMenus(ctx, sql.NullString{String: id, Valid: true})
-			if err != nil {
-				return response.ErrCodeMenuErrror, out, fmt.Errorf("lỗi lấy danh sách con %v", err)
-			}
-
-			// Cập nhật level cho menu con
-			for _, menu := range subMenus {
-				err = s.r.UpdateMenu(ctx, database.UpdateMenuParams{
-					ID:              menu.ID,
-					MenuName:        menu.MenuName,
-					MenuIcon:        menu.MenuIcon,
-					MenuUrl:         menu.MenuUrl,
-					MenuNumberOrder: menu.MenuNumberOrder,
-					MenuGroupName:   menu.MenuGroupName,
-					MenuLevel:       menu.MenuLevel + levelDiff,
-					MenuParentID:    menu.MenuParentID,
-				})
-				if err != nil {
-					return response.ErrCodeMenuErrror, out, fmt.Errorf("lỗi cập nhật menu con %v", err)
-				}
-			}
+		// Lưu lại menu cuối cùng được cập nhật
+		lastUpdatedMenu = model.MenuOutput{
+			Id:                menu.Id,
+			Menu_name:         menu.Menu_name,
+			Menu_icon:         menu.Menu_icon,
+			Menu_url:          menu.Menu_url,
+			Menu_parent_id:    menu.Menu_parent_id,
+			Menu_level:        menu.Menu_level,
+			Menu_Number_order: menu.Menu_Number_order,
+			Menu_group_name:   menu.Menu_group_name,
 		}
 	}
 
-	// Lấy lại dữ liệu menu sau khi cập nhật
-	menu, err := s.r.GetMenuById(ctx, id)
+	// Commit transaction sau khi cập nhật thành công
+	err := tx.Commit()
 	if err != nil {
-		return response.ErrCodeMenuErrror, out, fmt.Errorf("lỗi lấy menu khi cập nhật %v", err)
+		return response.ErrCodeMenuErrror, model.MenuOutput{}, fmt.Errorf("failed to commit transaction: %w", err)
 	}
 
-	// Gán dữ liệu vào output
-	out = model.MenuOutput{
-		Id:                menu.ID,
-		Menu_name:         menu.MenuName,
-		Menu_icon:         menu.MenuIcon,
-		Menu_url:          menu.MenuUrl,
-		Menu_parent_id:    menu.MenuParentID.String,
-		Menu_Number_order: int(menu.MenuNumberOrder),
-		Menu_level:        int(menu.MenuLevel),
-	}
-
-	return response.ErrCodeSucces, out, err
+	return response.ErrCodeSucces, lastUpdatedMenu, nil
 }

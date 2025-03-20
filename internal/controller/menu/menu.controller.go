@@ -5,6 +5,7 @@ import (
 	"go-backend-api/internal/service"
 	"go-backend-api/pkg/response"
 	"log"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
@@ -86,30 +87,37 @@ func (ac *cMenu) GetMenuById(ctx *gin.Context) {
 }
 
 // UpdateMenu
-// @Summary      Cập nhật menu
-// @Description  API này cập nhật thông tin menu dựa trên ID
+// @Summary      Cập nhật nhiều menu
+// @Description  API này cập nhật danh sách menu dựa trên danh sách ID
 // @Tags         Menu
 // @Accept       json
 // @Produce      json
 // @Security     BearerAuth
-// @Param        id   path   string  true  "ID menu cần cập nhật"
-// @Param        body body   model.MenuInput true "Dữ liệu cập nhật menu"
+// @Param        body body   []model.MenuInput true "Danh sách menu cần cập nhật"
 // @Success      200  {object}  response.ResponseData
 // @Failure      400  {object}  response.ErrorResponseData
 // @Failure      500  {object}  response.ErrorResponseData
-// @Router       /menu/update_menu/{id} [PUT]
+// @Router       /menu/update_multiple_menu [PUT]
 func (ac *cMenu) EditMenuById(ctx *gin.Context) {
-	id := ctx.Param("id")
-	var modelMenu model.MenuInput
-	if err := ctx.ShouldBindJSON(&modelMenu); err != nil {
+	var menuUpdates []model.MenuInput
+	if err := ctx.ShouldBindJSON(&menuUpdates); err != nil {
 		ctx.JSON(response.ErrCodeParamInvalid, gin.H{"error": "Invalid input data"})
 		return
 	}
-	code, menu, err := service.MenuItem().EditMenuById(ctx, &modelMenu, id)
+
+	// Lấy context chuẩn
+	requestCtx := ctx.Request.Context()
+
+	// Gọi service cập nhật nhiều menu
+	code, updatedMenus, err := service.MenuItem().EditMenuById(requestCtx, menuUpdates)
 	if err != nil {
-		log.Printf("Error getting menu: %v", err)
-		response.ErrorResponse(ctx, code, err.Error())
+		log.Printf("Error updating menu: %v", err)
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"code":  code,
+			"error": err.Error(),
+		})
 		return
 	}
-	response.SuccessResponse(ctx, code, menu)
+
+	response.SuccessResponse(ctx, code, updatedMenus)
 }

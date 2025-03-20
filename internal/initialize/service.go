@@ -9,8 +9,12 @@ import (
 
 func InitServiceInterface() {
 	queries := database.New(global.Mdbc)
+	tx, err := global.Mdbc.Begin()
 	// user service interface
 	service.InitAccountItem(impl.NewAccountImpl(queries))
 	service.InitLoginItem(impl.NewLoginImpl(queries))
-	service.InitMenuItem(impl.NewMenuImpl(queries))
+	if err != nil {
+		// handle error
+	}
+	service.InitMenuItem(impl.NewMenuImpl(queries, tx))
 }

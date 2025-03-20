@@ -538,14 +538,14 @@ const docTemplate = `{
                 }
             }
         },
-        "/menu/update_menu/{id}": {
+        "/menu/update_multiple_menu": {
             "put": {
                 "security": [
                     {
                         "BearerAuth": []
                     }
                 ],
-                "description": "API này cập nhật thông tin menu dựa trên ID",
+                "description": "API này cập nhật danh sách menu dựa trên danh sách ID",
                 "consumes": [
                     "application/json"
                 ],
@@ -555,22 +555,18 @@ const docTemplate = `{
                 "tags": [
                     "Menu"
                 ],
-                "summary": "Cập nhật menu",
+                "summary": "Cập nhật nhiều menu",
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "ID menu cần cập nhật",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "Dữ liệu cập nhật menu",
+                        "description": "Danh sách menu cần cập nhật",
                         "name": "body",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.MenuInput"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.MenuInput"
+                            }
                         }
                     }
                 ],
@@ -640,6 +636,9 @@ const docTemplate = `{
         "model.MenuInput": {
             "type": "object",
             "properties": {
+                "id": {
+                    "type": "string"
+                },
                 "menu_group_name": {
                     "type": "string"
                 },

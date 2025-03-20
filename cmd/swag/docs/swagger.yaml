@@ -27,6 +27,8 @@ definitions:
     type: object
   model.MenuInput:
     properties:
+      id:
+        type: string
       menu_group_name:
         type: string
       menu_icon:
@@ -402,23 +404,20 @@ paths:
       summary: Lấy menu theo ID
       tags:
       - Menu
-  /menu/update_menu/{id}:
+  /menu/update_multiple_menu:
     put:
       consumes:
       - application/json
-      description: API này cập nhật thông tin menu dựa trên ID
+      description: API này cập nhật danh sách menu dựa trên danh sách ID
       parameters:
-      - description: ID menu cần cập nhật
-        in: path
-        name: id
-        required: true
-        type: string
-      - description: Dữ liệu cập nhật menu
+      - description: Danh sách menu cần cập nhật
         in: body
         name: body
         required: true
         schema:
-          $ref: '#/definitions/model.MenuInput'
+          items:
+            $ref: '#/definitions/model.MenuInput'
+          type: array
       produces:
       - application/json
       responses:
@@ -436,7 +435,7 @@ paths:
             $ref: '#/definitions/response.ErrorResponseData'
       security:
       - BearerAuth: []
-      summary: Cập nhật menu
+      summary: Cập nhật nhiều menu
       tags:
       - Menu
 security:
