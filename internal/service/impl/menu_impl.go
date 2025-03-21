@@ -127,11 +127,11 @@ func (s *sMenu) GetMenuById(ctx context.Context, id string) (codeResult int, out
 	return response.ErrCodeSucces, out, err
 }
 
-func (s *sMenu) EditMenuById(ctx context.Context, menuUpdates []model.MenuInput) (int, model.MenuOutput, error) {
+func (s *sMenu) EditMenuById(ctx context.Context, menuUpdates []model.MenuInput) (int, []model.MenuOutput, error) {
 	// Bắt đầu transaction mới
 	tx, err := s.db.BeginTx(ctx, nil)
 	if err != nil {
-		return response.ErrCodeMenuErrror, model.MenuOutput{}, fmt.Errorf("failed to begin transaction: %w", err)
+		return response.ErrCodeMenuErrror, nil, fmt.Errorf("failed to begin transaction: %w", err)
 	}
 
 	var committed bool
@@ -144,13 +144,13 @@ func (s *sMenu) EditMenuById(ctx context.Context, menuUpdates []model.MenuInput)
 	// Lấy thông tin tất cả menu (sử dụng transaction)
 	allMenus, err := s.r.GetAllMenus(ctx)
 	if err != nil {
-		return response.ErrCodeMenuErrror, model.MenuOutput{}, fmt.Errorf("failed to get all menus: %w", err)
+		return response.ErrCodeMenuErrror, nil, fmt.Errorf("failed to get all menus: %w", err)
 	}
 
 	// Xử lý logic cập nhật menu
 	updateParamsList, err := utils.ProcessMenuUpdates(menuUpdates, allMenus)
 	if err != nil {
-		return response.ErrCodeMenuErrror, model.MenuOutput{}, err
+		return response.ErrCodeMenuErrror, nil, err
 	}
 
 	// Thực hiện các truy vấn cập nhật trong transaction
@@ -158,37 +158,41 @@ func (s *sMenu) EditMenuById(ctx context.Context, menuUpdates []model.MenuInput)
 		err := s.r.UpdateSingleMenu(ctx, updateParams)
 		if err != nil {
 			log.Printf("Lỗi cập nhật menu ID %s: %v", updateParams.ID, err)
-			return response.ErrCodeMenuErrror, model.MenuOutput{}, fmt.Errorf("failed to update menu ID %s: %w", updateParams.ID, err)
+			return response.ErrCodeMenuErrror, nil, fmt.Errorf("failed to update menu ID %s: %w", updateParams.ID, err)
 		}
 	}
 
 	// Commit transaction sau khi cập nhật thành công
 	err = tx.Commit()
 	if err != nil {
-		return response.ErrCodeMenuErrror, model.MenuOutput{}, fmt.Errorf("failed to commit transaction: %w", err)
+		return response.ErrCodeMenuErrror, nil, fmt.Errorf("failed to commit transaction: %w", err)
 	}
 	committed = true
 
-	// Lấy thông tin menu cuối cùng được cập nhật
-	var lastUpdatedMenu model.MenuOutput
-	if len(menuUpdates) > 0 {
-		lastMenuInput := menuUpdates[len(menuUpdates)-1]
-		updatedMenu, err := s.r.GetMenuById(ctx, lastMenuInput.Id)
-		if err != nil {
-			return response.ErrCodeMenuErrror, model.MenuOutput{}, fmt.Errorf("failed to get updated menu: %w", err)
-		}
-
-		lastUpdatedMenu = model.MenuOutput{
-			Id:                updatedMenu.ID,
-			Menu_name:         updatedMenu.MenuName,
-			Menu_icon:         updatedMenu.MenuIcon,
-			Menu_url:          updatedMenu.MenuUrl,
-			Menu_parent_id:    updatedMenu.MenuParentID.String,
-			Menu_level:        int(updatedMenu.MenuLevel),
-			Menu_Number_order: int(updatedMenu.MenuNumberOrder),
-			Menu_group_name:   updatedMenu.MenuGroupName,
-		}
+	// Lấy lại tất cả menu sau khi cập nhật
+	allMenus, err = s.r.GetAllMenus(ctx)
+	if err != nil {
+		return response.ErrCodeMenuErrror, nil, fmt.Errorf("failed to get all menus: %w", err)
 	}
 
-	return response.ErrCodeSucces, lastUpdatedMenu, nil
+	// Convert to MenuOutput format
+	var menuOutputs []model.MenuOutput
+	for _, menu := range allMenus {
+		menuOutputs = append(menuOutputs, model.MenuOutput{
+			Id:                menu.ID,
+			Menu_name:         menu.MenuName,
+			Menu_icon:         menu.MenuIcon,
+			Menu_url:          menu.MenuUrl,
+			Menu_parent_id:    menu.MenuParentID.String,
+			Menu_level:        int(menu.MenuLevel),
+			Menu_Number_order: int(menu.MenuNumberOrder),
+			Menu_group_name:   menu.MenuGroupName,
+		})
+	}
+
+	// Xây dựng cây menu
+	menuMap, rootMenus := repo.GroupMenusByParent(menuOutputs)
+	finalMenus := repo.BuildMenuTree(rootMenus, menuMap)
+
+	return response.ErrCodeSucces, finalMenus, nil
 }
