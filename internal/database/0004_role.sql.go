@@ -12,8 +12,8 @@ import (
 )
 
 const createRole = `-- name: CreateRole :execresult
-INSERT INTO ` + "`" + `role` + "`" + ` (code, role_name,role_left_value,role_right_value,role_max_number,
-is_licensed,created_by,create_at,update_at)
+INSERT INTO ` + "`" + `role` + "`" + ` (code, role_name, role_left_value, role_right_value, role_max_number,
+is_licensed, created_by, create_at, update_at)
 VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), NOW())
 `
 
@@ -109,6 +109,24 @@ func (q *Queries) GetAllRole(ctx context.Context) ([]GetAllRoleRow, error) {
 	return items, nil
 }
 
+const getParentRoleInfo = `-- name: GetParentRoleInfo :one
+SELECT role_left_value, role_right_value
+FROM ` + "`" + `role` + "`" + `
+WHERE id = ? AND is_deleted = false
+`
+
+type GetParentRoleInfoRow struct {
+	RoleLeftValue  int32
+	RoleRightValue int32
+}
+
+func (q *Queries) GetParentRoleInfo(ctx context.Context, id string) (GetParentRoleInfoRow, error) {
+	row := q.db.QueryRowContext(ctx, getParentRoleInfo, id)
+	var i GetParentRoleInfoRow
+	err := row.Scan(&i.RoleLeftValue, &i.RoleRightValue)
+	return i, err
+}
+
 const getRoleById = `-- name: GetRoleById :one
 SELECT id, code, role_name,role_left_value,role_right_value,role_max_number,
 is_licensed,created_by,create_at,update_at
@@ -179,4 +197,14 @@ func (q *Queries) UpdateRole(ctx context.Context, arg UpdateRoleParams) error {
 		arg.ID,
 	)
 	return err
+}
+
+const updateRoleTree = `-- name: UpdateRoleTree :execresult
+UPDATE ` + "`" + `role` + "`" + `
+SET role_right_value = role_right_value + 2
+WHERE role_right_value >= ? AND is_deleted = false
+`
+
+func (q *Queries) UpdateRoleTree(ctx context.Context, roleRightValue int32) (sql.Result, error) {
+	return q.db.ExecContext(ctx, updateRoleTree, roleRightValue)
 }

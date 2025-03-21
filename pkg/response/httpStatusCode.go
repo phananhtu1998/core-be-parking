@@ -21,6 +21,10 @@ const (
 	ErrCodeMenuNotFound  = 90001 // menu not found
 	ErrCodeMenuHasExists = 90002 // menu already exists
 	ErrCodeMenuErrror    = 90003
+	// error code Role
+	ErrCodeRoleError = 10001
+	ErrCodeRoleSucces = 10002
+	ErrCodeRoleNotFound = 10003
 )
 
 // message

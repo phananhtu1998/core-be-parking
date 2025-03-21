@@ -44,6 +44,54 @@ definitions:
       menu_url:
         type: string
     type: object
+  model.RoleInput:
+    properties:
+      code:
+        type: string
+      created_at:
+        type: string
+      created_by:
+        type: string
+      is_deleted:
+        type: boolean
+      is_licensed:
+        type: boolean
+      role_left_value:
+        type: integer
+      role_max_number:
+        type: integer
+      role_name:
+        type: string
+      role_right_value:
+        type: integer
+      updated_by:
+        type: string
+    type: object
+  model.RoleOutput:
+    properties:
+      code:
+        type: string
+      created_at:
+        type: string
+      created_by:
+        type: string
+      id:
+        type: string
+      is_deleted:
+        type: boolean
+      is_licensed:
+        type: boolean
+      role_left_value:
+        type: integer
+      role_max_number:
+        type: integer
+      role_name:
+        type: string
+      role_right_value:
+        type: integer
+      updated_by:
+        type: string
+    type: object
   response.ErrorResponseData:
     properties:
       code:
@@ -469,6 +517,28 @@ paths:
       summary: Cập nhật nhiều menu
       tags:
       - Menu
+  /role/create_role:
+    post:
+      consumes:
+      - application/json
+      description: Create a new role with binary tree structure
+      parameters:
+      - description: Role information
+        in: body
+        name: role
+        required: true
+        schema:
+          $ref: '#/definitions/model.RoleInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.RoleOutput'
+      summary: Create a new role
+      tags:
+      - Role
 security:
 - "":
   - BearerAuth
