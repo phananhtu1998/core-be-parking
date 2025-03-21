@@ -20,6 +20,7 @@ func Run() *gin.Engine {
 	InitMysqlC()
 	InitServiceInterface()
 	InitRedis()
+	GetServerInfo()
 	r := InitRouter()
 	if r == nil {
 		global.Logger.Error("Failed to initialize Router")
