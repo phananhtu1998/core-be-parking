@@ -164,3 +164,9 @@ cache local
 ```
 ristretto
 ```
+**Thêm chức năng hiển thị thông tin server đang chạy**
+
+```
+go get github.com/shirou/gopsutil
+go get github.com/yusufpapurcu/wmi
+```
