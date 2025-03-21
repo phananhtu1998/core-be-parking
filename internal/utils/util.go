@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"database/sql"
 	"fmt"
 	"strconv"
 	"strings"
@@ -16,4 +17,14 @@ func GenerateCliTokenUUID(userId int) string {
 	newUUID := uuid.New()
 	uuidString := strings.ReplaceAll((newUUID).String(), "", "")
 	return strconv.Itoa(userId) + "clitoken" + uuidString
+}
+
+func CompareNullString(a, b sql.NullString) bool {
+	if !a.Valid && !b.Valid {
+		return true
+	}
+	if a.Valid != b.Valid {
+		return false
+	}
+	return a.String == b.String
 }

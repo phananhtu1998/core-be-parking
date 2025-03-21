@@ -8,6 +8,7 @@ import (
 	"go-backend-api/internal/database"
 	"go-backend-api/internal/model"
 	"go-backend-api/internal/repo"
+	"go-backend-api/internal/utils"
 	"go-backend-api/pkg/response"
 	"log"
 
@@ -20,8 +21,12 @@ type sMenu struct {
 	db  *sql.DB
 }
 
-func NewMenuImpl(r *database.Queries, qTx *sql.Tx) *sMenu {
-	return &sMenu{r: r, qTx: qTx}
+func NewMenuImpl(r *database.Queries, qTx *sql.Tx, db *sql.DB) *sMenu {
+	return &sMenu{
+		r:   r,
+		qTx: qTx,
+		db:  db,
+	}
 }
 
 func (s *sMenu) CreateMenu(ctx context.Context, in *model.MenuInput) (int, model.MenuOutput, error) {
@@ -124,44 +129,65 @@ func (s *sMenu) GetMenuById(ctx context.Context, id string) (codeResult int, out
 
 func (s *sMenu) EditMenuById(ctx context.Context, menuUpdates []model.MenuInput) (int, model.MenuOutput, error) {
 	// Bắt đầu transaction mới
-	tx := s.qTx
-	defer tx.Rollback()
+	tx, err := s.db.BeginTx(ctx, nil)
+	if err != nil {
+		return response.ErrCodeMenuErrror, model.MenuOutput{}, fmt.Errorf("failed to begin transaction: %w", err)
+	}
 
-	var lastUpdatedMenu model.MenuOutput
-	for _, menu := range menuUpdates {
-		// Thực hiện truy vấn cập nhật trong transaction
-		err := s.r.UpdateSingleMenu(ctx, database.UpdateSingleMenuParams{
-			MenuName:        menu.Menu_name,
-			MenuIcon:        menu.Menu_icon,
-			MenuUrl:         menu.Menu_url,
-			MenuParentID:    sql.NullString{String: menu.Menu_parent_id, Valid: menu.Menu_parent_id != ""},
-			MenuLevel:       int32(menu.Menu_level),
-			MenuNumberOrder: int32(menu.Menu_Number_order),
-			MenuGroupName:   menu.Menu_group_name,
-			ID:              menu.Id,
-		})
-		if err != nil {
-			log.Printf("Lỗi cập nhật menu ID %s: %v", menu.Id, err)
-			return response.ErrCodeMenuErrror, model.MenuOutput{}, fmt.Errorf("failed to update menu ID %s: %w", menu.Id, err)
+	var committed bool
+	defer func() {
+		if !committed {
+			tx.Rollback()
 		}
+	}()
 
-		// Lưu lại menu cuối cùng được cập nhật
-		lastUpdatedMenu = model.MenuOutput{
-			Id:                menu.Id,
-			Menu_name:         menu.Menu_name,
-			Menu_icon:         menu.Menu_icon,
-			Menu_url:          menu.Menu_url,
-			Menu_parent_id:    menu.Menu_parent_id,
-			Menu_level:        menu.Menu_level,
-			Menu_Number_order: menu.Menu_Number_order,
-			Menu_group_name:   menu.Menu_group_name,
+	// Lấy thông tin tất cả menu (sử dụng transaction)
+	allMenus, err := s.r.GetAllMenus(ctx)
+	if err != nil {
+		return response.ErrCodeMenuErrror, model.MenuOutput{}, fmt.Errorf("failed to get all menus: %w", err)
+	}
+
+	// Xử lý logic cập nhật menu
+	updateParamsList, err := utils.ProcessMenuUpdates(menuUpdates, allMenus)
+	if err != nil {
+		return response.ErrCodeMenuErrror, model.MenuOutput{}, err
+	}
+
+	// Thực hiện các truy vấn cập nhật trong transaction
+	for _, updateParams := range updateParamsList {
+		err := s.r.UpdateSingleMenu(ctx, updateParams)
+		if err != nil {
+			log.Printf("Lỗi cập nhật menu ID %s: %v", updateParams.ID, err)
+			return response.ErrCodeMenuErrror, model.MenuOutput{}, fmt.Errorf("failed to update menu ID %s: %w", updateParams.ID, err)
 		}
 	}
 
 	// Commit transaction sau khi cập nhật thành công
-	err := tx.Commit()
+	err = tx.Commit()
 	if err != nil {
 		return response.ErrCodeMenuErrror, model.MenuOutput{}, fmt.Errorf("failed to commit transaction: %w", err)
+	}
+	committed = true
+
+	// Lấy thông tin menu cuối cùng được cập nhật
+	var lastUpdatedMenu model.MenuOutput
+	if len(menuUpdates) > 0 {
+		lastMenuInput := menuUpdates[len(menuUpdates)-1]
+		updatedMenu, err := s.r.GetMenuById(ctx, lastMenuInput.Id)
+		if err != nil {
+			return response.ErrCodeMenuErrror, model.MenuOutput{}, fmt.Errorf("failed to get updated menu: %w", err)
+		}
+
+		lastUpdatedMenu = model.MenuOutput{
+			Id:                updatedMenu.ID,
+			Menu_name:         updatedMenu.MenuName,
+			Menu_icon:         updatedMenu.MenuIcon,
+			Menu_url:          updatedMenu.MenuUrl,
+			Menu_parent_id:    updatedMenu.MenuParentID.String,
+			Menu_level:        int(updatedMenu.MenuLevel),
+			Menu_Number_order: int(updatedMenu.MenuNumberOrder),
+			Menu_group_name:   updatedMenu.MenuGroupName,
+		}
 	}
 
 	return response.ErrCodeSucces, lastUpdatedMenu, nil

@@ -15,6 +15,7 @@ func InitServiceInterface() {
 	service.InitLoginItem(impl.NewLoginImpl(queries))
 	if err != nil {
 		// handle error
+		return
 	}
-	service.InitMenuItem(impl.NewMenuImpl(queries, tx))
+	service.InitMenuItem(impl.NewMenuImpl(queries, tx, global.Mdbc))
 }
