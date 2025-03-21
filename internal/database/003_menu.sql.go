@@ -24,6 +24,15 @@ func (q *Queries) CountMenuByURL(ctx context.Context, menuUrl string) (int64, er
 	return total_count, err
 }
 
+const deleteMenu = `-- name: DeleteMenu :exec
+UPDATE menu SET is_deleted = true WHERE id = ?
+`
+
+func (q *Queries) DeleteMenu(ctx context.Context, id string) error {
+	_, err := q.db.ExecContext(ctx, deleteMenu, id)
+	return err
+}
+
 const getAllMenus = `-- name: GetAllMenus :many
 SELECT 
     m1.id, m1.menu_name, m1.menu_icon, m1.menu_url, m1.menu_parent_Id,
@@ -225,6 +234,15 @@ func (q *Queries) InsertMenu(ctx context.Context, arg InsertMenuParams) (sql.Res
 		arg.MenuNumberOrder,
 		arg.MenuGroupName,
 	)
+}
+
+const updateMenuDeleted = `-- name: UpdateMenuDeleted :exec
+UPDATE menu SET is_deleted = true WHERE id = ?
+`
+
+func (q *Queries) UpdateMenuDeleted(ctx context.Context, id string) error {
+	_, err := q.db.ExecContext(ctx, updateMenuDeleted, id)
+	return err
 }
 
 const updateSingleMenu = `-- name: UpdateSingleMenu :exec

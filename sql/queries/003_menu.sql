@@ -65,7 +65,11 @@ SET
     menu_group_name = ?
 WHERE id = ?;
 
+-- name: DeleteMenu :exec
+UPDATE menu SET is_deleted = true WHERE id = ?;
 
+-- name: UpdateMenuDeleted :exec
+UPDATE menu SET is_deleted = true WHERE id = ?;
 
 
 

@@ -17,6 +17,7 @@ func (ar *MenuRouter) InitAdminRouter(Router *gin.RouterGroup) {
 		menuRouterPrivate.GET("/get_all_menu", menu.Menus.GetAllMenu)
 		menuRouterPrivate.GET("/get_menu_by_id/:id", menu.Menus.GetMenuById)
 		menuRouterPrivate.PUT("/update_multiple_menu/", menu.Menus.EditMenuById)
+		menuRouterPrivate.DELETE("/delete/:id", menu.Menus.DeleteMenu)
 	}
 
 }

@@ -121,3 +121,32 @@ func (ac *cMenu) EditMenuById(ctx *gin.Context) {
 
 	response.SuccessResponse(ctx, code, updatedMenus)
 }
+
+// DeleteMenu
+// @Summary      Xóa menu
+// @Description  API này xóa một menu dựa trên ID
+// @Tags         Menu
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Param        id   path      string  true  "Menu ID"
+// @Success      200  {object}  response.ResponseData
+// @Failure      400  {object}  response.ErrorResponseData
+// @Failure      500  {object}  response.ErrorResponseData
+// @Router       /menu/delete/{id} [DELETE]
+func (ac *cMenu) DeleteMenu(ctx *gin.Context) {
+	id := ctx.Param("id")
+
+	// Lấy context chuẩn
+	requestCtx := ctx.Request.Context()
+
+	// Gọi service xóa menu
+	code, err := service.MenuItem().DeleteMenu(requestCtx, id)
+	if err != nil {
+		log.Printf("Error deleting menu: %v", err)
+		response.ErrorResponse(ctx, code, err.Error())
+		return
+	}
+
+	response.SuccessResponse(ctx, code, nil)
+}

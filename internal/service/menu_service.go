@@ -11,7 +11,7 @@ type (
 		GetAllMenu(ctx context.Context) (codeResult int, out []model.MenuOutput, err error)
 		GetMenuById(ctx context.Context, id string) (codeResult int, out model.MenuOutput, err error)
 		EditMenuById(ctx context.Context, menuUpdates []model.MenuInput) (int, []model.MenuOutput, error)
-		//DeleteMenu(ctx context.Context, id string) (codeResult int, err error)
+		DeleteMenu(ctx context.Context, id string) (codeResult int, err error)
 	}
 )
 

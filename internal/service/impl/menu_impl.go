@@ -46,7 +46,7 @@ func (s *sMenu) CreateMenu(ctx context.Context, in *model.MenuInput) (int, model
 		MenuName:        in.Menu_name,
 		MenuIcon:        in.Menu_icon,
 		MenuUrl:         in.Menu_url,
-		MenuParentID:    sql.NullString{String: in.Menu_parent_id, Valid: false},
+		MenuParentID:    sql.NullString{String: in.Menu_parent_id, Valid: true},
 		MenuLevel:       int32(in.Menu_level),
 		MenuNumberOrder: int32(in.Menu_Number_order),
 		MenuGroupName:   in.Menu_group_name,
@@ -195,4 +195,79 @@ func (s *sMenu) EditMenuById(ctx context.Context, menuUpdates []model.MenuInput)
 	finalMenus := repo.BuildMenuTree(rootMenus, menuMap)
 
 	return response.ErrCodeSucces, finalMenus, nil
+}
+
+func (s *sMenu) DeleteMenu(ctx context.Context, id string) (int, error) {
+	// Bắt đầu transaction mới
+	tx, err := s.db.BeginTx(ctx, nil)
+	if err != nil {
+		return response.ErrCodeMenuErrror, fmt.Errorf("failed to begin transaction: %w", err)
+	}
+
+	var committed bool
+	defer func() {
+		if !committed {
+			tx.Rollback()
+		}
+	}()
+
+	// Lấy thông tin menu cần xóa
+	_, err = s.r.GetMenuById(ctx, id)
+	if err != nil {
+		return response.ErrCodeMenuErrror, fmt.Errorf("menu not found: %w", err)
+	}
+
+	// Lấy tất cả menu để kiểm tra menu cha-con
+	allMenus, err := s.r.GetAllMenus(ctx)
+	if err != nil {
+		return response.ErrCodeMenuErrror, fmt.Errorf("failed to get all menus: %w", err)
+	}
+
+	// Tạo map để lưu thông tin menu hiện tại
+	menuMap := make(map[string]database.GetAllMenusRow)
+	for _, m := range allMenus {
+		menuMap[m.ID] = m
+	}
+
+	// Kiểm tra xem menu có phải là menu cha không
+	isParent := false
+	for _, m := range allMenus {
+		if m.MenuParentID.String == id {
+			isParent = true
+			break
+		}
+	}
+
+	if isParent {
+		// Nếu là menu cha, xóa tất cả menu con
+		for _, m := range allMenus {
+			if m.MenuParentID.String == id {
+				// Xóa menu con
+				err := s.r.DeleteMenu(ctx, m.ID)
+				if err != nil {
+					return response.ErrCodeMenuErrror, fmt.Errorf("failed to delete child menu %s: %w", m.ID, err)
+				}
+			}
+		}
+		// Xóa menu cha
+		err := s.r.DeleteMenu(ctx, id)
+		if err != nil {
+			return response.ErrCodeMenuErrror, fmt.Errorf("failed to delete parent menu: %w", err)
+		}
+	} else {
+		// Nếu là menu con, chỉ cập nhật Is_deleted
+		err := s.r.UpdateMenuDeleted(ctx, id)
+		if err != nil {
+			return response.ErrCodeMenuErrror, fmt.Errorf("failed to update menu deleted status: %w", err)
+		}
+	}
+
+	// Commit transaction
+	err = tx.Commit()
+	if err != nil {
+		return response.ErrCodeMenuErrror, fmt.Errorf("failed to commit transaction: %w", err)
+	}
+	committed = true
+
+	return response.ErrCodeSucces, nil
 }
