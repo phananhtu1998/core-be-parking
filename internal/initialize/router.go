@@ -18,12 +18,10 @@ func InitRouter() *gin.Engine {
 		r = gin.New()
 	}
 	// middleware
-	r.Use() //logging
-	r.Use() //cross
-	r.Use() //limiter global
+	r.Use()
 	manageRouter := routers.RouterGroupApp.Manage
 	loginRouter := routers.RouterGroupApp.Login
-	menuRouter := routers.RouterGroupApp
+	menuRouter := routers.RouterGroupApp.Menu
 	roleRouter := routers.RouterGroupApp.Role
 	MainGroup := r.Group("/v1/2025")
 	{
@@ -32,8 +30,8 @@ func InitRouter() *gin.Engine {
 	{
 		manageRouter.InitAdminRouter(MainGroup)
 		loginRouter.InitLoginRouter(MainGroup)
-		menuRouter.Menu.InitAdminRouter(MainGroup)
-		roleRouter.InitLoginRouter(MainGroup)
+		menuRouter.InitAdminRouter(MainGroup)
+		roleRouter.InitRoleRouter(MainGroup)
 	}
 	return r
 }

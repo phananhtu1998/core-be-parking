@@ -12,12 +12,13 @@ import (
 )
 
 const createRole = `-- name: CreateRole :execresult
-INSERT INTO ` + "`" + `role` + "`" + ` (code, role_name, role_left_value, role_right_value, role_max_number,
+INSERT INTO ` + "`" + `role` + "`" + ` (id, code, role_name, role_left_value, role_right_value, role_max_number,
 is_licensed, created_by, create_at, update_at)
-VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), NOW())
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())
 `
 
 type CreateRoleParams struct {
+	ID             string
 	Code           string
 	RoleName       string
 	RoleLeftValue  int32
@@ -29,6 +30,7 @@ type CreateRoleParams struct {
 
 func (q *Queries) CreateRole(ctx context.Context, arg CreateRoleParams) (sql.Result, error) {
 	return q.db.ExecContext(ctx, createRole,
+		arg.ID,
 		arg.Code,
 		arg.RoleName,
 		arg.RoleLeftValue,
@@ -56,10 +58,11 @@ func (q *Queries) DeleteRole(ctx context.Context, arg DeleteRoleParams) error {
 }
 
 const getAllRole = `-- name: GetAllRole :many
-SELECT id, code, role_name,role_left_value,role_right_value,role_max_number,
-is_licensed,created_by,create_at,update_at
+SELECT id, code, role_name, role_left_value, role_right_value, role_max_number,
+is_licensed, created_by, create_at, update_at
 FROM ` + "`" + `role` + "`" + `
 WHERE is_deleted = false
+ORDER BY role_left_value ASC
 `
 
 type GetAllRoleRow struct {
@@ -168,7 +171,7 @@ func (q *Queries) GetRoleById(ctx context.Context, id string) (GetRoleByIdRow, e
 const updateRole = `-- name: UpdateRole :exec
 UPDATE ` + "`" + `role` + "`" + `
 SET code = ?, role_name = ?,role_left_value = ?,role_right_value = ?,role_max_number = ?,
-is_licensed = ?,created_by = ?,create_at = ?,update_at = NOW()
+is_licensed = ?,created_by = ?,update_at = NOW()
 WHERE id = ?
 `
 
@@ -180,7 +183,6 @@ type UpdateRoleParams struct {
 	RoleMaxNumber  int64
 	IsLicensed     bool
 	CreatedBy      string
-	CreateAt       time.Time
 	ID             string
 }
 
@@ -193,7 +195,6 @@ func (q *Queries) UpdateRole(ctx context.Context, arg UpdateRoleParams) error {
 		arg.RoleMaxNumber,
 		arg.IsLicensed,
 		arg.CreatedBy,
-		arg.CreateAt,
 		arg.ID,
 	)
 	return err

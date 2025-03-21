@@ -643,7 +643,12 @@ const docTemplate = `{
         },
         "/role/create_role": {
             "post": {
-                "description": "Create a new role with binary tree structure",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Api tạo role trong hệ thống",
                 "consumes": [
                     "application/json"
                 ],
@@ -653,15 +658,15 @@ const docTemplate = `{
                 "tags": [
                     "Role"
                 ],
-                "summary": "Create a new role",
+                "summary": "Tạo role",
                 "parameters": [
                     {
-                        "description": "Role information",
-                        "name": "role",
+                        "description": "payload",
+                        "name": "payload",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.RoleInput"
+                            "$ref": "#/definitions/model.Role"
                         }
                     }
                 ],
@@ -669,7 +674,47 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.RoleOutput"
+                            "$ref": "#/definitions/response.ResponseData"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponseData"
+                        }
+                    }
+                }
+            }
+        },
+        "/role/get_all_roles": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Api lấy danh sách role trong hệ thống",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Role"
+                ],
+                "summary": "Lấy danh sách role",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResponseData"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponseData"
                         }
                     }
                 }
@@ -745,42 +790,7 @@ const docTemplate = `{
                 }
             }
         },
-        "model.RoleInput": {
-            "type": "object",
-            "properties": {
-                "code": {
-                    "type": "string"
-                },
-                "created_at": {
-                    "type": "string"
-                },
-                "created_by": {
-                    "type": "string"
-                },
-                "is_deleted": {
-                    "type": "boolean"
-                },
-                "is_licensed": {
-                    "type": "boolean"
-                },
-                "role_left_value": {
-                    "type": "integer"
-                },
-                "role_max_number": {
-                    "type": "integer"
-                },
-                "role_name": {
-                    "type": "string"
-                },
-                "role_right_value": {
-                    "type": "integer"
-                },
-                "updated_by": {
-                    "type": "string"
-                }
-            }
-        },
-        "model.RoleOutput": {
+        "model.Role": {
             "type": "object",
             "properties": {
                 "code": {

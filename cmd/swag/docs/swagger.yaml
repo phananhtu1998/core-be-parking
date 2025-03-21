@@ -44,30 +44,7 @@ definitions:
       menu_url:
         type: string
     type: object
-  model.RoleInput:
-    properties:
-      code:
-        type: string
-      created_at:
-        type: string
-      created_by:
-        type: string
-      is_deleted:
-        type: boolean
-      is_licensed:
-        type: boolean
-      role_left_value:
-        type: integer
-      role_max_number:
-        type: integer
-      role_name:
-        type: string
-      role_right_value:
-        type: integer
-      updated_by:
-        type: string
-    type: object
-  model.RoleOutput:
+  model.Role:
     properties:
       code:
         type: string
@@ -521,22 +498,49 @@ paths:
     post:
       consumes:
       - application/json
-      description: Create a new role with binary tree structure
+      description: Api tạo role trong hệ thống
       parameters:
-      - description: Role information
+      - description: payload
         in: body
-        name: role
+        name: payload
         required: true
         schema:
-          $ref: '#/definitions/model.RoleInput'
+          $ref: '#/definitions/model.Role'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/model.RoleOutput'
-      summary: Create a new role
+            $ref: '#/definitions/response.ResponseData'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponseData'
+      security:
+      - BearerAuth: []
+      summary: Tạo role
+      tags:
+      - Role
+  /role/get_all_roles:
+    get:
+      consumes:
+      - application/json
+      description: Api lấy danh sách role trong hệ thống
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ResponseData'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponseData'
+      security:
+      - BearerAuth: []
+      summary: Lấy danh sách role
       tags:
       - Role
 security:

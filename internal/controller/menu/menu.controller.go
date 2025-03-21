@@ -5,6 +5,7 @@ import (
 	"go-backend-api/internal/service"
 	"go-backend-api/pkg/response"
 	"log"
+
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -35,12 +36,12 @@ func (c *cMenu) CreateMenu(ctx *gin.Context) {
 		return
 	}
 
-	codeRs, dataRs, err := service.MenuItem().CreateMenu(ctx, &params)
+	codeMenu, dataMenu, err := service.MenuItem().CreateMenu(ctx, &params)
 	if err != nil {
 		response.ErrorResponse(ctx, response.ErrCodeParamInvalid, err.Error())
 		return
 	}
-	response.SuccessResponse(ctx, codeRs, dataRs)
+	response.SuccessResponse(ctx, codeMenu, dataMenu)
 }
 
 // Menu

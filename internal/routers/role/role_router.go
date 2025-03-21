@@ -8,10 +8,11 @@ import (
 
 type RoleRouter struct{}
 
-func (ar *RoleRouter) InitLoginRouter(Router *gin.RouterGroup) {
+func (ar *RoleRouter) InitRoleRouter(Router *gin.RouterGroup) {
 	roleRouterPrivate := Router.Group("/role")
 	//roleRouterPrivate.Use(middlewares.AuthenMiddleware())
 	{
 		roleRouterPrivate.POST("/create_role", role.Roles.CreateRole)
+		roleRouterPrivate.GET("/get_all_roles", role.Roles.GetAllRoles)
 	}
 }

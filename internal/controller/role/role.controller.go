@@ -14,25 +14,46 @@ type cRole struct {
 	roleService service.IRole
 }
 
-// CreateRole godoc
-// @Summary Create a new role
-// @Description Create a new role with binary tree structure
+// Role
+// @Summary Tạo role
+// @Description Api tạo role trong hệ thống
 // @Tags Role
 // @Accept json
 // @Produce json
-// @Param role body model.RoleInput true "Role information"
-// @Success 200 {object} model.RoleOutput
+// @Security     BearerAuth
+// @Param        payload body model.Role true "payload"
+// @Success 200 {object} response.ResponseData
+// @Failure      500  {object}  response.ErrorResponseData
 // @Router /role/create_role [post]
 func (c *cRole) CreateRole(ctx *gin.Context) {
-	var params model.RoleInput
+	var params model.Role
 	if err := ctx.ShouldBindJSON(&params); err != nil {
 		response.ErrorResponse(ctx, response.ErrCodeParamInvalid, err.Error())
 		return
 	}
-	codeRs, dataRs, err := c.roleService.CreateRole(ctx, &params)
+	codeRole, dataRole, err := service.RoleItem().CreateRole(ctx, &params)
 	if err != nil {
 		response.ErrorResponse(ctx, response.ErrCodeParamInvalid, err.Error())
 		return
 	}
-	response.SuccessResponse(ctx, codeRs, dataRs)
+	response.SuccessResponse(ctx, codeRole, dataRole)
+}
+
+// GetAllRoles
+// @Summary Lấy danh sách role
+// @Description Api lấy danh sách role trong hệ thống
+// @Tags Role
+// @Accept json
+// @Produce json
+// @Security     BearerAuth
+// @Success 200 {object} response.ResponseData
+// @Failure      500  {object}  response.ErrorResponseData
+// @Router /role/get_all_roles [get]
+func (c *cRole) GetAllRoles(ctx *gin.Context) {
+	codeRole, dataRole, err := service.RoleItem().GetAllRoles(ctx)
+	if err != nil {
+		response.ErrorResponse(ctx, response.ErrCodeParamInvalid, err.Error())
+		return
+	}
+	response.SuccessResponse(ctx, codeRole, dataRole)
 }

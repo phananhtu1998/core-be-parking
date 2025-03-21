@@ -7,7 +7,8 @@ import (
 
 type (
 	IRole interface {
-		CreateRole(ctx context.Context, in *model.RoleInput) (codeResult int, out model.RoleOutput, err error)
+		CreateRole(ctx context.Context, in *model.Role) (codeResult int, out model.Role, err error)
+		GetAllRoles(ctx context.Context) (codeResult int, out []model.RoleHierarchyOutput, err error)
 	}
 )
 
