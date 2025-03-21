@@ -49,3 +49,17 @@ type Menu struct {
 	CreateAt        time.Time
 	UpdateAt        time.Time
 }
+
+type Role struct {
+	ID             string
+	Code           string
+	RoleName       string
+	RoleLeftValue  int32
+	RoleRightValue int32
+	RoleMaxNumber  int64
+	IsLicensed     bool
+	CreatedBy      string
+	IsDeleted      bool
+	CreateAt       time.Time
+	UpdateAt       time.Time
+}
