@@ -39,6 +39,9 @@ func (s *sLogin) Login(ctx context.Context, in *model.LoginInput) (codeResult in
 	if !crypto.MatchingPassword(accountBase.Password, in.Password, accountBase.Salt) {
 		return response.ErrCodeAuthFailed, out, fmt.Errorf("does not match password")
 	}
+	if accountBase.Status == false {
+		return response.ErrCodeAuthFailed, out, fmt.Errorf("tài khoản đã bị khóa")
+	}
 	subToken := utils.GenerateCliTokenUUID(int(accountBase.Number))
 	log.Println("subtoken:", subToken)
 	infoAccount, err := s.r.GetAccountById(ctx, accountBase.ID)
