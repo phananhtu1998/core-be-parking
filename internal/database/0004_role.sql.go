@@ -12,9 +12,12 @@ import (
 )
 
 const createRole = `-- name: CreateRole :execresult
-INSERT INTO ` + "`" + `role` + "`" + ` (id, code, role_name, role_left_value, role_right_value, role_max_number,
-is_licensed, created_by, create_at, update_at)
-VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())
+INSERT INTO ` + "`" + `role` + "`" + ` (
+  id, code, role_name, role_left_value, role_right_value, 
+  role_max_number, is_licensed, created_by, create_at, update_at
+) VALUES (
+  ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW()
+)
 `
 
 type CreateRoleParams struct {
@@ -112,6 +115,19 @@ func (q *Queries) GetAllRole(ctx context.Context) ([]GetAllRoleRow, error) {
 	return items, nil
 }
 
+const getMaxRightValue = `-- name: GetMaxRightValue :one
+SELECT COALESCE(MAX(role_right_value), 0) as max_right_value
+FROM ` + "`" + `role` + "`" + `
+WHERE is_deleted = false
+`
+
+func (q *Queries) GetMaxRightValue(ctx context.Context) (interface{}, error) {
+	row := q.db.QueryRowContext(ctx, getMaxRightValue)
+	var max_right_value interface{}
+	err := row.Scan(&max_right_value)
+	return max_right_value, err
+}
+
 const getParentRoleInfo = `-- name: GetParentRoleInfo :one
 SELECT role_left_value, role_right_value
 FROM ` + "`" + `role` + "`" + `
@@ -168,6 +184,28 @@ func (q *Queries) GetRoleById(ctx context.Context, id string) (GetRoleByIdRow, e
 	return i, err
 }
 
+const updateLeftValuesForInsert = `-- name: UpdateLeftValuesForInsert :exec
+UPDATE ` + "`" + `role` + "`" + ` 
+SET role_left_value = role_left_value + 2 
+WHERE role_left_value > ? AND is_deleted = false
+`
+
+func (q *Queries) UpdateLeftValuesForInsert(ctx context.Context, roleLeftValue int32) error {
+	_, err := q.db.ExecContext(ctx, updateLeftValuesForInsert, roleLeftValue)
+	return err
+}
+
+const updateRightValuesForInsert = `-- name: UpdateRightValuesForInsert :exec
+UPDATE ` + "`" + `role` + "`" + ` 
+SET role_right_value = role_right_value + 2 
+WHERE role_right_value >= ? AND is_deleted = false
+`
+
+func (q *Queries) UpdateRightValuesForInsert(ctx context.Context, roleRightValue int32) error {
+	_, err := q.db.ExecContext(ctx, updateRightValuesForInsert, roleRightValue)
+	return err
+}
+
 const updateRole = `-- name: UpdateRole :exec
 UPDATE ` + "`" + `role` + "`" + `
 SET code = ?, role_name = ?,role_left_value = ?,role_right_value = ?,role_max_number = ?,
@@ -201,9 +239,7 @@ func (q *Queries) UpdateRole(ctx context.Context, arg UpdateRoleParams) error {
 }
 
 const updateRoleTree = `-- name: UpdateRoleTree :execresult
-UPDATE ` + "`" + `role` + "`" + `
-SET role_right_value = role_right_value + 2
-WHERE role_right_value >= ? AND is_deleted = false
+UPDATE ` + "`" + `role` + "`" + ` SET role_right_value = role_right_value + 2 WHERE role_right_value >= ? AND is_deleted = false
 `
 
 func (q *Queries) UpdateRoleTree(ctx context.Context, roleRightValue int32) (sql.Result, error) {
