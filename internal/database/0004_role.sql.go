@@ -115,6 +115,61 @@ func (q *Queries) GetAllRole(ctx context.Context) ([]GetAllRoleRow, error) {
 	return items, nil
 }
 
+const getChildRolesByParentId = `-- name: GetChildRolesByParentId :many
+SELECT id, code, role_name, role_left_value, role_right_value, role_max_number,
+is_licensed, created_by, create_at, update_at
+FROM ` + "`" + `role` + "`" + `
+WHERE created_by = ? AND is_deleted = false
+ORDER BY role_left_value ASC
+`
+
+type GetChildRolesByParentIdRow struct {
+	ID             string
+	Code           string
+	RoleName       string
+	RoleLeftValue  int32
+	RoleRightValue int32
+	RoleMaxNumber  int64
+	IsLicensed     bool
+	CreatedBy      string
+	CreateAt       time.Time
+	UpdateAt       time.Time
+}
+
+func (q *Queries) GetChildRolesByParentId(ctx context.Context, createdBy string) ([]GetChildRolesByParentIdRow, error) {
+	rows, err := q.db.QueryContext(ctx, getChildRolesByParentId, createdBy)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []GetChildRolesByParentIdRow
+	for rows.Next() {
+		var i GetChildRolesByParentIdRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.Code,
+			&i.RoleName,
+			&i.RoleLeftValue,
+			&i.RoleRightValue,
+			&i.RoleMaxNumber,
+			&i.IsLicensed,
+			&i.CreatedBy,
+			&i.CreateAt,
+			&i.UpdateAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getMaxRightValue = `-- name: GetMaxRightValue :one
 SELECT COALESCE(MAX(role_right_value), 0) as max_right_value
 FROM ` + "`" + `role` + "`" + `
@@ -182,6 +237,68 @@ func (q *Queries) GetRoleById(ctx context.Context, id string) (GetRoleByIdRow, e
 		&i.UpdateAt,
 	)
 	return i, err
+}
+
+const getRoleWithChildren = `-- name: GetRoleWithChildren :many
+SELECT r.id, r.code, r.role_name, r.role_left_value, r.role_right_value, r.role_max_number,
+r.is_licensed, r.created_by, r.create_at, r.update_at
+FROM ` + "`" + `role` + "`" + ` r
+WHERE r.role_left_value >= (SELECT r2.role_left_value FROM ` + "`" + `role` + "`" + ` r2 WHERE r2.id = ? AND r2.is_deleted = false)
+AND r.role_right_value <= (SELECT r3.role_right_value FROM ` + "`" + `role` + "`" + ` r3 WHERE r3.id = ? AND r3.is_deleted = false)
+AND r.is_deleted = false
+ORDER BY r.role_left_value ASC
+`
+
+type GetRoleWithChildrenParams struct {
+	ID   string
+	ID_2 string
+}
+
+type GetRoleWithChildrenRow struct {
+	ID             string
+	Code           string
+	RoleName       string
+	RoleLeftValue  int32
+	RoleRightValue int32
+	RoleMaxNumber  int64
+	IsLicensed     bool
+	CreatedBy      string
+	CreateAt       time.Time
+	UpdateAt       time.Time
+}
+
+func (q *Queries) GetRoleWithChildren(ctx context.Context, arg GetRoleWithChildrenParams) ([]GetRoleWithChildrenRow, error) {
+	rows, err := q.db.QueryContext(ctx, getRoleWithChildren, arg.ID, arg.ID_2)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []GetRoleWithChildrenRow
+	for rows.Next() {
+		var i GetRoleWithChildrenRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.Code,
+			&i.RoleName,
+			&i.RoleLeftValue,
+			&i.RoleRightValue,
+			&i.RoleMaxNumber,
+			&i.IsLicensed,
+			&i.CreatedBy,
+			&i.CreateAt,
+			&i.UpdateAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const updateLeftValuesForInsert = `-- name: UpdateLeftValuesForInsert :exec

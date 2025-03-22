@@ -3,6 +3,7 @@ package impl
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"fmt"
 	"go-backend-api/internal/database"
 	"go-backend-api/internal/model"
@@ -108,7 +109,7 @@ func (s *sRole) CreateRole(ctx context.Context, in *model.Role) (codeResult int,
 	}, nil
 }
 
-// GetAllRoles retrieves all roles and builds a hierarchical tree
+// GetAllRoles
 func (s *sRole) GetAllRoles(ctx context.Context) (codeResult int, out []model.RoleHierarchyOutput, err error) {
 	roles, err := s.r.GetAllRole(ctx)
 	if err != nil {
@@ -139,4 +140,45 @@ func (s *sRole) GetAllRoles(ctx context.Context) (codeResult int, out []model.Ro
 	}
 
 	return response.ErrCodeSucces, rootNodes, nil
+}
+
+func (s *sRole) GetRoleById(ctx context.Context, parentId string) (codeResult int, out []model.RoleHierarchyOutput, err error) {
+	// First, get the role by its ID
+	parentRole, err := s.r.GetRoleById(ctx, parentId)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return response.ErrCodeRoleNotFound, nil, fmt.Errorf("role not found")
+		}
+		return response.ErrCodeRoleError, nil, fmt.Errorf("failed to get role: %w", err)
+	}
+
+	// Get all child roles where created_by matches the roleId
+	childRoles, err := s.r.GetChildRolesByParentId(ctx, parentId)
+	if err != nil {
+		return response.ErrCodeRoleError, nil, fmt.Errorf("failed to get child roles: %w", err)
+	}
+
+	// Create the parent node
+	rootNode := model.RoleHierarchyOutput{
+		Id:        parentRole.ID,
+		Code:      parentRole.Code,
+		Role_name: parentRole.RoleName,
+		Children:  make([]model.RoleHierarchyOutput, 0, len(childRoles)),
+	}
+
+	// Add child nodes
+	for _, role := range childRoles {
+		childNode := model.RoleHierarchyOutput{
+			Id:        role.ID,
+			Code:      role.Code,
+			Role_name: role.RoleName,
+			Children:  []model.RoleHierarchyOutput{}, // Initialize empty children array
+		}
+		rootNode.Children = append(rootNode.Children, childNode)
+	}
+
+	// Create a slice with the root node as the only element
+	result := []model.RoleHierarchyOutput{rootNode}
+
+	return response.ErrCodeSucces, result, nil
 }
