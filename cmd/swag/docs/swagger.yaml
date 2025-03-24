@@ -527,6 +527,15 @@ paths:
       consumes:
       - application/json
       description: Api lấy danh sách role trong hệ thống
+      parameters:
+      - description: 'Số trang (mặc định: 1)'
+        in: query
+        name: page
+        type: integer
+      - description: 'Số lượng mỗi trang (mặc định: 20)'
+        in: query
+        name: page_size
+        type: integer
       produces:
       - application/json
       responses:

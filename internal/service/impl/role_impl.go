@@ -110,10 +110,20 @@ func (s *sRole) CreateRole(ctx context.Context, in *model.Role) (codeResult int,
 }
 
 // GetAllRoles
-func (s *sRole) GetAllRoles(ctx context.Context) (codeResult int, out []model.RoleHierarchyOutput, err error) {
-	roles, err := s.r.GetAllRole(ctx)
+func (s *sRole) GetAllRoles(ctx context.Context, page, pageSize int) (codeResult int, out []model.RoleHierarchyOutput, total int64, err error) {
+	// Lấy tổng số records
+	total, err = s.r.GetTotalRoles(ctx)
 	if err != nil {
-		return response.ErrCodeRoleError, nil, err
+		return response.ErrCodeRoleError, nil, 0, err
+	}
+	// Tính offset
+	offset := (page - 1) * pageSize
+	roles, err := s.r.GetAllRole(ctx, database.GetAllRoleParams{
+		Limit:  int32(pageSize),
+		Offset: int32(offset),
+	})
+	if err != nil {
+		return response.ErrCodeRoleError, nil, 0, err
 	}
 
 	var modelRoles []model.Role
@@ -139,7 +149,7 @@ func (s *sRole) GetAllRoles(ctx context.Context) (codeResult int, out []model.Ro
 		}
 	}
 
-	return response.ErrCodeSucces, rootNodes, nil
+	return response.ErrCodeSucces, rootNodes, total, nil
 }
 
 func (s *sRole) GetRoleById(ctx context.Context, parentId string) (codeResult int, out []model.RoleHierarchyOutput, err error) {

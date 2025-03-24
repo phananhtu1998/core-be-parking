@@ -5,6 +5,7 @@ import (
 	"go-backend-api/internal/service"
 	"go-backend-api/pkg/response"
 	"log"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -47,16 +48,35 @@ func (c *cRole) CreateRole(ctx *gin.Context) {
 // @Accept json
 // @Produce json
 // @Security     BearerAuth
+// @Param page query int false "Số trang (mặc định: 1)"
+// @Param page_size query int false "Số lượng mỗi trang (mặc định: 20)"
 // @Success 200 {object} response.ResponseData
 // @Failure      500  {object}  response.ErrorResponseData
 // @Router /role/get_all_roles [get]
 func (c *cRole) GetAllRoles(ctx *gin.Context) {
-	codeRole, dataRole, err := service.RoleItem().GetAllRoles(ctx)
+	// Lấy tham số phân trang từ query params
+	page := 1
+	pageSize := 20
+
+	if pageStr := ctx.Query("page"); pageStr != "" {
+		if p, err := strconv.Atoi(pageStr); err == nil && p > 0 {
+			page = p
+		}
+	}
+
+	if pageSizeStr := ctx.Query("page_size"); pageSizeStr != "" {
+		if ps, err := strconv.Atoi(pageSizeStr); err == nil && ps > 0 {
+			pageSize = ps
+		}
+	}
+	codeRole, dataRole, total, err := service.RoleItem().GetAllRoles(ctx, page, pageSize)
 	if err != nil {
 		response.ErrorResponse(ctx, response.ErrCodeParamInvalid, err.Error())
 		return
 	}
-	response.SuccessResponse(ctx, codeRole, dataRole)
+	// Trả về response với thông tin phân trang
+	paginatedResponse := model.NewPaginationResponse(dataRole, page, pageSize, total)
+	response.SuccessResponse(ctx, codeRole, paginatedResponse)
 }
 
 // GetRoleById

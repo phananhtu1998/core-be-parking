@@ -4,12 +4,14 @@ is_licensed,created_by,create_at,update_at
 FROM `role`
 WHERE id = ? AND is_deleted = false;
 
+
 -- name: GetAllRole :many
 SELECT id, code, role_name, role_left_value, role_right_value, role_max_number,
 is_licensed, created_by, create_at, update_at
 FROM `role`
 WHERE is_deleted = false
-ORDER BY role_left_value ASC;
+ORDER BY role_left_value ASC
+LIMIT ? OFFSET ?;
 
 -- name: GetParentRoleInfo :one
 SELECT role_left_value, role_right_value
@@ -69,3 +71,13 @@ is_licensed, created_by, create_at, update_at
 FROM `role`
 WHERE created_by = ? AND is_deleted = false
 ORDER BY role_left_value ASC;
+
+-- name: GetTotalRoles :one
+SELECT COUNT(*) FROM `role` WHERE is_deleted = false;
+
+-- name: GetRolesWithPagination :many
+SELECT id, code, role_name, role_left_value, role_right_value, role_max_number,
+is_licensed, created_by, create_at, update_at
+FROM `role`
+WHERE is_deleted = false
+ORDER BY role_left_value ASC LIMIT ? OFFSET ?;

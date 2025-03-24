@@ -704,6 +704,20 @@ const docTemplate = `{
                     "Role"
                 ],
                 "summary": "Lấy danh sách role",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Số trang (mặc định: 1)",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Số lượng mỗi trang (mặc định: 20)",
+                        "name": "page_size",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",

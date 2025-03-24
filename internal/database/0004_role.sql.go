@@ -66,7 +66,13 @@ is_licensed, created_by, create_at, update_at
 FROM ` + "`" + `role` + "`" + `
 WHERE is_deleted = false
 ORDER BY role_left_value ASC
+LIMIT ? OFFSET ?
 `
+
+type GetAllRoleParams struct {
+	Limit  int32
+	Offset int32
+}
 
 type GetAllRoleRow struct {
 	ID             string
@@ -81,8 +87,8 @@ type GetAllRoleRow struct {
 	UpdateAt       time.Time
 }
 
-func (q *Queries) GetAllRole(ctx context.Context) ([]GetAllRoleRow, error) {
-	rows, err := q.db.QueryContext(ctx, getAllRole)
+func (q *Queries) GetAllRole(ctx context.Context, arg GetAllRoleParams) ([]GetAllRoleRow, error) {
+	rows, err := q.db.QueryContext(ctx, getAllRole, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
@@ -299,6 +305,77 @@ func (q *Queries) GetRoleWithChildren(ctx context.Context, arg GetRoleWithChildr
 		return nil, err
 	}
 	return items, nil
+}
+
+const getRolesWithPagination = `-- name: GetRolesWithPagination :many
+SELECT id, code, role_name, role_left_value, role_right_value, role_max_number,
+is_licensed, created_by, create_at, update_at
+FROM ` + "`" + `role` + "`" + `
+WHERE is_deleted = false
+ORDER BY role_left_value ASC LIMIT ? OFFSET ?
+`
+
+type GetRolesWithPaginationParams struct {
+	Limit  int32
+	Offset int32
+}
+
+type GetRolesWithPaginationRow struct {
+	ID             string
+	Code           string
+	RoleName       string
+	RoleLeftValue  int32
+	RoleRightValue int32
+	RoleMaxNumber  int64
+	IsLicensed     bool
+	CreatedBy      string
+	CreateAt       time.Time
+	UpdateAt       time.Time
+}
+
+func (q *Queries) GetRolesWithPagination(ctx context.Context, arg GetRolesWithPaginationParams) ([]GetRolesWithPaginationRow, error) {
+	rows, err := q.db.QueryContext(ctx, getRolesWithPagination, arg.Limit, arg.Offset)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []GetRolesWithPaginationRow
+	for rows.Next() {
+		var i GetRolesWithPaginationRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.Code,
+			&i.RoleName,
+			&i.RoleLeftValue,
+			&i.RoleRightValue,
+			&i.RoleMaxNumber,
+			&i.IsLicensed,
+			&i.CreatedBy,
+			&i.CreateAt,
+			&i.UpdateAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getTotalRoles = `-- name: GetTotalRoles :one
+SELECT COUNT(*) FROM ` + "`" + `role` + "`" + ` WHERE is_deleted = false
+`
+
+func (q *Queries) GetTotalRoles(ctx context.Context) (int64, error) {
+	row := q.db.QueryRowContext(ctx, getTotalRoles)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
 }
 
 const updateLeftValuesForInsert = `-- name: UpdateLeftValuesForInsert :exec
