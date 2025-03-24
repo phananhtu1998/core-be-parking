@@ -63,3 +63,13 @@ type Role struct {
 	CreateAt       time.Time
 	UpdateAt       time.Time
 }
+
+type RolesMenu struct {
+	ID         string
+	MenuID     string
+	RoleID     string
+	ListMethod json.RawMessage
+	IsDeleted  bool
+	CreateAt   time.Time
+	UpdateAt   time.Time
+}

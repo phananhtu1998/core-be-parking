@@ -19,4 +19,5 @@ func InitServiceInterface() {
 	service.InitLoginItem(impl.NewLoginImpl(queries))
 	service.InitMenuItem(impl.NewMenuImpl(queries, tx, global.Mdbc))
 	service.InitRoleItem(impl.NewRoleImpl(queries, tx, global.Mdbc))
+	service.InitRolesMenuItem(impl.NewRolesMenuImpl(queries, tx, global.Mdbc))
 }

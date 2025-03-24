@@ -22,9 +22,13 @@ const (
 	ErrCodeMenuHasExists = 90002 // menu already exists
 	ErrCodeMenuErrror    = 90003
 	// error code Role
-	ErrCodeRoleError = 10001
-	ErrCodeRoleSucces = 10002
+	ErrCodeRoleError    = 10001
+	ErrCodeRoleSucces   = 10002
 	ErrCodeRoleNotFound = 10003
+	// error code RoleMenu
+	ErrCodeRoleMenuError    = 11001
+	ErrCodeRoleMenuSucces   = 11002
+	ErrCodeRoleMenuNotFound = 11003
 )
 
 // message
@@ -43,4 +47,7 @@ var msg = map[int]string{
 	ErrCodeMenuNotFound:              "menu not found",
 	ErrCodeMenuHasExists:             "menu already exists",
 	ErrCodeMenuErrror:                "menu error",
+	ErrCodeRoleMenuError:             "role menu error",
+	ErrCodeRoleMenuSucces:            "role menu succes",
+	ErrCodeRoleMenuNotFound:          "role menu not found",
 }
