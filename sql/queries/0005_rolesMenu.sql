@@ -29,6 +29,8 @@ SELECT
     m.menu_name, 
     m.menu_url, 
     m.menu_icon, 
+    rm.menu_id,
+    rm.role_id,
     m.menu_group_name, 
     r.code, 
     r.role_name, 
@@ -36,7 +38,11 @@ SELECT
 FROM roles_menu rm
 JOIN menu m ON m.id = rm.menu_id AND m.is_deleted = FALSE
 JOIN role r ON r.id = rm.role_id AND r.is_deleted = FALSE
-WHERE r.id = ?;
+WHERE r.id = ?
+AND (
+    ? = '' OR MATCH(r.role_name) AGAINST (? IN NATURAL LANGUAGE MODE)
+);
+
 
 
 

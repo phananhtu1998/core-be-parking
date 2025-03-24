@@ -43,3 +43,27 @@ func (c *cRolesMenu) CreateRolesMenu(ctx *gin.Context) {
 	// Trả về kết quả thành công
 	response.SuccessResponse(ctx, code, result)
 }
+
+// GetRoleMenuByRoleId
+// @Summary      Lấy role menu theo ID
+// @Description  API này trả về role menu theo ID
+// @Tags         RolesMenu
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Param        id   path   string  true  "ID role"
+// @Param        search query string false "Từ khóa tìm kiếm"
+// @Success      200  {object}  response.ResponseData
+// @Failure      500  {object}  response.ErrorResponseData
+// @Router       /rolesmenu/get_role_menu_by_role_id/{id} [GET]
+func (c *cRolesMenu) GetRoleMenuByRoleId(ctx *gin.Context) {
+	id := ctx.Param("id")
+	search := ctx.Query("search")
+	code, menu, err := service.RolesMenuItem().GetRoleMenuByRoleId(ctx, id, search)
+	if err != nil {
+		response.ErrorResponse(ctx, code, err.Error())
+		return
+	}
+
+	response.SuccessResponse(ctx, code, menu)
+}

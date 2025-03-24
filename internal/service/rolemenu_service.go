@@ -8,6 +8,7 @@ import (
 type (
 	IRolesMenu interface {
 		CreateRolesMenu(ctx context.Context, in *model.RolesMenu) (codeResult int, out model.RolesMenu, err error)
+		GetRoleMenuByRoleId(ctx context.Context, roleId, search string) (int, []model.RoleMenuOutput, error)
 	}
 )
 

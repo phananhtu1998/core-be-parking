@@ -90,6 +90,79 @@ func (q *Queries) GetAllRolesMenu(ctx context.Context) ([]GetAllRolesMenuRow, er
 	return items, nil
 }
 
+const getRoleMenuByRoleId = `-- name: GetRoleMenuByRoleId :many
+SELECT 
+    m.id, 
+    m.menu_name, 
+    m.menu_url, 
+    m.menu_icon, 
+    rm.menu_id,
+    rm.role_id,
+    m.menu_group_name, 
+    r.code, 
+    r.role_name, 
+    rm.list_method 
+FROM roles_menu rm
+JOIN menu m ON m.id = rm.menu_id AND m.is_deleted = FALSE
+JOIN role r ON r.id = rm.role_id AND r.is_deleted = FALSE
+WHERE r.id = ?
+AND (
+    ? = '' OR MATCH(r.role_name) AGAINST (? IN NATURAL LANGUAGE MODE)
+)
+`
+
+type GetRoleMenuByRoleIdParams struct {
+	ID      string
+	Column2 interface{}
+}
+
+type GetRoleMenuByRoleIdRow struct {
+	ID            string
+	MenuName      string
+	MenuUrl       string
+	MenuIcon      string
+	MenuID        string
+	RoleID        string
+	MenuGroupName string
+	Code          string
+	RoleName      string
+	ListMethod    json.RawMessage
+}
+
+func (q *Queries) GetRoleMenuByRoleId(ctx context.Context, arg GetRoleMenuByRoleIdParams) ([]GetRoleMenuByRoleIdRow, error) {
+	rows, err := q.db.QueryContext(ctx, getRoleMenuByRoleId, arg.ID, arg.Column2)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []GetRoleMenuByRoleIdRow
+	for rows.Next() {
+		var i GetRoleMenuByRoleIdRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.MenuName,
+			&i.MenuUrl,
+			&i.MenuIcon,
+			&i.MenuID,
+			&i.RoleID,
+			&i.MenuGroupName,
+			&i.Code,
+			&i.RoleName,
+			&i.ListMethod,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getRolesMenuByRoleId = `-- name: GetRolesMenuByRoleId :many
 SELECT id, menu_id, role_id, list_method
 FROM ` + "`" + `roles_menu` + "`" + `
