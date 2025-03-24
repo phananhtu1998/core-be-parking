@@ -109,13 +109,14 @@ func (s *sRole) CreateRole(ctx context.Context, in *model.Role) (codeResult int,
 	}, nil
 }
 
-// GetAllRoles
+// GetAllRoles - Lấy danh sách vai trò phân trang + xây dựng cây hierarchy
 func (s *sRole) GetAllRoles(ctx context.Context, page, pageSize int) (codeResult int, out []model.RoleHierarchyOutput, total int64, err error) {
 	// Lấy tổng số records
 	total, err = s.r.GetTotalRoles(ctx)
 	if err != nil {
 		return response.ErrCodeRoleError, nil, 0, err
 	}
+
 	// Tính offset
 	offset := (page - 1) * pageSize
 	roles, err := s.r.GetAllRole(ctx, database.GetAllRoleParams{
@@ -126,24 +127,29 @@ func (s *sRole) GetAllRoles(ctx context.Context, page, pageSize int) (codeResult
 		return response.ErrCodeRoleError, nil, 0, err
 	}
 
+	// Chuyển đổi danh sách Role sang Model
 	var modelRoles []model.Role
 	for _, r := range roles {
 		modelRoles = append(modelRoles, utils.ConvertToModelRole(r))
 	}
 
-	var rootNodes []model.RoleHierarchyOutput
+	// Thay đổi kiểu của map từ map[int]bool thành map[string]bool
+	childMap := make(map[string]bool)
 	for _, role := range roles {
-		isChild := false
-		for _, potentialParent := range roles {
-			if role.ID != potentialParent.ID &&
-				role.RoleLeftValue > potentialParent.RoleLeftValue &&
-				role.RoleRightValue < potentialParent.RoleRightValue {
-				isChild = true
+		for _, parent := range roles {
+			if role.ID != parent.ID &&
+				role.RoleLeftValue > parent.RoleLeftValue &&
+				role.RoleRightValue < parent.RoleRightValue {
+				childMap[role.ID] = true
 				break
 			}
 		}
+	}
 
-		if !isChild {
+	// Xây dựng danh sách root nodes
+	var rootNodes []model.RoleHierarchyOutput
+	for _, role := range roles {
+		if !childMap[role.ID] { // Chỉ lấy các role không phải con của role khác
 			node := utils.BuildRoleHierarchy(utils.ConvertToModelRole(role), modelRoles)
 			rootNodes = append(rootNodes, node)
 		}
