@@ -1,5 +1,5 @@
 package login
 
-type LogimRouterGroup struct {
+type LoginRouterGroup struct {
 	LoginRouter
 }

@@ -69,6 +69,38 @@ definitions:
       updated_by:
         type: string
     type: object
+  model.RolesMenu:
+    description: Role menu mapping model
+    properties:
+      created_at:
+        description: Creation timestamp
+        example: "2025-03-24T12:00:00Z"
+        type: string
+      id:
+        description: Unique identifier for the role menu mapping
+        example: rm-123
+        type: string
+      is_deleted:
+        description: Soft delete flag
+        example: false
+        type: boolean
+      list_method:
+        description: List of allowed methods for this role-menu combination
+        example:
+        - '[''GET'''
+        - '''POST'']'
+        items:
+          type: string
+        type: array
+      menu_id:
+        description: ID of the menu
+        example: menu-123
+        type: string
+      role_id:
+        description: ID of the role
+        example: role-123
+        type: string
+    type: object
   response.ErrorResponseData:
     properties:
       code:
@@ -606,6 +638,34 @@ paths:
       summary: Lấy role theo ID
       tags:
       - Role
+  /rolesmenu/create_roles_menu:
+    post:
+      consumes:
+      - application/json
+      description: Create a new mapping between roles and menus in the system
+      parameters:
+      - description: Role menu mapping details
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/model.RolesMenu'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ResponseData'
+        "500":
+          description: Server error
+          schema:
+            $ref: '#/definitions/response.ErrorResponseData'
+      security:
+      - BearerAuth: []
+      summary: Create a new role menu mapping
+      tags:
+      - RolesMenu
 security:
 - "":
   - BearerAuth

@@ -8,24 +8,23 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var RolesMenu = new(cRolesMenu)
+var RolesMenus = new(cRolesMenu)
 
 type cRolesMenu struct {
 	rolesMenuService service.IRolesMenu
 }
 
-// Rolesmenu
-// @Summary Tạo role menu
-// @Description Api tạo role menu trong hệ thống
+// CreateRolesMenu
+// @Summary Create a new role menu mapping
+// @Description Create a new mapping between roles and menus in the system
 // @Tags RolesMenu
 // @Accept json
 // @Produce json
-// @Security     BearerAuth
-// @Param        payload body model.RolesMenu true "payload"
+// @Security BearerAuth
+// @Param payload body model.RolesMenu true "Role menu mapping details"
 // @Success 200 {object} response.ResponseData
-// @Failure      500  {object}  response.ErrorResponseData
+// @Failure 500 {object} response.ErrorResponseData "Server error"
 // @Router /rolesmenu/create_roles_menu [post]
-
 func (c *cRolesMenu) CreateRolesMenu(ctx *gin.Context) {
 	// Lấy dữ liệu từ request body
 	var input model.RolesMenu
@@ -35,7 +34,7 @@ func (c *cRolesMenu) CreateRolesMenu(ctx *gin.Context) {
 	}
 
 	// Gọi service để tạo roles menu
-	code, result, err := c.rolesMenuService.CreateRolesMenu(ctx, &input)
+	code, result, err := service.RolesMenuItem().CreateRolesMenu(ctx, &input)
 	if err != nil {
 		response.ErrorResponse(ctx, code, err.Error())
 		return

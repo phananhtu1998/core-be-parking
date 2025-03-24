@@ -3,10 +3,13 @@ package impl
 import (
 	"context"
 	"database/sql"
+	"encoding/json"
 	"go-backend-api/internal/database"
 	"go-backend-api/internal/model"
 	"go-backend-api/internal/service"
 	"go-backend-api/pkg/response"
+
+	"github.com/google/uuid"
 )
 
 type sRolesMenu struct {
@@ -24,12 +27,18 @@ func NewRolesMenuImpl(r *database.Queries, qTx *sql.Tx, db *sql.DB) service.IRol
 }
 
 func (s *sRolesMenu) CreateRolesMenu(ctx context.Context, in *model.RolesMenu) (codeResult int, out model.RolesMenu, err error) {
+	// Convert []string to json.RawMessage for database storage
+	listMethodJSON, err := json.Marshal(in.ListMethod)
+	if err != nil {
+		return response.ErrCodeRoleMenuError, model.RolesMenu{}, err
+	}
+
 	// Thực hiện insert vào database
 	err = s.r.CreateRolesMenu(ctx, database.CreateRolesMenuParams{
-		ID:         in.Id,
+		ID:         uuid.New().String(),
 		MenuID:     in.Menu_id,
 		RoleID:     in.Role_id,
-		ListMethod: in.ListMethod,
+		ListMethod: listMethodJSON,
 	})
 
 	if err != nil {

@@ -10,7 +10,7 @@ import (
 
 type RouterGroup struct {
 	Manage    manage.ManageRouterGoup
-	Login     login.LogimRouterGroup
+	Login     login.LoginRouterGroup
 	Menu      menu.MenuRouterGoup
 	Role      role.RoleRouterGroup
 	RolesMenu rolesmenu.RolesMenuRouterGroup

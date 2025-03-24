@@ -819,6 +819,51 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/rolesmenu/create_roles_menu": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Create a new mapping between roles and menus in the system",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "RolesMenu"
+                ],
+                "summary": "Create a new role menu mapping",
+                "parameters": [
+                    {
+                        "description": "Role menu mapping details",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.RolesMenu"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResponseData"
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponseData"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -925,6 +970,48 @@ const docTemplate = `{
                 },
                 "updated_by": {
                     "type": "string"
+                }
+            }
+        },
+        "model.RolesMenu": {
+            "description": "Role menu mapping model",
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "description": "Creation timestamp",
+                    "type": "string",
+                    "example": "2025-03-24T12:00:00Z"
+                },
+                "id": {
+                    "description": "Unique identifier for the role menu mapping",
+                    "type": "string",
+                    "example": "rm-123"
+                },
+                "is_deleted": {
+                    "description": "Soft delete flag",
+                    "type": "boolean",
+                    "example": false
+                },
+                "list_method": {
+                    "description": "List of allowed methods for this role-menu combination",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "['GET'",
+                        "'POST']"
+                    ]
+                },
+                "menu_id": {
+                    "description": "ID of the menu",
+                    "type": "string",
+                    "example": "menu-123"
+                },
+                "role_id": {
+                    "description": "ID of the role",
+                    "type": "string",
+                    "example": "role-123"
                 }
             }
         },
