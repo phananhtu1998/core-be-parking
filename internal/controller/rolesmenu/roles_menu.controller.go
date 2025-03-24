@@ -16,7 +16,7 @@ type cRolesMenu struct {
 
 // Rolesmenu
 // @Summary Tạo role
-// @Description Api tạo role trong hệ thống
+// @Description Api tạo role menu trong hệ thống
 // @Tags Role
 // @Accept json
 // @Produce json
