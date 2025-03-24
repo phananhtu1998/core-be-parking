@@ -199,7 +199,6 @@ func (s *sRole) GetRoleById(ctx context.Context, parentId string) (codeResult in
 	return response.ErrCodeSucces, result, nil
 }
 
-// DeleteRole - Xóa mềm role
 func (s *sRole) DeleteRole(ctx context.Context, id string) (codeResult int, err error) {
 	// Bắt đầu transaction
 	tx, err := s.db.BeginTx(ctx, nil)
@@ -208,42 +207,23 @@ func (s *sRole) DeleteRole(ctx context.Context, id string) (codeResult int, err 
 	}
 	defer tx.Rollback()
 
-	// Kiểm tra role có tồn tại không
-	_, err = s.r.GetRoleById(ctx, id)
+	// Lấy role_left_value và role_right_value của role cha
+	parentRole, err := s.r.GetParentRoleInfo(ctx, id)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return response.ErrCodeRoleNotFound, fmt.Errorf("role not found")
 		}
-		return response.ErrCodeRoleError, fmt.Errorf("failed to get role: %w", err)
+		return response.ErrCodeRoleError, fmt.Errorf("failed to get parent role info: %w", err)
 	}
 
-	// Lấy tất cả role con
-	childRoles, err := s.r.GetRoleWithChildren(ctx, database.GetRoleWithChildrenParams{
-		ID:   id,
-		ID_2: id,
+	// Xóa mềm role cha và tất cả role con trong một truy vấn duy nhất
+	err = s.r.SoftDeleteRolesByRange(ctx, database.SoftDeleteRolesByRangeParams{
+		UpdateAt:       time.Now(),
+		RoleLeftValue:  parentRole.RoleLeftValue,
+		RoleRightValue: parentRole.RoleRightValue,
 	})
 	if err != nil {
-		return response.ErrCodeRoleError, fmt.Errorf("failed to get child roles: %w", err)
-	}
-
-	// Xóa mềm role cha
-	err = s.r.DeleteRole(ctx, database.DeleteRoleParams{
-		UpdateAt: time.Now(),
-		ID:       id,
-	})
-	if err != nil {
-		return response.ErrCodeRoleError, fmt.Errorf("failed to delete parent role: %w", err)
-	}
-
-	// Xóa mềm tất cả role con
-	for _, childRole := range childRoles {
-		err = s.r.DeleteRole(ctx, database.DeleteRoleParams{
-			UpdateAt: time.Now(),
-			ID:       childRole.ID,
-		})
-		if err != nil {
-			return response.ErrCodeRoleError, fmt.Errorf("failed to delete child role %s: %w", childRole.ID, err)
-		}
+		return response.ErrCodeRoleError, fmt.Errorf("failed to delete roles: %w", err)
 	}
 
 	// Commit transaction

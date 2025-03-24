@@ -81,3 +81,8 @@ is_licensed, created_by, create_at, update_at
 FROM `role`
 WHERE is_deleted = false
 ORDER BY role_left_value ASC LIMIT ? OFFSET ?;
+
+-- name: SoftDeleteRolesByRange :exec
+UPDATE `role`
+SET is_deleted = true, update_at = ?
+WHERE role_left_value >= ? AND role_right_value <= ? AND is_deleted = false;

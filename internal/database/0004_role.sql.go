@@ -378,6 +378,23 @@ func (q *Queries) GetTotalRoles(ctx context.Context) (int64, error) {
 	return count, err
 }
 
+const softDeleteRolesByRange = `-- name: SoftDeleteRolesByRange :exec
+UPDATE ` + "`" + `role` + "`" + `
+SET is_deleted = true, update_at = ?
+WHERE role_left_value >= ? AND role_right_value <= ? AND is_deleted = false
+`
+
+type SoftDeleteRolesByRangeParams struct {
+	UpdateAt       time.Time
+	RoleLeftValue  int32
+	RoleRightValue int32
+}
+
+func (q *Queries) SoftDeleteRolesByRange(ctx context.Context, arg SoftDeleteRolesByRangeParams) error {
+	_, err := q.db.ExecContext(ctx, softDeleteRolesByRange, arg.UpdateAt, arg.RoleLeftValue, arg.RoleRightValue)
+	return err
+}
+
 const updateLeftValuesForInsert = `-- name: UpdateLeftValuesForInsert :exec
 UPDATE ` + "`" + `role` + "`" + ` 
 SET role_left_value = role_left_value + 2 
