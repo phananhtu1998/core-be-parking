@@ -23,6 +23,7 @@ func InitRouter() *gin.Engine {
 	loginRouter := routers.RouterGroupApp.Login
 	menuRouter := routers.RouterGroupApp.Menu
 	roleRouter := routers.RouterGroupApp.Role
+	rolesMenuRouter := routers.RouterGroupApp.RolesMenu
 	MainGroup := r.Group("/v1/2025")
 	{
 		MainGroup.GET("/checkstatus") //tracking monitor
@@ -32,6 +33,7 @@ func InitRouter() *gin.Engine {
 		loginRouter.InitLoginRouter(MainGroup)
 		menuRouter.InitAdminRouter(MainGroup)
 		roleRouter.InitRoleRouter(MainGroup)
+		rolesMenuRouter.InitRolesMenuRouter(MainGroup)
 	}
 	return r
 }
