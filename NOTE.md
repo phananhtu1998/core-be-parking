@@ -99,3 +99,11 @@ EXEC: thực thi tất cả câu lệnh trong hàm đợi
 WATCH  
 UNWATCH 
 ```
+
+Search trong mysql
+
+```
+SELECT * FROM products WHERE MATCH(productName) AGAINST ('suzuki')
+SELECT * FROM products WHERE MATCH(productName) AGAINST ('suzuki corsair') // tìm kiếm gần đúng
+SELECT * FROM products WHERE MATCH(productName) AGAINST ('+suzuki +corsair' IN BOOLEAN MODE) // đúng chính xác
+```

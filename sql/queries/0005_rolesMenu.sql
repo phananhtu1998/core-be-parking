@@ -23,5 +23,22 @@ SET is_deleted = true, update_at = ?
 WHERE id = ?;
 
 
+-- name: GetRoleMenuByRoleId :many
+SELECT 
+    m.id, 
+    m.menu_name, 
+    m.menu_url, 
+    m.menu_icon, 
+    m.menu_group_name, 
+    r.code, 
+    r.role_name, 
+    rm.list_method 
+FROM roles_menu rm
+JOIN menu m ON m.id = rm.menu_id AND m.is_deleted = FALSE
+JOIN role r ON r.id = rm.role_id AND r.is_deleted = FALSE
+WHERE r.id = ?;
+
+
+
 
 
