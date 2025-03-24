@@ -680,6 +680,49 @@
                 }
             }
         },
+        "/role/delete_role/{id}": {
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "API xóa mềm role trong hệ thống",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Role"
+                ],
+                "summary": "Xóa role",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID của role cần xóa",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResponseData"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponseData"
+                        }
+                    }
+                }
+            }
+        },
         "/role/get_all_roles": {
             "get": {
                 "security": [

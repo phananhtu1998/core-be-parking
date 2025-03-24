@@ -522,6 +522,33 @@ paths:
       summary: Tạo role
       tags:
       - Role
+  /role/delete_role/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: API xóa mềm role trong hệ thống
+      parameters:
+      - description: ID của role cần xóa
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ResponseData'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponseData'
+      security:
+      - BearerAuth: []
+      summary: Xóa role
+      tags:
+      - Role
   /role/get_all_roles:
     get:
       consumes:

@@ -15,5 +15,6 @@ func (ar *RoleRouter) InitRoleRouter(Router *gin.RouterGroup) {
 		roleRouterPrivate.POST("/create_role", role.Roles.CreateRole)
 		roleRouterPrivate.GET("/get_all_roles", role.Roles.GetAllRoles)
 		roleRouterPrivate.GET("/get_role_by_id/:id", role.Roles.GetRoleById)
+		roleRouterPrivate.DELETE("/delete_role/:id", role.Roles.DeleteRole)
 	}
 }

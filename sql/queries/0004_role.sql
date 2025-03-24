@@ -10,7 +10,7 @@ SELECT id, code, role_name, role_left_value, role_right_value, role_max_number,
 is_licensed, created_by, create_at, update_at
 FROM `role`
 WHERE is_deleted = false
-ORDER BY role_left_value ASC
+ORDER BY role_left_value DESC
 LIMIT ? OFFSET ?;
 
 -- name: GetParentRoleInfo :one

@@ -101,3 +101,24 @@ func (c *cRole) GetRoleById(ctx *gin.Context) {
 
 	response.SuccessResponse(ctx, code, menu)
 }
+
+// DeleteRole
+// @Summary Xóa role
+// @Description API xóa mềm role trong hệ thống
+// @Tags Role
+// @Accept json
+// @Produce json
+// @Security     BearerAuth
+// @Param        id   path      string  true  "ID của role cần xóa"
+// @Success      200  {object}  response.ResponseData
+// @Failure      500  {object}  response.ErrorResponseData
+// @Router       /role/delete_role/{id} [delete]
+func (c *cRole) DeleteRole(ctx *gin.Context) {
+	id := ctx.Param("id")
+	code, err := service.RoleItem().DeleteRole(ctx, id)
+	if err != nil {
+		response.ErrorResponse(ctx, code, err.Error())
+		return
+	}
+	response.SuccessResponse(ctx, code, nil)
+}

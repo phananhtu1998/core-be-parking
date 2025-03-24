@@ -907,3 +907,12 @@
 {"level":"INFO","time":"2025-03-24T13:00:22.319+0700","caller":"initialize/run.go:17","msg":"config Log ok!","ok":"success"}
 {"level":"INFO","time":"2025-03-24T13:00:22.327+0700","caller":"initialize/mysql.go:30","msg":"Initializing MySQL Successfully"}
 {"level":"INFO","time":"2025-03-24T13:00:22.328+0700","caller":"initialize/mysqlc.go:27","msg":"Initializing MySQL Successfully"}
+{"level":"INFO","time":"2025-03-24T14:46:36.068+0700","caller":"initialize/run.go:17","msg":"config Log ok!","ok":"success"}
+{"level":"INFO","time":"2025-03-24T14:46:36.078+0700","caller":"initialize/mysql.go:30","msg":"Initializing MySQL Successfully"}
+{"level":"INFO","time":"2025-03-24T14:46:36.078+0700","caller":"initialize/mysqlc.go:27","msg":"Initializing MySQL Successfully"}
+{"level":"INFO","time":"2025-03-24T14:51:45.755+0700","caller":"initialize/run.go:17","msg":"config Log ok!","ok":"success"}
+{"level":"INFO","time":"2025-03-24T14:51:45.763+0700","caller":"initialize/mysql.go:30","msg":"Initializing MySQL Successfully"}
+{"level":"INFO","time":"2025-03-24T14:51:45.763+0700","caller":"initialize/mysqlc.go:27","msg":"Initializing MySQL Successfully"}
+{"level":"INFO","time":"2025-03-24T14:56:38.336+0700","caller":"initialize/run.go:17","msg":"config Log ok!","ok":"success"}
+{"level":"INFO","time":"2025-03-24T14:56:38.344+0700","caller":"initialize/mysql.go:30","msg":"Initializing MySQL Successfully"}
+{"level":"INFO","time":"2025-03-24T14:56:38.345+0700","caller":"initialize/mysqlc.go:27","msg":"Initializing MySQL Successfully"}
