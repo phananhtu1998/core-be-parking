@@ -33,6 +33,7 @@ const (
 	ErrCodeRoleAccountError    = 12001
 	ErrCodeRoleAccountSucces   = 12002
 	ErrCodeRoleAccountNotFound = 12003
+	ErrCodeRoleAccountValid    = 12004 //
 )
 
 // message
@@ -59,4 +60,6 @@ var msg = map[int]string{
 	ErrCodeRoleNotFound:              "role not found",
 	ErrCodeRoleAccountError:          "role account error",
 	ErrCodeRoleAccountSucces:         "role account succes",
+	ErrCodeRoleAccountNotFound:       "role account not found",
+	ErrCodeRoleAccountValid:          "role account valid",
 }

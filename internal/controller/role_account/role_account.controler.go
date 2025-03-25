@@ -3,6 +3,7 @@ package roleaccount
 import (
 	"go-backend-api/internal/model"
 	"go-backend-api/internal/service"
+	"go-backend-api/internal/utils"
 	"go-backend-api/pkg/response"
 
 	"github.com/gin-gonic/gin"
@@ -26,8 +27,18 @@ type cRoleaccount struct {
 // @Failure 500 {object} response.ErrorResponseData "Server error"
 // @Router /roleaccount/create_roles_account [post]
 func (c *cRoleaccount) CreateRoleAccount(ctx *gin.Context) {
+	// Đọc toàn bộ body request
 	var input model.RoleAccount
-	if err := ctx.ShouldBindJSON(&input); err != nil {
+
+	// Danh sách field hợp lệ
+	validFields := map[string]bool{
+		"account_id": true,
+		"role_id":    true,
+		"license_id": true,
+	}
+
+	// Gọi hàm kiểm tra JSON
+	if err := utils.ValidateJSONFields(ctx, &input, validFields); err != nil {
 		response.ErrorResponse(ctx, response.ErrCodeRoleMenuError, err.Error())
 		return
 	}
@@ -38,6 +49,7 @@ func (c *cRoleaccount) CreateRoleAccount(ctx *gin.Context) {
 		response.ErrorResponse(ctx, code, err.Error())
 		return
 	}
+
 	// Trả về kết quả thành công
 	response.SuccessResponse(ctx, code, result)
 }
