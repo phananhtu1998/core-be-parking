@@ -5,7 +5,7 @@ import (
 	"go-backend-api/internal/routers/manage"
 	"go-backend-api/internal/routers/menu"
 	"go-backend-api/internal/routers/role"
-	"go-backend-api/internal/routers/rolesmenu"
+	rolesmenu "go-backend-api/internal/routers/roles_menu"
 )
 
 type RouterGroup struct {

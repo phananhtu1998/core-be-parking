@@ -1,4 +1,4 @@
-package rolesmenu
+package roles_menu
 
 import (
 	"go-backend-api/internal/model"
