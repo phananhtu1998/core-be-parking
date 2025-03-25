@@ -64,6 +64,16 @@ type Role struct {
 	UpdateAt       time.Time
 }
 
+type RoleAccount struct {
+	ID        string
+	AccountID string
+	RoleID    string
+	LicenseID string
+	IsDeleted bool
+	CreateAt  time.Time
+	UpdateAt  time.Time
+}
+
 type RolesMenu struct {
 	ID         string
 	MenuID     string
