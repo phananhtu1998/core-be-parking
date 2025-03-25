@@ -9,12 +9,12 @@ FROM `role_account`
 WHERE is_deleted = false AND id = ?;
 
 -- name: GetRoleAccountByAccountId :many
-SELECT id, account_id, role_id, license_id
+SELECT id, account_id, role_id, license_id, create_at, update_at
 FROM `role_account`
 WHERE is_deleted = false AND account_id = ?;
 
 -- name: GetRoleAccountByRoleId :many
-SELECT id, account_id, role_id, license_id,create_at,update_at
+SELECT id, account_id, role_id, license_id, create_at, update_at
 FROM `role_account`
 WHERE is_deleted = false AND role_id = ?;
 

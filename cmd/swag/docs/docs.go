@@ -865,6 +865,49 @@ const docTemplate = `{
                 }
             }
         },
+        "/roleaccount/get_role_account_by_account_id/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "API này trả về role account theo Account_Id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "RoleAccount"
+                ],
+                "summary": "Lấy role account theo Account_Id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID account",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResponseData"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponseData"
+                        }
+                    }
+                }
+            }
+        },
         "/roleaccount/get_role_account_by_role_id/{id}": {
             "get": {
                 "security": [
@@ -1157,11 +1200,11 @@ const docTemplate = `{
             "properties": {
                 "email": {
                     "type": "string",
-                    "example": "admin@gmail.com"
+                    "example": "phananhtu1998@gmail.com"
                 },
                 "password": {
                     "type": "string",
-                    "example": "helo@1234"
+                    "example": "123"
                 }
             }
         },

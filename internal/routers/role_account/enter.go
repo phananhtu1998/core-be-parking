@@ -16,6 +16,6 @@ func (ar *RoleAccountRouter) InitRoleAccountRouter(Router *gin.RouterGroup) {
 	{
 		roleAccountRouterPrivate.POST("/create_roles_account", roleaccount.RoleAccounts.CreateRoleAccount)
 		roleAccountRouterPrivate.GET("/get_role_account_by_role_id/:id", roleaccount.RoleAccounts.GetAllRoleAccountByRoleId)
-
+		roleAccountRouterPrivate.GET("/get_role_account_by_account_id/:id", roleaccount.RoleAccounts.GetAllRoleAccountByAccountId)
 	}
 }

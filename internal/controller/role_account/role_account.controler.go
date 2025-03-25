@@ -67,3 +67,29 @@ func (c *cRoleaccount) GetAllRoleAccountByRoleId(ctx *gin.Context) {
 	}
 	response.SuccessResponse(ctx, code, result)
 }
+
+// GetAllRoleAccountByAccountId
+// @Summary      Lấy role account theo Account_Id
+// @Description  API này trả về role account theo Account_Id
+// @Tags         RoleAccount
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Param        id   path   string  true  "ID account"
+// @Success      200  {object}  response.ResponseData
+// @Failure      500  {object}  response.ErrorResponseData
+// @Router       /roleaccount/get_role_account_by_account_id/{id} [GET]
+func (c *cRoleaccount) GetAllRoleAccountByAccountId(ctx *gin.Context) {
+	Id := ctx.Param("id")
+	// check uuid
+	if _, err := uuid.Parse(Id); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid role id"})
+		return
+	}
+	code, result, err := service.RoleAccountItem().GetAllRoleAccountByAccountId(ctx, Id)
+	if err != nil {
+		response.ErrorResponse(ctx, code, err.Error())
+		return
+	}
+	response.SuccessResponse(ctx, code, result)
+}

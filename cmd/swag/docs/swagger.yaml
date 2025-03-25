@@ -29,10 +29,10 @@ definitions:
   model.LoginInput:
     properties:
       email:
-        example: admin@gmail.com
+        example: phananhtu1998@gmail.com
         type: string
       password:
-        example: helo@1234
+        example: "123"
         type: string
     required:
     - email
@@ -694,6 +694,33 @@ paths:
       security:
       - BearerAuth: []
       summary: Tạo role account
+      tags:
+      - RoleAccount
+  /roleaccount/get_role_account_by_account_id/{id}:
+    get:
+      consumes:
+      - application/json
+      description: API này trả về role account theo Account_Id
+      parameters:
+      - description: ID account
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ResponseData'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponseData'
+      security:
+      - BearerAuth: []
+      summary: Lấy role account theo Account_Id
       tags:
       - RoleAccount
   /roleaccount/get_role_account_by_role_id/{id}:

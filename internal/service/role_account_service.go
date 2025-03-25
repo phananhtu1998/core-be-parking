@@ -9,6 +9,7 @@ type (
 	IRoleAccount interface {
 		CreateRoleAccount(ctx context.Context, roleAccount *model.RoleAccount) (codeResult int, out model.RoleAccountOutput, err error)
 		GetAllRoleAccountByRoleId(ctx context.Context, role_Id string) (codeResult int, out []model.RoleAccountOutput, err error)
+		GetAllRoleAccountByAccountId(ctx context.Context, account_Id string) (codeResult int, out []model.RoleAccountOutput, err error)
 	}
 )
 

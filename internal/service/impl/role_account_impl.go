@@ -5,7 +5,6 @@ import (
 	"go-backend-api/internal/database"
 	"go-backend-api/internal/model"
 	"go-backend-api/pkg/response"
-	"log"
 	"time"
 
 	"github.com/google/uuid"
@@ -47,7 +46,6 @@ func (s *sRoleAccount) GetAllRoleAccountByRoleId(ctx context.Context, role_Id st
 	if err != nil {
 		return response.ErrCodeAuthFailed, out, err
 	}
-	log.Println("roleAccount: ", roleAccount)
 	for _, item := range roleAccount {
 		out = append(out, model.RoleAccountOutput{
 			Id: item.ID,
@@ -61,4 +59,23 @@ func (s *sRoleAccount) GetAllRoleAccountByRoleId(ctx context.Context, role_Id st
 		})
 	}
 	return response.ErrCodeSucces, out, err
+}
+func (s *sRoleAccount) GetAllRoleAccountByAccountId(ctx context.Context, account_Id string) (codeResult int, out []model.RoleAccountOutput, err error) {
+	roleAccount, err := s.r.GetRoleAccountByAccountId(ctx, account_Id)
+	if err != nil {
+		return response.ErrCodeAuthFailed, out, err
+	}
+	for _, item := range roleAccount {
+		out = append(out, model.RoleAccountOutput{
+			Id: item.ID,
+			RoleAccount: model.RoleAccount{
+				Role_id:    item.RoleID,
+				Account_id: item.AccountID,
+				License_id: item.LicenseID,
+			},
+			Create_at: item.CreateAt,
+			Update_at: item.UpdateAt.Format("02-01-2006 15:04:05"),
+		})
+	}
+	return codeResult, out, err
 }
