@@ -650,6 +650,37 @@ paths:
       summary: Create a new role menu mapping
       tags:
       - RolesMenu
+  /rolesmenu/delete_roles_menu/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Api xóa role menu
+      parameters:
+      - description: ID của role menu
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ResponseData'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponseData'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponseData'
+      security:
+      - BearerAuth: []
+      summary: Xóa role menu
+      tags:
+      - RolesMenu
   /rolesmenu/get_role_menu_by_role_id/{id}:
     get:
       consumes:
@@ -679,6 +710,43 @@ paths:
       security:
       - BearerAuth: []
       summary: Lấy role menu theo ID
+      tags:
+      - RolesMenu
+  /rolesmenu/update_roles_menu/{id}:
+    put:
+      consumes:
+      - application/json
+      description: Api cập nhật phân quyền menu cho role
+      parameters:
+      - description: ID của role menu
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Thông tin cần cập nhật
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/model.RolesMenu'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ResponseData'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponseData'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponseData'
+      security:
+      - BearerAuth: []
+      summary: Cập nhật role menu
       tags:
       - RolesMenu
 security:

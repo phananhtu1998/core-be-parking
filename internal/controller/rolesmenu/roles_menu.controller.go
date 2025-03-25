@@ -67,3 +67,60 @@ func (c *cRolesMenu) GetRoleMenuByRoleId(ctx *gin.Context) {
 
 	response.SuccessResponse(ctx, code, menu)
 }
+
+// UpdateRolesMenu godoc
+// @Summary      Cập nhật role menu
+// @Description  Api cập nhật phân quyền menu cho role
+// @Tags         RolesMenu
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Param        id   path      string  true  "ID của role menu"
+// @Param        payload body model.RolesMenu true "Thông tin cần cập nhật"
+// @Success      200  {object}  response.ResponseData
+// @Failure      400  {object}  response.ErrorResponseData
+// @Failure      500  {object}  response.ErrorResponseData
+// @Router       /rolesmenu/update_roles_menu/{id} [put]
+func (c *cRolesMenu) UpdateRolesMenu(ctx *gin.Context) {
+	id := ctx.Param("id")
+	if id == "" {
+		response.ErrorResponse(ctx, response.ErrCodeRoleNotFound, "ID không được để trống")
+		return
+	}
+
+	var input model.RolesMenu
+	if err := ctx.ShouldBindJSON(&input); err != nil {
+		response.ErrorResponse(ctx, response.ErrCodeRoleNotFound, err.Error())
+		return
+	}
+
+	code, result, err := service.RolesMenuItem().UpdateRolesMenu(ctx, id, &input)
+	if err != nil {
+		response.ErrorResponse(ctx, code, err.Error())
+		return
+	}
+
+	response.SuccessResponse(ctx, code, result)
+}
+
+// DeleteRolesMenu godoc
+// @Summary      Xóa role menu
+// @Description  Api xóa role menu
+// @Tags         RolesMenu
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Param        id   path      string  true  "ID của role menu"
+// @Success      200  {object}  response.ResponseData
+// @Failure      400  {object}  response.ErrorResponseData
+// @Failure      500  {object}  response.ErrorResponseData
+// @Router       /rolesmenu/delete_roles_menu/{id} [delete]
+func (c *cRolesMenu) DeleteRolesMenu(ctx *gin.Context) {
+	id := ctx.Param("id")
+	code, err := service.RolesMenuItem().DeleteRolesMenu(ctx, id)
+	if err != nil {
+		response.ErrorResponse(ctx, code, err.Error())
+		return
+	}
+	response.SuccessResponse(ctx, code, nil)
+}

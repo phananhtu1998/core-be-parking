@@ -8,6 +8,7 @@ import (
 	"go-backend-api/internal/model"
 	"go-backend-api/internal/service"
 	"go-backend-api/pkg/response"
+	"time"
 
 	"github.com/google/uuid"
 )
@@ -83,4 +84,39 @@ func (s *sRolesMenu) GetRoleMenuByRoleId(ctx context.Context, roleId, search str
 	}
 
 	return response.ErrCodeRoleMenuSucces, result, nil
+}
+
+func (s *sRolesMenu) UpdateRolesMenu(ctx context.Context, id string, in *model.RolesMenu) (int, model.RolesMenu, error) {
+	// Convert []string to json.RawMessage for database storage
+	listMethodJSON, err := json.Marshal(in.ListMethod)
+	if err != nil {
+		return response.ErrCodeRoleMenuError, model.RolesMenu{}, err
+	}
+
+	// Thực hiện update vào database
+	err = s.r.UpdateRolesMenu(ctx, database.UpdateRolesMenuParams{
+		ID:         id,
+		MenuID:     in.Menu_id,
+		RoleID:     in.Role_id,
+		ListMethod: listMethodJSON,
+	})
+
+	if err != nil {
+		return response.ErrCodeRoleMenuError, model.RolesMenu{}, err
+	}
+
+	// Trả về dữ liệu đã update thành công
+	return response.ErrCodeRoleMenuSucces, *in, nil
+}
+
+func (s *sRolesMenu) DeleteRolesMenu(ctx context.Context, id string) (int, error) {
+	err := s.r.DeleteRolesMenu(ctx, database.DeleteRolesMenuParams{
+		ID:       id,
+		UpdateAt: time.Now(),
+	})
+	if err != nil {
+		return response.ErrCodeRoleMenuError, err
+	}
+
+	return response.ErrCodeRoleMenuSucces, nil
 }

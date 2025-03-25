@@ -9,6 +9,8 @@ type (
 	IRolesMenu interface {
 		CreateRolesMenu(ctx context.Context, in *model.RolesMenu) (codeResult int, out model.RolesMenu, err error)
 		GetRoleMenuByRoleId(ctx context.Context, roleId, search string) (int, []model.RoleMenuOutput, error)
+		UpdateRolesMenu(ctx context.Context, id string, in *model.RolesMenu) (int, model.RolesMenu, error)
+		DeleteRolesMenu(ctx context.Context, id string) (int, error)
 	}
 )
 
