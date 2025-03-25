@@ -43,19 +43,32 @@ definitions:
       id:
         type: string
       menu_group_name:
+        example: /api/dashboard
         type: string
       menu_icon:
+        example: database
         type: string
       menu_level:
+        example: 1
         type: integer
       menu_name:
+        example: Dashboard
         type: string
       menu_number_order:
+        example: 1
         type: integer
       menu_parent_id:
         type: string
       menu_url:
+        example: /dashboard
         type: string
+    required:
+    - menu_group_name
+    - menu_icon
+    - menu_level
+    - menu_name
+    - menu_number_order
+    - menu_url
     type: object
   model.Role:
     properties:
@@ -113,6 +126,10 @@ definitions:
       role_id:
         example: role-123
         type: string
+    required:
+    - list_method
+    - menu_id
+    - role_id
     type: object
   response.ErrorResponseData:
     properties:
@@ -655,7 +672,7 @@ paths:
     post:
       consumes:
       - application/json
-      description: Create a new mapping between roles and account in the system
+      description: Api tạo role account cho hệ thống
       parameters:
       - description: Role account mapping details
         in: body
@@ -676,7 +693,34 @@ paths:
             $ref: '#/definitions/response.ErrorResponseData'
       security:
       - BearerAuth: []
-      summary: Create a new role account mapping
+      summary: Tạo role account
+      tags:
+      - RoleAccount
+  /roleaccount/get_role_account_by_role_id/{id}:
+    get:
+      consumes:
+      - application/json
+      description: API này trả về role account theo role_Id
+      parameters:
+      - description: ID role
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ResponseData'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponseData'
+      security:
+      - BearerAuth: []
+      summary: Lấy role account theo Role_Id
       tags:
       - RoleAccount
   /rolesmenu/create_roles_menu:

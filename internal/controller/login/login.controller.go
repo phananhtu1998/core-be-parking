@@ -91,7 +91,6 @@ func (c *cLogin) RefreshTokens(ctx *gin.Context) {
 // @Router       /auth/change_password [post]
 func (c *cLogin) ChangePassword(ctx *gin.Context) {
 	var params model.ChangePasswordInput
-	// ✅ Thêm dòng này để đọc JSON từ request body vào struct
 	if err := ctx.ShouldBindJSON(&params); err != nil {
 		response.ErrorResponse(ctx, response.ErrCodeParamInvalid, err.Error())
 		return

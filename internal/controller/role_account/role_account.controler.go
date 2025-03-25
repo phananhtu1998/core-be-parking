@@ -4,8 +4,10 @@ import (
 	"go-backend-api/internal/model"
 	"go-backend-api/internal/service"
 	"go-backend-api/pkg/response"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 var RoleAccounts = new(cRoleaccount)
@@ -15,8 +17,8 @@ type cRoleaccount struct {
 }
 
 // CreateRoleAccount
-// @Summary Create a new role account mapping
-// @Description Create a new mapping between roles and account in the system
+// @Summary Tạo role account
+// @Description Api tạo role account cho hệ thống
 // @Tags RoleAccount
 // @Accept json
 // @Produce json
@@ -33,6 +35,32 @@ func (c *cRoleaccount) CreateRoleAccount(ctx *gin.Context) {
 		return
 	}
 	code, result, err := service.RoleAccountItem().CreateRoleAccount(ctx, &params)
+	if err != nil {
+		response.ErrorResponse(ctx, code, err.Error())
+		return
+	}
+	response.SuccessResponse(ctx, code, result)
+}
+
+// GetRoleAccountByRoleId
+// @Summary      Lấy role account theo Role_Id
+// @Description  API này trả về role account theo role_Id
+// @Tags         RoleAccount
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Param        id   path   string  true  "ID role"
+// @Success      200  {object}  response.ResponseData
+// @Failure      500  {object}  response.ErrorResponseData
+// @Router       /roleaccount/get_role_account_by_role_id/{id} [GET]
+func (c *cRoleaccount) GetAllRoleAccountByRoleId(ctx *gin.Context) {
+	Id := ctx.Param("id")
+	// check uuid
+	if _, err := uuid.Parse(Id); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid role id"})
+		return
+	}
+	code, result, err := service.RoleAccountItem().GetAllRoleAccountByRoleId(ctx, Id)
 	if err != nil {
 		response.ErrorResponse(ctx, code, err.Error())
 		return

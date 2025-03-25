@@ -130,9 +130,8 @@ func (s *sAccount) GetAllAccount(ctx context.Context) (codeResult int, out []mod
 	if err != nil {
 		return response.ErrCodeAuthFailed, nil, err
 	}
-	var accounts []model.AccountOutput
 	for _, item := range lst {
-		accounts = append(accounts, model.AccountOutput{
+		out = append(out, model.AccountOutput{
 			ID:     item.ID,
 			Name:   item.Name,
 			Email:  item.Email,
@@ -141,6 +140,6 @@ func (s *sAccount) GetAllAccount(ctx context.Context) (codeResult int, out []mod
 		})
 	}
 
-	log.Println("Successfully fetched accounts:", len(accounts))
-	return response.ErrCodeSucces, accounts, nil
+	log.Println("Successfully fetched accounts:", len(out))
+	return response.ErrCodeSucces, out, nil
 }

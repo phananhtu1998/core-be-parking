@@ -827,7 +827,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Create a new mapping between roles and account in the system",
+                "description": "Api tạo role account cho hệ thống",
                 "consumes": [
                     "application/json"
                 ],
@@ -837,7 +837,7 @@ const docTemplate = `{
                 "tags": [
                     "RoleAccount"
                 ],
-                "summary": "Create a new role account mapping",
+                "summary": "Tạo role account",
                 "parameters": [
                     {
                         "description": "Role account mapping details",
@@ -858,6 +858,49 @@ const docTemplate = `{
                     },
                     "500": {
                         "description": "Server error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponseData"
+                        }
+                    }
+                }
+            }
+        },
+        "/roleaccount/get_role_account_by_role_id/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "API này trả về role account theo role_Id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "RoleAccount"
+                ],
+                "summary": "Lấy role account theo Role_Id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID role",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResponseData"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
                         "schema": {
                             "$ref": "#/definitions/response.ErrorResponseData"
                         }
@@ -1124,30 +1167,44 @@ const docTemplate = `{
         },
         "model.MenuInput": {
             "type": "object",
+            "required": [
+                "menu_group_name",
+                "menu_icon",
+                "menu_level",
+                "menu_name",
+                "menu_number_order",
+                "menu_url"
+            ],
             "properties": {
                 "id": {
                     "type": "string"
                 },
                 "menu_group_name": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "/api/dashboard"
                 },
                 "menu_icon": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "database"
                 },
                 "menu_level": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 1
                 },
                 "menu_name": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Dashboard"
                 },
                 "menu_number_order": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 1
                 },
                 "menu_parent_id": {
                     "type": "string"
                 },
                 "menu_url": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "/dashboard"
                 }
             }
         },
@@ -1213,6 +1270,11 @@ const docTemplate = `{
         },
         "model.RolesMenu": {
             "type": "object",
+            "required": [
+                "list_method",
+                "menu_id",
+                "role_id"
+            ],
             "properties": {
                 "list_method": {
                     "type": "array",

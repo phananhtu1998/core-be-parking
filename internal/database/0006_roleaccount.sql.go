@@ -156,7 +156,7 @@ func (q *Queries) GetRoleAccountById(ctx context.Context, id string) (GetRoleAcc
 }
 
 const getRoleAccountByRoleId = `-- name: GetRoleAccountByRoleId :many
-SELECT id, account_id, role_id, license_id
+SELECT id, account_id, role_id, license_id,create_at,update_at
 FROM ` + "`" + `role_account` + "`" + `
 WHERE is_deleted = false AND role_id = ?
 `
@@ -166,6 +166,8 @@ type GetRoleAccountByRoleIdRow struct {
 	AccountID string
 	RoleID    string
 	LicenseID string
+	CreateAt  time.Time
+	UpdateAt  time.Time
 }
 
 func (q *Queries) GetRoleAccountByRoleId(ctx context.Context, roleID string) ([]GetRoleAccountByRoleIdRow, error) {
@@ -182,6 +184,8 @@ func (q *Queries) GetRoleAccountByRoleId(ctx context.Context, roleID string) ([]
 			&i.AccountID,
 			&i.RoleID,
 			&i.LicenseID,
+			&i.CreateAt,
+			&i.UpdateAt,
 		); err != nil {
 			return nil, err
 		}
