@@ -1,10 +1,13 @@
 package roleaccount
 
 import (
+	"bytes"
+	"encoding/json"
 	"go-backend-api/internal/model"
 	"go-backend-api/internal/service"
-	"go-backend-api/internal/utils"
 	"go-backend-api/pkg/response"
+	"io"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
@@ -28,28 +31,29 @@ type cRoleaccount struct {
 // @Router /roleaccount/create_roles_account [post]
 func (c *cRoleaccount) CreateRoleAccount(ctx *gin.Context) {
 	// Đọc toàn bộ body request
-	var input model.RoleAccount
-
-	// Danh sách field hợp lệ
-	validFields := map[string]bool{
-		"account_id": true,
-		"role_id":    true,
-		"license_id": true,
-	}
-
-	// Gọi hàm kiểm tra JSON
-	if err := utils.ValidateJSONFields(ctx, &input, validFields); err != nil {
-		response.ErrorResponse(ctx, response.ErrCodeRoleMenuError, err.Error())
+	var params model.RoleAccount
+	// Đọc raw JSON từ body
+	body, err := io.ReadAll(ctx.Request.Body)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request"})
 		return
 	}
-
-	// Gọi service để tạo roles menu
-	code, result, err := service.RoleAccountItem().CreateRoleAccount(ctx, &input)
+	// Decode JSON với DisallowUnknownFields để phát hiện field dư
+	decoder := json.NewDecoder(bytes.NewReader(body))
+	decoder.DisallowUnknownFields()
+	if err := decoder.Decode(&params); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid field in request"})
+		return
+	}
+	// Bind JSON vào struct
+	if err := ctx.ShouldBindJSON(&params); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid field in request"})
+		return
+	}
+	code, result, err := service.RoleAccountItem().CreateRoleAccount(ctx, &params)
 	if err != nil {
 		response.ErrorResponse(ctx, code, err.Error())
 		return
 	}
-
-	// Trả về kết quả thành công
 	response.SuccessResponse(ctx, code, result)
 }

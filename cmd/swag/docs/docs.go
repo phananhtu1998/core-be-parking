@@ -1176,6 +1176,11 @@ const docTemplate = `{
         },
         "model.RoleAccount": {
             "type": "object",
+            "required": [
+                "account_id",
+                "license_id",
+                "role_id"
+            ],
             "properties": {
                 "account_id": {
                     "type": "string",

@@ -80,6 +80,10 @@ definitions:
       role_id:
         example: 351ec27d-2134-4993-b120-b72a950f5574
         type: string
+    required:
+    - account_id
+    - license_id
+    - role_id
     type: object
   model.RolesMenu:
     properties:

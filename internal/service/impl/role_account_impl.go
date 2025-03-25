@@ -39,5 +39,5 @@ func (s *sRoleAccount) CreateRoleAccount(ctx context.Context, roleAccount *model
 	if err != nil {
 		return response.ErrCodeAuthFailed, out, err
 	}
-	return codeResult, roleaccount, err
+	return response.ErrCodeSucces, roleaccount, err
 }
