@@ -38,10 +38,7 @@ SELECT
 FROM roles_menu rm
 JOIN menu m ON m.id = rm.menu_id AND m.is_deleted = FALSE
 JOIN role r ON r.id = rm.role_id AND r.is_deleted = FALSE
-WHERE r.id = ?
-AND (
-    ? = '' OR MATCH(r.role_name) AGAINST (? IN NATURAL LANGUAGE MODE)
-);
+WHERE r.id = ? AND r.role_name LIKE ?
 
 
 

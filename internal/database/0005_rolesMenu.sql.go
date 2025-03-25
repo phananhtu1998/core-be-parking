@@ -105,15 +105,12 @@ SELECT
 FROM roles_menu rm
 JOIN menu m ON m.id = rm.menu_id AND m.is_deleted = FALSE
 JOIN role r ON r.id = rm.role_id AND r.is_deleted = FALSE
-WHERE r.id = ?
-AND (
-    ? = '' OR MATCH(r.role_name) AGAINST (? IN NATURAL LANGUAGE MODE)
-)
+WHERE r.id = ? AND r.role_name LIKE ?
 `
 
 type GetRoleMenuByRoleIdParams struct {
-	ID      string
-	Column2 interface{}
+	ID       string
+	RoleName string
 }
 
 type GetRoleMenuByRoleIdRow struct {
@@ -130,7 +127,7 @@ type GetRoleMenuByRoleIdRow struct {
 }
 
 func (q *Queries) GetRoleMenuByRoleId(ctx context.Context, arg GetRoleMenuByRoleIdParams) ([]GetRoleMenuByRoleIdRow, error) {
-	rows, err := q.db.QueryContext(ctx, getRoleMenuByRoleId, arg.ID, arg.Column2)
+	rows, err := q.db.QueryContext(ctx, getRoleMenuByRoleId, arg.ID, arg.RoleName)
 	if err != nil {
 		return nil, err
 	}
