@@ -1070,18 +1070,27 @@ const docTemplate = `{
     "definitions": {
         "model.AccountInput": {
             "type": "object",
+            "required": [
+                "email",
+                "name",
+                "password"
+            ],
             "properties": {
                 "email": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "admin@gmail.com"
                 },
                 "images": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "/upload/images/phananhtu.jpg"
                 },
                 "name": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Admin"
                 },
                 "password": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "hello@1234"
                 },
                 "status": {
                     "type": "boolean"
@@ -1098,12 +1107,18 @@ const docTemplate = `{
         },
         "model.LoginInput": {
             "type": "object",
+            "required": [
+                "email",
+                "password"
+            ],
             "properties": {
                 "email": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "admin@gmail.com"
                 },
                 "password": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "helo@1234"
                 }
             }
         },

@@ -1,13 +1,9 @@
 package roleaccount
 
 import (
-	"bytes"
-	"encoding/json"
 	"go-backend-api/internal/model"
 	"go-backend-api/internal/service"
 	"go-backend-api/pkg/response"
-	"io"
-	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
@@ -30,24 +26,10 @@ type cRoleaccount struct {
 // @Failure 500 {object} response.ErrorResponseData "Server error"
 // @Router /roleaccount/create_roles_account [post]
 func (c *cRoleaccount) CreateRoleAccount(ctx *gin.Context) {
-	// Đọc toàn bộ body request
 	var params model.RoleAccount
-	// Đọc raw JSON từ body
-	body, err := io.ReadAll(ctx.Request.Body)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request"})
-		return
-	}
-	// Decode JSON với DisallowUnknownFields để phát hiện field dư
-	decoder := json.NewDecoder(bytes.NewReader(body))
-	decoder.DisallowUnknownFields()
-	if err := decoder.Decode(&params); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid field in request"})
-		return
-	}
-	// Bind JSON vào struct
+	// check valid
 	if err := ctx.ShouldBindJSON(&params); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid field in request"})
+		ctx.JSON(response.ErrCodeParamInvalid, gin.H{"error": "Invalid input data"})
 		return
 	}
 	code, result, err := service.RoleAccountItem().CreateRoleAccount(ctx, &params)

@@ -4,13 +4,13 @@ import "database/sql"
 
 type MenuInput struct {
 	Id                string `json:"id"`
-	Menu_name         string `json:"menu_name"`
-	Menu_icon         string `json:"menu_icon"`
-	Menu_url          string `json:"menu_url"`
+	Menu_name         string `json:"menu_name" binding:"required" example:"Dashboard"`
+	Menu_icon         string `json:"menu_icon" binding:"required" example:"database"`
+	Menu_url          string `json:"menu_url" binding:"required" example:"/dashboard"`
 	Menu_parent_id    string `json:"menu_parent_id"`
-	Menu_level        int    `json:"menu_level"`
-	Menu_Number_order int    `json:"menu_number_order"`
-	Menu_group_name   string `json:"menu_group_name"`
+	Menu_level        int    `json:"menu_level" binding:"required" example:"1"`
+	Menu_Number_order int    `json:"menu_number_order" binding:"required" example:"1"`
+	Menu_group_name   string `json:"menu_group_name" binding:"required" example:"/api/dashboard"`
 }
 type MenuOutput struct {
 	Id                string       `json:"id"`

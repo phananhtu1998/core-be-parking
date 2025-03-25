@@ -3,15 +3,23 @@ definitions:
   model.AccountInput:
     properties:
       email:
+        example: admin@gmail.com
         type: string
       images:
+        example: /upload/images/phananhtu.jpg
         type: string
       name:
+        example: Admin
         type: string
       password:
+        example: hello@1234
         type: string
       status:
         type: boolean
+    required:
+    - email
+    - name
+    - password
     type: object
   model.ChangePasswordInput:
     properties:
@@ -21,9 +29,14 @@ definitions:
   model.LoginInput:
     properties:
       email:
+        example: admin@gmail.com
         type: string
       password:
+        example: helo@1234
         type: string
+    required:
+    - email
+    - password
     type: object
   model.MenuInput:
     properties:

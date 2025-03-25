@@ -123,16 +123,16 @@ func (ac *cAccount) DeleteAccount(ctx *gin.Context) {
 // @Failure      500   {object}  response.ErrorResponseData
 // @Router       /admin/create_account [POST]
 func (ac *cAccount) CreateAccount(ctx *gin.Context) {
-	var modelAccount model.AccountInput
+	var params model.AccountInput
 
 	// check valid
-	if err := ctx.ShouldBindJSON(&modelAccount); err != nil {
+	if err := ctx.ShouldBindJSON(&params); err != nil {
 		ctx.JSON(response.ErrCodeParamInvalid, gin.H{"error": "Invalid input data"})
 		return
 	}
 
 	// call service CreateAccount
-	code, account, err := service.AccountItem().CreateAccount(ctx, &modelAccount)
+	code, account, err := service.AccountItem().CreateAccount(ctx, &params)
 	if err != nil {
 		log.Printf("Error creating account: %v", err)
 		response.ErrorResponse(ctx, code, err.Error())
