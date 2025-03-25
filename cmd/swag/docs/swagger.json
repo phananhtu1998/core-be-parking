@@ -814,6 +814,51 @@
                 }
             }
         },
+        "/roleaccount/create_roles_account": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Create a new mapping between roles and account in the system",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "RoleAccount"
+                ],
+                "summary": "Create a new role account mapping",
+                "parameters": [
+                    {
+                        "description": "Role account mapping details",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.RoleAccount"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResponseData"
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponseData"
+                        }
+                    }
+                }
+            }
+        },
         "/rolesmenu/create_roles_menu": {
             "post": {
                 "security": [
@@ -1120,6 +1165,23 @@
                 },
                 "updated_by": {
                     "type": "string"
+                }
+            }
+        },
+        "model.RoleAccount": {
+            "type": "object",
+            "properties": {
+                "account_id": {
+                    "type": "string",
+                    "example": "b16fdfbc-da22-4ab2-b045-614677e536d6"
+                },
+                "license_id": {
+                    "type": "string",
+                    "example": "xxx-yyyy-zzz"
+                },
+                "role_id": {
+                    "type": "string",
+                    "example": "351ec27d-2134-4993-b120-b72a950f5574"
                 }
             }
         },

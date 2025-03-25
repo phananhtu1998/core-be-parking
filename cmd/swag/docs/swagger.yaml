@@ -69,6 +69,18 @@ definitions:
       updated_by:
         type: string
     type: object
+  model.RoleAccount:
+    properties:
+      account_id:
+        example: b16fdfbc-da22-4ab2-b045-614677e536d6
+        type: string
+      license_id:
+        example: xxx-yyyy-zzz
+        type: string
+      role_id:
+        example: 351ec27d-2134-4993-b120-b72a950f5574
+        type: string
+    type: object
   model.RolesMenu:
     properties:
       list_method:
@@ -622,6 +634,34 @@ paths:
       summary: Lấy role theo ID
       tags:
       - Role
+  /roleaccount/create_roles_account:
+    post:
+      consumes:
+      - application/json
+      description: Create a new mapping between roles and account in the system
+      parameters:
+      - description: Role account mapping details
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/model.RoleAccount'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ResponseData'
+        "500":
+          description: Server error
+          schema:
+            $ref: '#/definitions/response.ErrorResponseData'
+      security:
+      - BearerAuth: []
+      summary: Create a new role account mapping
+      tags:
+      - RoleAccount
   /rolesmenu/create_roles_menu:
     post:
       consumes:

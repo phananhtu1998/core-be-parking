@@ -1,7 +1,14 @@
 package service
 
+import (
+	"context"
+	"go-backend-api/internal/model"
+)
+
 type (
-	IRoleAccount interface{}
+	IRoleAccount interface {
+		CreateRoleAccount(ctx context.Context, roleAccount *model.RoleAccount) (codeResult int, out model.RoleAccountOutput, err error)
+	}
 )
 
 var (

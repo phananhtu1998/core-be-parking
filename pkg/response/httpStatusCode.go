@@ -29,6 +29,10 @@ const (
 	ErrCodeRoleMenuError    = 11001
 	ErrCodeRoleMenuSucces   = 11002
 	ErrCodeRoleMenuNotFound = 11003
+	// error code RoleAccount
+	ErrCodeRoleAccountError    = 12001
+	ErrCodeRoleAccountSucces   = 12002
+	ErrCodeRoleAccountNotFound = 12003
 )
 
 // message
@@ -50,4 +54,9 @@ var msg = map[int]string{
 	ErrCodeRoleMenuError:             "role menu error",
 	ErrCodeRoleMenuSucces:            "role menu succes",
 	ErrCodeRoleMenuNotFound:          "role menu not found",
+	ErrCodeRoleError:                 "role error",
+	ErrCodeRoleSucces:                "role succes",
+	ErrCodeRoleNotFound:              "role not found",
+	ErrCodeRoleAccountError:          "role account error",
+	ErrCodeRoleAccountSucces:         "role account succes",
 }
