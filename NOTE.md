@@ -103,6 +103,7 @@ UNWATCH
 Search trong mysql
 
 ```
+CREATE FULLTEXT INDEX idx_role_name ON role(role_name);
 SELECT * FROM products WHERE MATCH(productName) AGAINST ('suzuki')
 SELECT * FROM products WHERE MATCH(productName) AGAINST ('suzuki corsair') // tìm kiếm gần đúng
 SELECT * FROM products WHERE MATCH(productName) AGAINST ('+suzuki +corsair' IN BOOLEAN MODE) // đúng chính xác
