@@ -7,16 +7,14 @@ import (
 
 	// "go-backend-api/internal/po"
 	"time"
-
-	"go.uber.org/zap"
 )
 
-func checkErrorPanicC(err error, errString string) {
-	if err != nil {
-		global.Logger.Error(errString, zap.Error(err))
-		panic(err)
-	}
-}
+//	func checkErrorPanicC(err error, errString string) {
+//		if err != nil {
+//			global.Logger.Error(errString, zap.Error(err))
+//			panic(err)
+//		}
+//	}
 func InitMysqlC() {
 	m := global.Config.Mysql
 	dsn := "%s:%s@tcp(%s:%v)/%s?charset=utf8mb4&parseTime=True&loc=Local"
