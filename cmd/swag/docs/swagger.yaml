@@ -696,6 +696,40 @@ paths:
       summary: Tạo role account
       tags:
       - RoleAccount
+  /roleaccount/delete_multiple_role_account:
+    delete:
+      consumes:
+      - application/json
+      description: API này xóa danh sách Role Account dựa trên danh sách ID
+      parameters:
+      - description: Danh sách ID cần xóa
+        in: body
+        name: ids
+        required: true
+        schema:
+          items:
+            type: string
+          type: array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ResponseData'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponseData'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponseData'
+      security:
+      - BearerAuth: []
+      summary: Xóa nhiều Role Account
+      tags:
+      - RoleAccount
   /roleaccount/get_role_account_by_account_id/{id}:
     get:
       consumes:

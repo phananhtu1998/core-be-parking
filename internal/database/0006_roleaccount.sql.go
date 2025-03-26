@@ -34,17 +34,12 @@ func (q *Queries) CreateRoleAccount(ctx context.Context, arg CreateRoleAccountPa
 
 const deleteRoleAccount = `-- name: DeleteRoleAccount :exec
 UPDATE ` + "`" + `role_account` + "`" + `
-SET is_deleted = true, update_at = ?
-WHERE id = ?
+SET is_deleted = true, update_at = NOW()
+WHERE id IN (?)
 `
 
-type DeleteRoleAccountParams struct {
-	UpdateAt time.Time
-	ID       string
-}
-
-func (q *Queries) DeleteRoleAccount(ctx context.Context, arg DeleteRoleAccountParams) error {
-	_, err := q.db.ExecContext(ctx, deleteRoleAccount, arg.UpdateAt, arg.ID)
+func (q *Queries) DeleteRoleAccount(ctx context.Context, id string) error {
+	_, err := q.db.ExecContext(ctx, deleteRoleAccount, id)
 	return err
 }
 

@@ -29,5 +29,5 @@ WHERE id = ?;
 
 -- name: DeleteRoleAccount :exec
 UPDATE `role_account`
-SET is_deleted = true, update_at = ?
-WHERE id = ?;
+SET is_deleted = true, update_at = NOW()
+WHERE id IN (?);

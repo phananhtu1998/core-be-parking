@@ -1,6 +1,7 @@
 package roleaccount
 
 import (
+	"fmt"
 	"go-backend-api/internal/model"
 	"go-backend-api/internal/service"
 	"go-backend-api/pkg/response"
@@ -92,4 +93,44 @@ func (c *cRoleaccount) GetAllRoleAccountByAccountId(ctx *gin.Context) {
 		return
 	}
 	response.SuccessResponse(ctx, code, result)
+}
+
+// DeleteRoleAccountById
+// @Summary      Xóa nhiều Role Account
+// @Description  API này xóa danh sách Role Account dựa trên danh sách ID
+// @Tags         RoleAccount
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Param        ids body []string true "Danh sách ID cần xóa"
+// @Success      200  {object}  response.ResponseData
+// @Failure      400  {object}  response.ErrorResponseData
+// @Failure      500  {object}  response.ErrorResponseData
+// @Router       /roleaccount/delete_multiple_role_account [DELETE]
+func (c *cRoleaccount) DeleteRoleAccount(ctx *gin.Context) {
+	var ids []string
+
+	// Nhận dữ liệu từ request
+	if err := ctx.ShouldBindJSON(&ids); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input data"})
+		return
+	}
+
+	// Kiểm tra ID có hợp lệ không
+	for _, id := range ids {
+		if _, err := uuid.Parse(id); err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("Invalid id: %s", id)})
+			return
+		}
+	}
+
+	// Gọi service để xóa
+	code, err := service.RoleAccountItem().DeleteRoleAccount(ctx, ids)
+	if err != nil {
+		response.ErrorResponse(ctx, code, err.Error())
+		return
+	}
+
+	// Trả về kết quả thành công
+	response.SuccessResponse(ctx, code, nil)
 }

@@ -2,6 +2,8 @@ package impl
 
 import (
 	"context"
+	"database/sql"
+	"fmt"
 	"go-backend-api/internal/database"
 	"go-backend-api/internal/model"
 	"go-backend-api/pkg/response"
@@ -11,11 +13,17 @@ import (
 )
 
 type sRoleAccount struct {
-	r *database.Queries
+	r   *database.Queries
+	qTx *sql.Tx
+	db  *sql.DB
 }
 
-func NewRoleAccountImpl(r *database.Queries) *sRoleAccount {
-	return &sRoleAccount{r: r}
+func NewRoleAccountImpl(r *database.Queries, qTx *sql.Tx, db *sql.DB) *sRoleAccount {
+	return &sRoleAccount{
+		r:   r,
+		qTx: qTx,
+		db:  db,
+	}
 }
 
 func (s *sRoleAccount) CreateRoleAccount(ctx context.Context, roleAccount *model.RoleAccount) (codeResult int, out model.RoleAccountOutput, err error) {
@@ -78,4 +86,34 @@ func (s *sRoleAccount) GetAllRoleAccountByAccountId(ctx context.Context, account
 		})
 	}
 	return codeResult, out, err
+}
+
+func (s *sRoleAccount) DeleteRoleAccount(ctx context.Context, ids []string) (codeResult int, err error) {
+	// Bắt đầu transaction
+	tx, err := s.db.BeginTx(ctx, nil)
+	if err != nil {
+		return response.ErrCodeRoleAccountError, fmt.Errorf("failed to begin transaction: %w", err)
+	}
+	// Đảm bảo rollback nếu có lỗi
+	var committed bool
+	defer func() {
+		if !committed {
+			tx.Rollback() // Gọi rollback nếu chưa commit
+		}
+	}()
+	//
+	for _, id := range ids {
+		err := s.r.DeleteRoleAccount(ctx, id)
+		if err != nil {
+			return response.ErrCodeRoleAccountError, fmt.Errorf("failed to delete role account: %w", err)
+		}
+	}
+	// Commit transaction
+	err = tx.Commit()
+	if err != nil {
+		return response.ErrCodeRoleAccountError, fmt.Errorf("failed to commit transaction: %w", err)
+	}
+	// Đánh dấu transaction đã commit
+	committed = true
+	return response.ErrCodeRoleAccountSucces, nil
 }
