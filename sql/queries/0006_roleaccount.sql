@@ -25,7 +25,7 @@ VALUES (?, ?, ?, ?, false, NOW(), NOW());
 -- name: UpdateRoleAccount :exec
 UPDATE `role_account`
 SET account_id = ?, role_id = ?, license_id = ?
-WHERE id = ?;
+WHERE id = ? AND is_deleted = false;
 
 -- name: DeleteRoleAccount :exec
 UPDATE `role_account`

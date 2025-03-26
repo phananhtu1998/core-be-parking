@@ -117,3 +117,26 @@ func (s *sRoleAccount) DeleteRoleAccount(ctx context.Context, ids []string) (cod
 	committed = true
 	return response.ErrCodeRoleAccountSucces, nil
 }
+
+func (s *sRoleAccount) UpdateRoleAccount(ctx context.Context, id string, roleAccount *model.RoleAccount) (codeResult int, out model.RoleAccountOutput, err error) {
+	err = s.r.UpdateRoleAccount(ctx, database.UpdateRoleAccountParams{
+		ID:        id,
+		RoleID:    roleAccount.Role_id,
+		AccountID: roleAccount.Account_id,
+		LicenseID: roleAccount.License_id,
+	})
+	roleaccount := model.RoleAccountOutput{
+		Id: id,
+		RoleAccount: model.RoleAccount{
+			Role_id:    roleAccount.Role_id,
+			Account_id: roleAccount.Account_id,
+			License_id: roleAccount.License_id,
+		},
+		Create_at: time.Now(),
+		Update_at: string(time.Now().Format("02-01-2006 15:04:05")),
+	}
+	if err != nil {
+		return response.ErrCodeAuthFailed, out, err
+	}
+	return response.ErrCodeSucces, roleaccount, err
+}

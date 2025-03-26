@@ -126,3 +126,35 @@ func (c *cRoleaccount) DeleteRoleAccount(ctx *gin.Context) {
 	}
 	response.SuccessResponse(ctx, code, nil)
 }
+
+// UpdateRoleAccount
+// @Summary      Cập nhật Role account
+// @Description  API này cập nhật thông tin role account dựa trên ID
+// @Tags         RoleAccount
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Param        id   path   string  true  "ID role account cần cập nhật"
+// @Param        body body   model.RoleAccount true "Dữ liệu cập nhật role account"
+// @Success      200  {object}  response.ResponseData
+// @Failure      400  {object}  response.ErrorResponseData
+// @Failure      500  {object}  response.ErrorResponseData
+// @Router       /roleaccount/update_role_account/{id} [PUT]
+func (c *cRoleaccount) UpdateRoleAccount(ctx *gin.Context) {
+	id := ctx.Param("id")
+	var modelRoleAccount model.RoleAccount
+	if err := ctx.ShouldBindJSON(&modelRoleAccount); err != nil {
+		ctx.JSON(response.ErrCodeParamInvalid, gin.H{"error": "Invalid input data"})
+		return
+	}
+	if _, err := uuid.Parse(id); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid role id"})
+		return
+	}
+	code, roleAccount, err := service.RoleAccountItem().UpdateRoleAccount(ctx, id, &modelRoleAccount)
+	if err != nil {
+		response.ErrorResponse(ctx, code, err.Error())
+		return
+	}
+	response.SuccessResponse(ctx, code, roleAccount)
+}
