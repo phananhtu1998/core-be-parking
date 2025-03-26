@@ -191,10 +191,15 @@ func (s *sLogin) ChangePassword(ctx context.Context, in *model.ChangePasswordInp
 	if err := cache.GetCache(ctx, subjectUUID.(string), &infoUser); err != nil {
 		return 0, out, err
 	}
-	log.Println("in.Password", in.Password)
+
+	log.Println("in.Password", in.ConfirmPassword)
 	// lưu thông tin password vào db
 	outUser, err := s.r.GetAccountById(ctx, infoUser.ID)
-	Password := crypto.HashPassword(in.Password, outUser.Salt, global.Config.JWT.SECRET_KEY)
+	// kiểm tra passsword cũ có đúng hay không
+	if !crypto.MatchingPassword(outUser.Password, in.OldPassword, outUser.Salt) {
+		return response.ErrCodeAuthFailed, out, fmt.Errorf("Mật khẩu cũ không đúng")
+	}
+	Password := crypto.HashPassword(in.NewPassword, outUser.Salt, global.Config.JWT.SECRET_KEY)
 	err = s.r.ChangPasswordById(ctx, database.ChangPasswordByIdParams{
 		Password: Password,
 		ID:       infoUser.ID,

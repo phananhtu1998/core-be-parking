@@ -1298,7 +1298,13 @@ const docTemplate = `{
         "model.ChangePasswordInput": {
             "type": "object",
             "properties": {
-                "password": {
+                "confirmpassword": {
+                    "type": "string"
+                },
+                "newpassword": {
+                    "type": "string"
+                },
+                "oldpassword": {
                     "type": "string"
                 }
             }

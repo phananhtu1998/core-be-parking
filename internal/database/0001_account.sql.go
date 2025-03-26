@@ -89,19 +89,20 @@ func (q *Queries) EditAccountById(ctx context.Context, arg EditAccountByIdParams
 }
 
 const getAccountById = `-- name: GetAccountById :one
-SELECT id, number, name, email, status,images,salt
+SELECT id, number, name, email, status,images,salt, password
 FROM ` + "`" + `account` + "`" + `
 WHERE id = ? AND is_deleted = false
 `
 
 type GetAccountByIdRow struct {
-	ID     string
-	Number int32
-	Name   string
-	Email  string
-	Status bool
-	Images string
-	Salt   string
+	ID       string
+	Number   int32
+	Name     string
+	Email    string
+	Status   bool
+	Images   string
+	Salt     string
+	Password string
 }
 
 func (q *Queries) GetAccountById(ctx context.Context, id string) (GetAccountByIdRow, error) {
@@ -115,6 +116,7 @@ func (q *Queries) GetAccountById(ctx context.Context, id string) (GetAccountById
 		&i.Status,
 		&i.Images,
 		&i.Salt,
+		&i.Password,
 	)
 	return i, err
 }

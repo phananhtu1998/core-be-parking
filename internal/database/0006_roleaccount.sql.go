@@ -202,7 +202,7 @@ func (q *Queries) GetRoleAccountByRoleId(ctx context.Context, roleID string) ([]
 const updateRoleAccount = `-- name: UpdateRoleAccount :exec
 UPDATE ` + "`" + `role_account` + "`" + `
 SET account_id = ?, role_id = ?, license_id = ?
-WHERE id = ?
+WHERE id = ? AND is_deleted = false
 `
 
 type UpdateRoleAccountParams struct {

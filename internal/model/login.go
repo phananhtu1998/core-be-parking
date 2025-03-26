@@ -18,7 +18,9 @@ type GetCacheToken struct {
 }
 
 type ChangePasswordInput struct {
-	Password string `json:"password"`
+	OldPassword     string `json:"oldpassword"`
+	NewPassword     string `json:"newpassword"`
+	ConfirmPassword string `json:"confirmpassword"`
 }
 
 type GetCacheTokenForChangePassword struct {

@@ -23,7 +23,11 @@ definitions:
     type: object
   model.ChangePasswordInput:
     properties:
-      password:
+      confirmpassword:
+        type: string
+      newpassword:
+        type: string
+      oldpassword:
         type: string
     type: object
   model.LoginInput:
