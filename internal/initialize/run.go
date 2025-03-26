@@ -21,6 +21,15 @@ func Run() *gin.Engine {
 	InitServiceInterface()
 	InitRedis()
 	GetServerInfo()
+
+	// Khởi tạo RBAC
+	enforcer, err := InitializeRBAC(global.Mdb)
+	if err != nil {
+		global.Logger.Error("Failed to initialize RBAC", zap.Error(err))
+		return nil
+	}
+	global.Enforcer = enforcer
+
 	r := InitRouter()
 	if r == nil {
 		global.Logger.Error("Failed to initialize Router")

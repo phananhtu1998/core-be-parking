@@ -1,6 +1,7 @@
 package login
 
 import (
+	"go-backend-api/global"
 	"go-backend-api/internal/controller/login"
 	"go-backend-api/internal/middlewares"
 
@@ -12,6 +13,7 @@ type LoginRouter struct{}
 func (ar *LoginRouter) InitLoginRouter(Router *gin.RouterGroup) {
 	// public router
 	adminRouterPublic := Router.Group("/auth")
+	adminRouterPublic.Use(middlewares.PermissionMiddleware(global.Enforcer, "/auth/login", "POST"))
 	{
 		adminRouterPublic.POST("/login", login.Logins.Login)
 	}
