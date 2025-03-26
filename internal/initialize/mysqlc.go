@@ -9,7 +9,6 @@ import (
 	"time"
 
 	"go.uber.org/zap"
-	"gorm.io/gen"
 )
 
 func checkErrorPanicC(err error, errString string) {
@@ -42,15 +41,15 @@ func SetPoolC() {
 	sqlDb.SetConnMaxLifetime(time.Duration(m.ConnMaxLifetime)) //
 }
 
-func genTableDAOC() {
-	g := gen.NewGenerator(gen.Config{
-		OutPath: "./internal/models",
-		Mode:    gen.WithoutContext | gen.WithDefaultQuery | gen.WithQueryInterface, // generate mode
-	})
-	g.UseDB(global.Mdb) // reuse your gorm db
-	g.GenerateModel("go_crm_user")
-	g.Execute()
-}
+// func genTableDAOC() {
+// 	g := gen.NewGenerator(gen.Config{
+// 		OutPath: "./internal/models",
+// 		Mode:    gen.WithoutContext | gen.WithDefaultQuery | gen.WithQueryInterface, // generate mode
+// 	})
+// 	g.UseDB(global.Mdb) // reuse your gorm db
+// 	g.GenerateModel("go_crm_user")
+// 	g.Execute()
+// }
 
 // func migrateTablesC() {
 // 	err := global.Mdb.AutoMigrate(

@@ -21,6 +21,6 @@ func Loadconfig() {
 	// read server configuration
 	fmt.Println("Server Port::", viper.GetInt("server.port"))
 	if err := viper.Unmarshal(&global.Config); err != nil {
-		fmt.Println("Unable to decode configuration %v", err)
+		fmt.Printf("Unable to decode configuration %v\n", err)
 	}
 }
