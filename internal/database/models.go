@@ -36,6 +36,16 @@ type Keytoken struct {
 	UpdateAt          time.Time
 }
 
+type License struct {
+	ID        string
+	License   string
+	DateStart time.Time
+	DateEnd   time.Time
+	CreatedAt time.Time
+	UpdateAt  time.Time
+	IsDeleted bool
+}
+
 type Menu struct {
 	ID              string
 	MenuName        string

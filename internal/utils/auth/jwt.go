@@ -48,6 +48,15 @@ func CreateToken(uuidToken string) (string, error) {
 		},
 	})
 }
+func CreateTokenNoExpiration(payload string) (string, error) {
+	return GenTokenJWT(&PayloadClaims{
+		StandardClaims: jwt.StandardClaims{
+			Id:      uuid.New().String(),
+			Issuer:  "parkingdevgo",
+			Subject: payload,
+		},
+	})
+}
 func CreateRefreshToken(uuidToken string) (string, error) {
 	// 1. Set time expiration
 	timeEx := global.Config.JWT.REFRESH_TOKEN
