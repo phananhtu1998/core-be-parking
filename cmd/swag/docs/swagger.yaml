@@ -829,7 +829,7 @@ paths:
     post:
       consumes:
       - application/json
-      description: Create a new mapping between roles and menus in the system
+      description: Api tạo role menu cho hệ thống
       parameters:
       - description: Role menu mapping details
         in: body

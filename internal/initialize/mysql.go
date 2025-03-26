@@ -3,7 +3,6 @@ package initialize
 import (
 	"fmt"
 	"go-backend-api/global"
-	"go-backend-api/internal/po"
 	"time"
 
 	"go.uber.org/zap"
@@ -52,12 +51,12 @@ func genTableDAO() {
 	g.Execute()
 }
 
-func migrateTables() {
-	err := global.Mdb.AutoMigrate(
-		&po.User{},
-		&po.Role{},
-	)
-	if err != nil {
-		fmt.Println("Migrating tables error: ", err)
-	}
-}
+// func migrateTables() {
+// 	err := global.Mdb.AutoMigrate(
+// 		&po.User{},
+// 		&po.Role{},
+// 	)
+// 	if err != nil {
+// 		fmt.Println("Migrating tables error: ", err)
+// 	}
+// }

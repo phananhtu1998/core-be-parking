@@ -4,7 +4,8 @@ import (
 	"database/sql"
 	"fmt"
 	"go-backend-api/global"
-	"go-backend-api/internal/po"
+
+	// "go-backend-api/internal/po"
 	"time"
 
 	"go.uber.org/zap"
@@ -51,12 +52,12 @@ func genTableDAOC() {
 	g.Execute()
 }
 
-func migrateTablesC() {
-	err := global.Mdb.AutoMigrate(
-		&po.User{},
-		&po.Role{},
-	)
-	if err != nil {
-		fmt.Println("Migrating tables error: ", err)
-	}
-}
+// func migrateTablesC() {
+// 	err := global.Mdb.AutoMigrate(
+// 		&po.User{},
+// 		&po.Role{},
+// 	)
+// 	if err != nil {
+// 		fmt.Println("Migrating tables error: ", err)
+// 	}
+// }

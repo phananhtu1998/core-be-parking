@@ -1070,7 +1070,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Create a new mapping between roles and menus in the system",
+                "description": "Api tạo role menu cho hệ thống",
                 "consumes": [
                     "application/json"
                 ],

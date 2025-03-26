@@ -1,9 +1,12 @@
 module go-backend-api
 
-go 1.24.0
+go 1.23.0
+
+toolchain go1.23.4
 
 require (
 	github.com/gin-gonic/gin v1.10.0
+	github.com/shirou/gopsutil v3.21.11+incompatible
 	github.com/spf13/viper v1.19.0
 	github.com/stretchr/testify v1.10.0
 	github.com/swaggo/swag v1.16.4
@@ -20,7 +23,8 @@ require (
 	github.com/go-openapi/swag v0.23.0 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/mailru/easyjson v0.9.0 // indirect
-	github.com/shirou/gopsutil v3.21.11+incompatible // indirect
+	github.com/tklauser/go-sysconf v0.3.15 // indirect
+	github.com/tklauser/numcpus v0.10.0 // indirect
 	github.com/yusufpapurcu/wmi v1.2.4 // indirect
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1 // indirect
 )
@@ -43,7 +47,6 @@ require (
 	github.com/goccy/go-json v0.10.5 // indirect
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/google/uuid v1.6.0
-	github.com/google/wire v0.6.0
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
