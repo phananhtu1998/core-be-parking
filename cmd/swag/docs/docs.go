@@ -1080,7 +1080,7 @@ const docTemplate = `{
                 "tags": [
                     "RolesMenu"
                 ],
-                "summary": "Create a new role menu mapping",
+                "summary": "Tạo role menu",
                 "parameters": [
                     {
                         "description": "Role menu mapping details",

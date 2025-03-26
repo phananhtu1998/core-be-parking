@@ -850,7 +850,7 @@ paths:
             $ref: '#/definitions/response.ErrorResponseData'
       security:
       - BearerAuth: []
-      summary: Create a new role menu mapping
+      summary: Tạo role menu
       tags:
       - RolesMenu
   /rolesmenu/delete_roles_menu/{id}:

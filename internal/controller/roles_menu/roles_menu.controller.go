@@ -15,7 +15,7 @@ type cRolesMenu struct {
 }
 
 // CreateRolesMenu
-// @Summary Create a new role menu mapping
+// @Summary Tạo role menu
 // @Description Create a new mapping between roles and menus in the system
 // @Tags RolesMenu
 // @Accept json
