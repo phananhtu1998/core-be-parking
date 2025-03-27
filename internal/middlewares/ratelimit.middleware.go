@@ -5,6 +5,9 @@ import (
 	"fmt"
 	"go-backend-api/global"
 	consts "go-backend-api/internal/const"
+	"go-backend-api/internal/model"
+	"go-backend-api/internal/utils/auth"
+	"go-backend-api/internal/utils/cache"
 	"net/http"
 	"time"
 
@@ -17,9 +20,18 @@ var ctx = context.Background()
 func RateLimiterMiddlewareRedis() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		client := global.Rdb
+		ctx := c.Request.Context()
+		// Lấy token từ request
+		jwtToken, _ := auth.ExtracBearerToken(c)
+		claims, _ := auth.VerifyTokenSubject(jwtToken)
+		var infoUser model.GetCacheToken
+		if err := cache.GetCache(ctx, claims.Subject, &infoUser); err != nil {
+			return
+		}
 		endpoint := c.FullPath() // Lấy đường dẫn API
 		ip := c.ClientIP()       // Lấy địa chỉ IP của user
-		key := fmt.Sprintf("ratelimit:%s:%s", endpoint, ip)
+		// truyền cả Id vì giả sử trong 1 cty thì IP mạng có thể giống nhau nên kèm theo ID để phân biệt
+		key := fmt.Sprintf("ratelimit:%s:%s:%", endpoint, ip, infoUser.ID)
 
 		// Lấy số lượng request hiện tại
 		count, _ := client.Get(ctx, key).Int()

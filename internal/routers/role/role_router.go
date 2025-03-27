@@ -11,7 +11,7 @@ type RoleRouter struct{}
 
 func (ar *RoleRouter) InitRoleRouter(Router *gin.RouterGroup) {
 	roleRouterPrivate := Router.Group("/role")
-	//roleRouterPrivate.Use(middlewares.AuthenMiddleware())
+	roleRouterPrivate.Use(middlewares.AuthenMiddleware())
 	roleRouterPrivate.Use(middlewares.RateLimiterMiddlewareRedis())
 	{
 		roleRouterPrivate.POST("/create_role", role.Roles.CreateRole)
