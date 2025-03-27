@@ -5,7 +5,6 @@ import (
 	consts "go-backend-api/internal/const"
 	"go-backend-api/internal/utils/auth"
 	"go-backend-api/internal/utils/rbac"
-	"log"
 	"net/http"
 	"strings"
 
@@ -17,8 +16,6 @@ import (
 func PermissionMiddleware(enforcer *casbin.SyncedEnforcer) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		ctx := c.Request.Context()
-		log.Println("Request URL:", c.Request.URL.Path)
-
 		// Lấy token từ request
 		jwtToken, _ := auth.ExtracBearerToken(c)
 		claims, _ := auth.VerifyTokenSubject(jwtToken)
@@ -36,22 +33,15 @@ func PermissionMiddleware(enforcer *casbin.SyncedEnforcer) gin.HandlerFunc {
 
 		// Load quyền vào Casbin
 		for _, perm := range lstUserPermission {
-			log.Println("Raw Method from DB:", perm.Method)
-
 			// Chuyển JSON string thành slice `[]string`
 			perm.Method = strings.ReplaceAll(perm.Method, "'", "\"")
 			var methods []string
 			err := json.Unmarshal([]byte(perm.Method), &methods)
 			if err != nil {
-				log.Println("Error parsing method JSON:", err)
 				continue
 			}
-
-			log.Println("Parsed Methods:", methods)
-
 			// Thêm từng method vào Casbin
 			for _, method := range methods {
-				log.Println("Adding permission:", claims.Subject, perm.Menu_group_name, method)
 				enforcer.AddPermissionForUser(claims.Subject, perm.Menu_group_name, method)
 			}
 		}
@@ -63,13 +53,11 @@ func PermissionMiddleware(enforcer *casbin.SyncedEnforcer) gin.HandlerFunc {
 
 		allowed, err := enforcer.Enforce(sub, obj, act)
 		if err != nil {
-			log.Println("Error checking permission:", err)
 			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": "Error checking permission"})
 			return
 		}
 
 		if !allowed {
-			log.Println("Permission denied for:", sub, "on", obj, "with action", act)
 			c.AbortWithStatusJSON(http.StatusForbidden, gin.H{"error": "Permission denied"})
 			return
 		}
