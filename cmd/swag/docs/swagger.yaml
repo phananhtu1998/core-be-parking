@@ -118,9 +118,6 @@ definitions:
   model.RolesMenu:
     properties:
       list_method:
-        example:
-        - '[''GET'''
-        - '''POST'']'
         items:
           type: string
         type: array

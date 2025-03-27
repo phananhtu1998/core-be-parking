@@ -1441,11 +1441,7 @@ const docTemplate = `{
                     "type": "array",
                     "items": {
                         "type": "string"
-                    },
-                    "example": [
-                        "['GET'",
-                        "'POST']"
-                    ]
+                    }
                 },
                 "menu_id": {
                     "type": "string",

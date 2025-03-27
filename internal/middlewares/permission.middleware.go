@@ -1,38 +1,26 @@
 package middlewares
 
 import (
+	"encoding/json"
 	"go-backend-api/internal/utils/auth"
 	"go-backend-api/internal/utils/rbac"
-	"go-backend-api/pkg/response"
 	"log"
 	"net/http"
+	"strings"
 
 	"github.com/casbin/casbin/v2"
 	"github.com/gin-gonic/gin"
 )
 
-// PermissionMiddleware kiểm tra quyền truy cập bằng Casbin
+// Middleware kiểm tra quyền truy cập bằng Casbin
 func PermissionMiddleware(enforcer *casbin.SyncedEnforcer) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		ctx := c.Request.Context()
 		log.Println("Request URL:", c.Request.URL.Path)
-		jwtToken, valid := auth.ExtracBearerToken(c)
-		if !valid {
-			log.Println("Token is missing")
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-				"code": response.ErrUnauthorized, "err": "Unauthorized",
-			})
-			return
-		}
 
-		claims, err := auth.VerifyTokenSubject(jwtToken)
-		if err != nil {
-			log.Println("Invalid token")
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-				"code": response.ErrUnauthorized, "err": "Invalid token",
-			})
-			return
-		}
+		// Lấy token từ request
+		jwtToken, _ := auth.ExtracBearerToken(c)
+		claims, _ := auth.VerifyTokenSubject(jwtToken)
 
 		// Lấy danh sách quyền của user từ DB
 		lstUserPermission, err := rbac.GetFullPermisionByAccount(ctx, claims.Subject)
@@ -42,14 +30,35 @@ func PermissionMiddleware(enforcer *casbin.SyncedEnforcer) gin.HandlerFunc {
 			return
 		}
 
-		// Load quyền vào Casbin nếu chưa có
+		// Xóa quyền cũ để đảm bảo load lại đúng
+		enforcer.DeletePermissionsForUser(claims.Subject)
+
+		// Load quyền vào Casbin
 		for _, perm := range lstUserPermission {
-			enforcer.AddPermissionForUser(claims.Subject, perm.Menu_group_name, perm.Method)
+			log.Println("Raw Method from DB:", perm.Method)
+
+			// Chuyển JSON string thành slice `[]string`
+			perm.Method = strings.ReplaceAll(perm.Method, "'", "\"")
+			var methods []string
+			err := json.Unmarshal([]byte(perm.Method), &methods)
+			if err != nil {
+				log.Println("Error parsing method JSON:", err)
+				continue
+			}
+
+			log.Println("Parsed Methods:", methods)
+
+			// Thêm từng method vào Casbin
+			for _, method := range methods {
+				log.Println("Adding permission:", claims.Subject, perm.Menu_group_name, method)
+				enforcer.AddPermissionForUser(claims.Subject, perm.Menu_group_name, method)
+			}
 		}
 
-		sub := claims.Subject     // Người dùng
-		obj := c.Request.URL.Path // Đối tượng truy cập (endpoint)
-		act := c.Request.Method   // Hành động (GET, POST, DELETE,...)
+		// Kiểm tra quyền user với Casbin
+		obj := strings.TrimPrefix(c.Request.URL.Path, "/v1/2025")
+		sub := claims.Subject
+		act := c.Request.Method
 
 		allowed, err := enforcer.Enforce(sub, obj, act)
 		if err != nil {

@@ -5,21 +5,12 @@ import (
 	"go-backend-api/internal/model"
 	"go-backend-api/internal/service"
 	"go-backend-api/internal/utils/cache"
-	"go-backend-api/pkg/response"
+	"log"
 )
-
-// RBAC lấy tất cả các vai trò và nhóm quyền
-func GetFullPermision(ctx context.Context) (codeResult int, out []model.RolePermission, err error) {
-	// Lấy danh sách vai trò và quyền
-	codeRole, roles, err := service.RoleItem().GetAllPermission(ctx)
-	if err != nil {
-		return response.ErrCodeRoleError, roles, err
-	}
-	return codeRole, out, err
-}
 
 // RBAC lấy tất cả các vai trò và nhóm quyền theo tài khoản
 func GetFullPermisionByAccount(ctx context.Context, subtoken string) (out []model.RolePermission, err error) {
+	log.Println("uuuuuuuuuuuuuuuuuuuuuuuuuuuuu")
 	var infoUser model.GetCacheTokenForChangePassword
 	if err := cache.GetCache(ctx, subtoken, &infoUser); err != nil {
 		return out, nil
@@ -29,5 +20,5 @@ func GetFullPermisionByAccount(ctx context.Context, subtoken string) (out []mode
 	if err != nil {
 		return roles, nil
 	}
-	return out, nil
+	return roles, nil
 }

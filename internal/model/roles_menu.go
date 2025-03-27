@@ -3,7 +3,7 @@ package model
 type RolesMenu struct {
 	Menu_id    string   `json:"menu_id" binding:"required" example:"menu-123"`
 	Role_id    string   `json:"role_id" binding:"required" example:"role-123"`
-	ListMethod []string `json:"list_method" binding:"required" example:"['GET','POST']"`
+	ListMethod []string `json:"list_method" binding:"required" example:["GET","POST"]`
 }
 
 type RoleMenuOutput struct {
