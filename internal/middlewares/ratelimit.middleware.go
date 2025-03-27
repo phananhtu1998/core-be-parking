@@ -1,7 +1,6 @@
 package middlewares
 
 import (
-	"context"
 	"fmt"
 	"go-backend-api/global"
 	consts "go-backend-api/internal/const"
@@ -13,8 +12,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 )
-
-var ctx = context.Background()
 
 // RateLimiterMiddlewareRedis giới hạn tốc độ request bằng Redis
 func RateLimiterMiddlewareRedis() gin.HandlerFunc {
