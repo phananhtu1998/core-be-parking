@@ -2,6 +2,7 @@ package initialize
 
 import (
 	"go-backend-api/global"
+	consts "go-backend-api/internal/const"
 	"go-backend-api/internal/routers"
 
 	"github.com/gin-gonic/gin"
@@ -25,7 +26,7 @@ func InitRouter() *gin.Engine {
 	roleRouter := routers.RouterGroupApp.Role
 	rolesMenuRouter := routers.RouterGroupApp.RolesMenu
 	roleAccountRouter := routers.RouterGroupApp.RoleAccount
-	MainGroup := r.Group("/v1/2025")
+	MainGroup := r.Group(consts.HOST_PREFIX)
 	{
 		MainGroup.GET("/checkstatus") //tracking monitor
 	}

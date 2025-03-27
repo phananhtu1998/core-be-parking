@@ -2,6 +2,7 @@ package middlewares
 
 import (
 	"encoding/json"
+	consts "go-backend-api/internal/const"
 	"go-backend-api/internal/utils/auth"
 	"go-backend-api/internal/utils/rbac"
 	"log"
@@ -56,7 +57,7 @@ func PermissionMiddleware(enforcer *casbin.SyncedEnforcer) gin.HandlerFunc {
 		}
 
 		// Kiểm tra quyền user với Casbin
-		obj := strings.TrimPrefix(c.Request.URL.Path, "/v1/2025")
+		obj := strings.TrimPrefix(c.Request.URL.Path, consts.HOST_PREFIX)
 		sub := claims.Subject
 		act := c.Request.Method
 
