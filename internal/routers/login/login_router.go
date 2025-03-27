@@ -13,12 +13,13 @@ type LoginRouter struct{}
 func (ar *LoginRouter) InitLoginRouter(Router *gin.RouterGroup) {
 	// public router
 	adminRouterPublic := Router.Group("/auth")
-	adminRouterPublic.Use(middlewares.PermissionMiddleware(global.Enforcer))
+	
 	{
 		adminRouterPublic.POST("/login", login.Logins.Login)
 	}
 	adminRouterPrivate := Router.Group("/auth")
 	adminRouterPrivate.Use(middlewares.AuthenMiddleware())
+	adminRouterPublic.Use(middlewares.PermissionMiddleware(global.Enforcer))
 	{
 		adminRouterPrivate.POST("/logout", login.Logins.Logout)
 		adminRouterPrivate.POST("/change_password", login.Logins.ChangePassword)

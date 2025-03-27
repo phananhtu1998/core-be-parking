@@ -250,3 +250,20 @@ func (s *sRole) GetAllPermission(ctx context.Context) (codeResult int, out []mod
 	}
 	return response.ErrCodeSucces, out, nil
 }
+
+func (s *sRole) GetAllPermissionByAccountId(ctx context.Context, Account_Id string) (out []model.RolePermission, err error) {
+	// Lấy tất cả quyền của vai trò theo ID vai trò
+	permissions, err := s.r.GetAllPermissionsByAccountId(ctx, Account_Id)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get permissions by role ID: %w", err)
+	}
+	for _, item := range permissions {
+		out = append(out, model.RolePermission{
+			Id:              item.ID,
+			Role_name:       item.RoleName,
+			Menu_group_name: item.MenuGroupName,
+			Method:          string(item.Method),
+		})
+	}
+	return out, nil
+}
