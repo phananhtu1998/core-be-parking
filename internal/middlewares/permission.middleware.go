@@ -3,7 +3,9 @@ package middlewares
 import (
 	"encoding/json"
 	consts "go-backend-api/internal/const"
+	"go-backend-api/internal/model"
 	"go-backend-api/internal/utils/auth"
+	"go-backend-api/internal/utils/cache"
 	"go-backend-api/internal/utils/rbac"
 	"net/http"
 	"strings"
@@ -19,9 +21,13 @@ func PermissionMiddleware(enforcer *casbin.SyncedEnforcer) gin.HandlerFunc {
 		// Lấy token từ request
 		jwtToken, _ := auth.ExtracBearerToken(c)
 		claims, _ := auth.VerifyTokenSubject(jwtToken)
+		var infoUser model.GetCacheToken
+		if err := cache.GetCache(ctx, claims.Subject, &infoUser); err != nil {
+			return
+		}
 
 		// Lấy danh sách quyền của user từ DB
-		lstUserPermission, err := rbac.GetFullPermisionByAccount(ctx, claims.Subject)
+		lstUserPermission, err := rbac.GetFullPermisionByAccount(ctx, infoUser.ID)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Error retrieving user permissions"})
 			c.Abort()
@@ -29,7 +35,7 @@ func PermissionMiddleware(enforcer *casbin.SyncedEnforcer) gin.HandlerFunc {
 		}
 
 		// Xóa quyền cũ để đảm bảo load lại đúng
-		enforcer.DeletePermissionsForUser(claims.Subject)
+		enforcer.DeletePermissionsForUser(infoUser.ID)
 
 		// Load quyền vào Casbin
 		for _, perm := range lstUserPermission {
@@ -42,13 +48,13 @@ func PermissionMiddleware(enforcer *casbin.SyncedEnforcer) gin.HandlerFunc {
 			}
 			// Thêm từng method vào Casbin
 			for _, method := range methods {
-				enforcer.AddPermissionForUser(claims.Subject, perm.Menu_group_name, method)
+				enforcer.AddPermissionForUser(perm.Id, perm.Menu_group_name, method)
 			}
 		}
 
 		// Kiểm tra quyền user với Casbin
 		obj := strings.TrimPrefix(c.Request.URL.Path, consts.HOST_PREFIX)
-		sub := claims.Subject
+		sub := infoUser.ID
 		act := c.Request.Method
 
 		allowed, err := enforcer.Enforce(sub, obj, act)
