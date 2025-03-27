@@ -22,3 +22,10 @@ type RoleHierarchyOutput struct {
 	Role_name string                `json:"role_name"`
 	Children  []RoleHierarchyOutput `json:"children"`
 }
+
+type RolePermission struct {
+	Id              string `json:"id"`
+	Role_name       string `json:"role_name"`
+	Menu_group_name string `json:"menu_group_name"`
+	Method          string `json:"method"`
+}

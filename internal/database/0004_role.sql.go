@@ -8,6 +8,7 @@ package database
 import (
 	"context"
 	"database/sql"
+	"encoding/json"
 	"time"
 )
 
@@ -58,6 +59,98 @@ type DeleteRoleParams struct {
 func (q *Queries) DeleteRole(ctx context.Context, arg DeleteRoleParams) error {
 	_, err := q.db.ExecContext(ctx, deleteRole, arg.UpdateAt, arg.ID)
 	return err
+}
+
+const getAllPermissions = `-- name: GetAllPermissions :many
+SELECT a.id,a.name, r.role_name, m.menu_group_name,rm.list_method as Method FROM account a
+JOIN role_account ra ON ra.account_id = a.id
+JOIN role r ON r.id = ra.role_id
+JOIN roles_menu rm ON rm.role_id = r.id
+JOIN menu m ON m.id = rm.menu_id
+WHERE a.is_deleted = false AND r.is_deleted = false AND m.is_deleted = false
+`
+
+type GetAllPermissionsRow struct {
+	ID            string
+	Name          string
+	RoleName      string
+	MenuGroupName string
+	Method        json.RawMessage
+}
+
+func (q *Queries) GetAllPermissions(ctx context.Context) ([]GetAllPermissionsRow, error) {
+	rows, err := q.db.QueryContext(ctx, getAllPermissions)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []GetAllPermissionsRow
+	for rows.Next() {
+		var i GetAllPermissionsRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.Name,
+			&i.RoleName,
+			&i.MenuGroupName,
+			&i.Method,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getAllPermissionsByAccountId = `-- name: GetAllPermissionsByAccountId :many
+SELECT a.id,a.name, r.role_name, m.menu_group_name,rm.list_method as Method FROM account a
+JOIN role_account ra ON ra.account_id = a.id
+JOIN role r ON r.id = ra.role_id
+JOIN roles_menu rm ON rm.role_id = r.id
+JOIN menu m ON m.id = rm.menu_id
+WHERE a.is_deleted = false AND r.is_deleted = false AND m.is_deleted = false AND a.id = ?
+`
+
+type GetAllPermissionsByAccountIdRow struct {
+	ID            string
+	Name          string
+	RoleName      string
+	MenuGroupName string
+	Method        json.RawMessage
+}
+
+func (q *Queries) GetAllPermissionsByAccountId(ctx context.Context, id string) ([]GetAllPermissionsByAccountIdRow, error) {
+	rows, err := q.db.QueryContext(ctx, getAllPermissionsByAccountId, id)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []GetAllPermissionsByAccountIdRow
+	for rows.Next() {
+		var i GetAllPermissionsByAccountIdRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.Name,
+			&i.RoleName,
+			&i.MenuGroupName,
+			&i.Method,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const getAllRole = `-- name: GetAllRole :many

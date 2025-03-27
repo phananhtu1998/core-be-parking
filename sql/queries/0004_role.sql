@@ -86,3 +86,19 @@ ORDER BY role_left_value ASC LIMIT ? OFFSET ?;
 UPDATE `role`
 SET is_deleted = true, update_at = ?
 WHERE role_left_value >= ? AND role_right_value <= ? AND is_deleted = false;
+
+-- name: GetAllPermissions :many
+SELECT a.id,a.name, r.role_name, m.menu_group_name,rm.list_method as Method FROM account a
+JOIN role_account ra ON ra.account_id = a.id
+JOIN role r ON r.id = ra.role_id
+JOIN roles_menu rm ON rm.role_id = r.id
+JOIN menu m ON m.id = rm.menu_id
+WHERE a.is_deleted = false AND r.is_deleted = false AND m.is_deleted = false;
+
+-- name: GetAllPermissionsByAccountId :many
+SELECT a.id,a.name, r.role_name, m.menu_group_name,rm.list_method as Method FROM account a
+JOIN role_account ra ON ra.account_id = a.id
+JOIN role r ON r.id = ra.role_id
+JOIN roles_menu rm ON rm.role_id = r.id
+JOIN menu m ON m.id = rm.menu_id
+WHERE a.is_deleted = false AND r.is_deleted = false AND m.is_deleted = false AND a.id = ?;

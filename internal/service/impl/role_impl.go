@@ -233,3 +233,20 @@ func (s *sRole) DeleteRole(ctx context.Context, id string) (codeResult int, err 
 
 	return response.ErrCodeSucces, nil
 }
+
+func (s *sRole) GetAllPermission(ctx context.Context) (codeResult int, out []model.RolePermission, err error) {
+	// Lấy tất cả quyền của vai trò
+	permissions, err := s.r.GetAllPermissions(ctx)
+	if err != nil {
+		return response.ErrCodeRoleError, nil, fmt.Errorf("failed to get all permissions: %w", err)
+	}
+	for _, item := range permissions {
+		out = append(out, model.RolePermission{
+			Id:              item.ID,
+			Role_name:       item.RoleName,
+			Menu_group_name: item.MenuGroupName,
+			Method:          string(item.Method),
+		})
+	}
+	return response.ErrCodeSucces, out, nil
+}
