@@ -8,4 +8,6 @@ const (
 	REFRESH_TOKEN         int    = 168
 	HOST_EMAIL            string = "phananhtu1998@gmail.com"
 	HOST_PREFIX           string = "/v1/2025"
+	RATELIMIT_REQUEST     int    = 5
+	RATELIMIT_SECOND      int    = 10
 )

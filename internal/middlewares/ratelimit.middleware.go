@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"go-backend-api/global"
+	consts "go-backend-api/internal/const"
 	"net/http"
 	"time"
 
@@ -24,8 +25,8 @@ func RateLimiterMiddlewareRedis() gin.HandlerFunc {
 		count, _ := client.Get(ctx, key).Int()
 
 		// Giới hạn request (ví dụ: 5 request mỗi 10 giây)
-		limit := 5
-		expiration := 10 * time.Second
+		limit := consts.RATELIMIT_REQUEST
+		expiration := time.Duration(consts.RATELIMIT_SECOND) * time.Second
 
 		if count >= limit {
 			c.JSON(http.StatusTooManyRequests, gin.H{"error": "Too Many Requests"})
