@@ -26,6 +26,6 @@ func (ar *LoginRouter) InitLoginRouter(Router *gin.RouterGroup) {
 	adminRouterRefreshToken := Router.Group("/auth")
 	adminRouterRefreshToken.Use(middlewares.AuthenMiddlewareV2())
 	{
-		adminRouterRefreshToken.POST("/refreshtoken", login.Logins.RefreshTokens)
+		adminRouterRefreshToken.POST("/refresh-token", login.Logins.RefreshTokens)
 	}
 }

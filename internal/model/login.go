@@ -1,7 +1,7 @@
 package model
 
 type LoginInput struct {
-	Username string `json:"user_name" binding:"required" example:"phananhtu1998"`
+	Username string `json:"username" binding:"required" example:"phananhtu1998"`
 	Password string `json:"password" binding:"required" example:"123"`
 }
 

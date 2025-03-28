@@ -378,7 +378,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/auth/refreshtoken": {
+        "/auth/refresh-token": {
             "post": {
                 "description": "RefreshToken",
                 "consumes": [
@@ -1318,14 +1318,14 @@ const docTemplate = `{
             "type": "object",
             "required": [
                 "password",
-                "user_name"
+                "username"
             ],
             "properties": {
                 "password": {
                     "type": "string",
                     "example": "123"
                 },
-                "user_name": {
+                "username": {
                     "type": "string",
                     "example": "phananhtu1998"
                 }

@@ -39,12 +39,12 @@ definitions:
       password:
         example: "123"
         type: string
-      user_name:
+      username:
         example: phananhtu1998
         type: string
     required:
     - password
-    - user_name
+    - username
     type: object
   model.MenuInput:
     properties:
@@ -398,7 +398,7 @@ paths:
       summary: Logout
       tags:
       - Authenticate
-  /auth/refreshtoken:
+  /auth/refresh-token:
     post:
       consumes:
       - application/json

@@ -68,7 +68,7 @@ func (c *cLogin) Logout(ctx *gin.Context) {
 // @Param        RefreshToken  header  string  true  "Refresh Token"
 // @Success      200  {object}  response.ResponseData
 // @Failure      500  {object}  response.ErrorResponseData
-// @Router       /auth/refreshtoken [post]
+// @Router       /auth/refresh-token [post]
 func (c *cLogin) RefreshTokens(ctx *gin.Context) {
 	codeRs, data, err := service.LoginItem().RefreshTokens(ctx.Request.Context()) // truyền ctx.Request.Context để truyền giá trị subjectUUID
 	if err != nil {
