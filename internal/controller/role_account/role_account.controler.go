@@ -32,7 +32,7 @@ func (c *cRoleaccount) CreateRoleAccount(ctx *gin.Context) {
 	var params model.RoleAccount
 	// check valid
 	if err := ctx.ShouldBindJSON(&params); err != nil {
-		ctx.JSON(response.ErrCodeParamInvalid, gin.H{"error": "Invalid input data"})
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input data"})
 		return
 	}
 	code, result, err := service.RoleAccountItem().CreateRoleAccount(ctx, &params)
@@ -144,7 +144,7 @@ func (c *cRoleaccount) UpdateRoleAccount(ctx *gin.Context) {
 	id := ctx.Param("id")
 	var modelRoleAccount model.RoleAccount
 	if err := ctx.ShouldBindJSON(&modelRoleAccount); err != nil {
-		ctx.JSON(response.ErrCodeParamInvalid, gin.H{"error": "Invalid input data"})
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input data"})
 		return
 	}
 	if _, err := uuid.Parse(id); err != nil {

@@ -116,7 +116,6 @@ definitions:
         type: string
     required:
     - account_id
-    - license_id
     - role_id
     type: object
   model.RolesMenu:

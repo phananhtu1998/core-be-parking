@@ -1416,7 +1416,6 @@ const docTemplate = `{
             "type": "object",
             "required": [
                 "account_id",
-                "license_id",
                 "role_id"
             ],
             "properties": {

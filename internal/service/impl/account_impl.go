@@ -41,6 +41,9 @@ func (s *sAccount) CreateAccount(ctx context.Context, in *model.AccountInput) (c
 	if accountFound > 0 {
 		return response.ErrCodeUserHasExists, model.AccountOutput{}, fmt.Errorf("Username has already registered")
 	}
+	// TODO: Kiểm tra quyền mà account tạo
+	subjectUUID := ctx.Value("subjectUUID")
+	println("subjectUUID account: ", subjectUUID)
 	// TODO: hash Password
 	accountBase := database.Account{}
 	userSalt, err := crypto.GenerateSalt(16)
