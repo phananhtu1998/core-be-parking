@@ -62,3 +62,8 @@ WHERE id = ?;
 SELECT COUNT(*)
 FROM `account`
 WHERE email = ?;
+
+-- name: CheckAccountUserNameExists :one
+SELECT COUNT(*)
+FROM `account`
+WHERE username = ?;

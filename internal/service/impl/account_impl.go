@@ -33,6 +33,14 @@ func (s *sAccount) CreateAccount(ctx context.Context, in *model.AccountInput) (c
 	if accountFound > 0 {
 		return response.ErrCodeUserHasExists, model.AccountOutput{}, fmt.Errorf("Email has already registered")
 	}
+	// TODO: check Username
+	accountFound, err = s.r.CheckAccountBaseExists(ctx, in.UserName)
+	if err != nil {
+		return response.ErrCodeUserHasExists, model.AccountOutput{}, err
+	}
+	if accountFound > 0 {
+		return response.ErrCodeUserHasExists, model.AccountOutput{}, fmt.Errorf("Username has already registered")
+	}
 	// TODO: hash Password
 	accountBase := database.Account{}
 	userSalt, err := crypto.GenerateSalt(16)

@@ -42,6 +42,19 @@ func (q *Queries) CheckAccountBaseExists(ctx context.Context, email string) (int
 	return count, err
 }
 
+const checkAccountUserNameExists = `-- name: CheckAccountUserNameExists :one
+SELECT COUNT(*)
+FROM ` + "`" + `account` + "`" + `
+WHERE username = ?
+`
+
+func (q *Queries) CheckAccountUserNameExists(ctx context.Context, username string) (int64, error) {
+	row := q.db.QueryRowContext(ctx, checkAccountUserNameExists, username)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
 const deleteAccountById = `-- name: DeleteAccountById :exec
 UPDATE account 
 SET
