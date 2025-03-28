@@ -2,10 +2,12 @@ package impl
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 	"go-backend-api/global"
 	"go-backend-api/internal/database"
 	"go-backend-api/internal/model"
+	"go-backend-api/internal/utils/cache"
 	"go-backend-api/internal/utils/crypto"
 	"go-backend-api/pkg/response"
 	"log"
@@ -16,15 +18,33 @@ import (
 )
 
 type sAccount struct {
-	r *database.Queries
+	r   *database.Queries
+	qTx *sql.Tx
+	db  *sql.DB
 }
 
-func NewAccountImpl(r *database.Queries) *sAccount {
-	return &sAccount{r: r}
+func NewAccountImpl(r *database.Queries, qTx *sql.Tx, db *sql.DB) *sAccount {
+	return &sAccount{
+		r:   r,
+		qTx: qTx,
+		db:  db,
+	}
 }
 
 // Tạo tài khoản mới
 func (s *sAccount) CreateAccount(ctx context.Context, in *model.AccountInput) (codeResult int, out model.AccountOutput, err error) {
+	// Khởi tạo transaction
+	tx, err := s.db.BeginTx(ctx, nil)
+	if err != nil {
+		return response.ErrCodeMenuErrror, out, fmt.Errorf("failed to begin transaction: %w", err)
+	}
+
+	var committed bool
+	defer func() {
+		if !committed {
+			tx.Rollback()
+		}
+	}()
 	// TODO: check Email
 	accountFound, err := s.r.CheckAccountBaseExists(ctx, in.Email)
 	if err != nil {
@@ -41,9 +61,33 @@ func (s *sAccount) CreateAccount(ctx context.Context, in *model.AccountInput) (c
 	if accountFound > 0 {
 		return response.ErrCodeUserHasExists, model.AccountOutput{}, fmt.Errorf("Username has already registered")
 	}
-	// TODO: Kiểm tra quyền mà account tạo
+	// TODO: Kiểm tra số lượng quyền được phép tạo
 	subjectUUID := ctx.Value("subjectUUID")
 	println("subjectUUID account: ", subjectUUID)
+	var infoUser model.GetCacheToken
+	// Lấy Id tài khoản đang đăng nhập từ context
+	if err := cache.GetCache(ctx, subjectUUID.(string), &infoUser); err != nil {
+		return 0, out, err
+	}
+	// Lấy role id và kiểm tra count là bao nhiêu
+	roleId, err := s.r.GetOneRoleAccountByAccountId(ctx, infoUser.ID)
+	if err != nil {
+		return response.ErrCodeUserOtpNotExists, model.AccountOutput{}, err
+	}
+	// Lấy số lượng tài khoản đã tạo theo role
+	countRoleId, err := s.r.CheckCountRoleId(ctx, roleId.RoleID)
+	if err != nil {
+		return response.ErrCodeRoleNotFound, model.AccountOutput{}, err
+	}
+	//Lấy số lượng tài khoản theo role được phép tạo
+	countmaxrole, err := s.r.GetRoleById(ctx, roleId.RoleID)
+	if err != nil {
+		return response.ErrCodeRoleNotFound, model.AccountOutput{}, err
+	}
+	// Kiểm tra số lượng tài khoản đã tạo theo role có lớn hơn số lượng tài khoản được phép tạo hay không
+	if countRoleId >= countmaxrole.RoleMaxNumber {
+		return response.ErrCodeRoleAccountMaxNumber, model.AccountOutput{}, fmt.Errorf("Role đã đạt số lượng tài khoản tối đa")
+	}
 	// TODO: hash Password
 	accountBase := database.Account{}
 	userSalt, err := crypto.GenerateSalt(16)
@@ -68,6 +112,17 @@ func (s *sAccount) CreateAccount(ctx context.Context, in *model.AccountInput) (c
 		log.Printf("Lỗi khi chèn tài khoản: %v", err)
 		return response.ErrCodeParamInvalid, model.AccountOutput{}, err
 	}
+	// thêm vào bảng role account
+	err = s.r.CreateRoleAccount(ctx, database.CreateRoleAccountParams{
+		ID:        newUUID,
+		AccountID: newUUID,
+		RoleID:    roleId.RoleID,
+		LicenseID: "",
+	})
+	if err != nil {
+		log.Printf("Lỗi khi chèn tài khoản vào bảng role account: %v", err)
+		return response.ErrCodeParamInvalid, model.AccountOutput{}, err
+	}
 	accountOutput := model.AccountOutput{
 		ID:       newUUID,
 		Name:     in.Name,
@@ -76,6 +131,12 @@ func (s *sAccount) CreateAccount(ctx context.Context, in *model.AccountInput) (c
 		Status:   in.Status,
 		Images:   in.Images,
 	}
+	// Commit transaction
+	err = tx.Commit()
+	if err != nil {
+		return response.ErrCodeMenuErrror, out, err
+	}
+	committed = true
 	return response.ErrCodeSucces, accountOutput, err
 }
 

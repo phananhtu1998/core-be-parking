@@ -15,7 +15,7 @@ func InitServiceInterface() {
 		return
 	}
 	// user service interface
-	service.InitAccountItem(impl.NewAccountImpl(queries))
+	service.InitAccountItem(impl.NewAccountImpl(queries, tx, global.Mdbc))
 	service.InitLoginItem(impl.NewLoginImpl(queries))
 	service.InitMenuItem(impl.NewMenuImpl(queries, tx, global.Mdbc))
 	service.InitRoleItem(impl.NewRoleImpl(queries, tx, global.Mdbc))

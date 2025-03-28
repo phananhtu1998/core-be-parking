@@ -10,6 +10,19 @@ import (
 	"time"
 )
 
+const checkCountRoleId = `-- name: CheckCountRoleId :one
+SELECT COUNT(*)
+FROM ` + "`" + `role_account` + "`" + `
+WHERE role_id = ? AND is_deleted = false
+`
+
+func (q *Queries) CheckCountRoleId(ctx context.Context, roleID string) (int64, error) {
+	row := q.db.QueryRowContext(ctx, checkCountRoleId, roleID)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
 const createRoleAccount = `-- name: CreateRoleAccount :exec
 INSERT INTO ` + "`" + `role_account` + "`" + ` (id, account_id, role_id, license_id, is_deleted, create_at, update_at)
 VALUES (?, ?, ?, ?, false, NOW(), NOW())
@@ -82,6 +95,35 @@ func (q *Queries) GetAllRoleAccount(ctx context.Context) ([]GetAllRoleAccountRow
 		return nil, err
 	}
 	return items, nil
+}
+
+const getOneRoleAccountByAccountId = `-- name: GetOneRoleAccountByAccountId :one
+SELECT id, account_id, role_id, license_id, create_at, update_at
+FROM ` + "`" + `role_account` + "`" + `
+WHERE is_deleted = false AND account_id = ?
+`
+
+type GetOneRoleAccountByAccountIdRow struct {
+	ID        string
+	AccountID string
+	RoleID    string
+	LicenseID string
+	CreateAt  time.Time
+	UpdateAt  time.Time
+}
+
+func (q *Queries) GetOneRoleAccountByAccountId(ctx context.Context, accountID string) (GetOneRoleAccountByAccountIdRow, error) {
+	row := q.db.QueryRowContext(ctx, getOneRoleAccountByAccountId, accountID)
+	var i GetOneRoleAccountByAccountIdRow
+	err := row.Scan(
+		&i.ID,
+		&i.AccountID,
+		&i.RoleID,
+		&i.LicenseID,
+		&i.CreateAt,
+		&i.UpdateAt,
+	)
+	return i, err
 }
 
 const getRoleAccountByAccountId = `-- name: GetRoleAccountByAccountId :many

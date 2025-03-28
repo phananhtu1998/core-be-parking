@@ -133,7 +133,7 @@ func (ac *cAccount) CreateAccount(ctx *gin.Context) {
 	}
 
 	// call service CreateAccount
-	code, account, err := service.AccountItem().CreateAccount(ctx, &params)
+	code, account, err := service.AccountItem().CreateAccount(ctx.Request.Context(), &params)
 	if err != nil {
 		log.Printf("Error creating account: %v", err)
 		response.ErrorResponse(ctx, code, err.Error())

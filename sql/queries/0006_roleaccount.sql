@@ -31,3 +31,14 @@ WHERE id = ? AND is_deleted = false;
 UPDATE `role_account`
 SET is_deleted = true, update_at = NOW()
 WHERE id IN (?);
+
+
+-- name: GetOneRoleAccountByAccountId :one
+SELECT id, account_id, role_id, license_id, create_at, update_at
+FROM `role_account`
+WHERE is_deleted = false AND account_id = ?;
+
+-- name: CheckCountRoleId :one
+SELECT COUNT(*)
+FROM `role_account`
+WHERE role_id = ? AND is_deleted = false;
