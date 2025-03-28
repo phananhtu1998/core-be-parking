@@ -14,7 +14,7 @@ import (
 )
 
 // RateLimiterMiddlewareRedis giới hạn tốc độ request bằng Redis
-func RateLimiterMiddlewareRedis() gin.HandlerFunc {
+func RateLimiterPrivateMiddlewareRedis() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		client := global.Rdb
 		ctx := c.Request.Context()
@@ -34,8 +34,8 @@ func RateLimiterMiddlewareRedis() gin.HandlerFunc {
 		count, _ := client.Get(ctx, key).Int()
 
 		// Giới hạn request (ví dụ: 5 request mỗi 10 giây)
-		limit := consts.RATELIMIT_REQUEST
-		expiration := time.Duration(consts.RATELIMIT_SECOND) * time.Second
+		limit := consts.RATELIMIT_REQUEST_PRIVATE
+		expiration := time.Duration(consts.RATELIMIT_SECOND__PRIVATE) * time.Second
 
 		if count >= limit {
 			c.JSON(http.StatusTooManyRequests, gin.H{"error": "Too Many Requests"})
@@ -45,6 +45,37 @@ func RateLimiterMiddlewareRedis() gin.HandlerFunc {
 		// Tăng số request và đặt thời gian hết hạn Expire key sau 10 giây
 		client.Incr(ctx, key)
 		client.Expire(ctx, key, expiration)
+		c.Next()
+	}
+}
+
+func RateLimiterGlobalMiddlewareRedis() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		ctx := c.Request.Context()
+		client := global.Rdb
+		key := "ratelimit:global"
+
+		// Sử dụng Redis Pipeline để tối ưu hiệu suất
+		pipe := client.TxPipeline()
+
+		// Tăng số request hiện tại
+		count := pipe.Incr(ctx, key)
+		pipe.Expire(ctx, key, time.Duration(consts.RATELIMIT_SECOND__GLOBAL)*time.Second)
+
+		_, err := pipe.Exec(ctx)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Redis error"})
+			c.Abort()
+			return
+		}
+
+		// Nếu request vượt quá giới hạn, trả về lỗi 429
+		if count.Val() > int64(consts.RATELIMIT_REQUEST_GLOBAL) {
+			c.JSON(http.StatusTooManyRequests, gin.H{"error": "Too Many Requests"})
+			c.Abort()
+			return
+		}
+
 		c.Next()
 	}
 }

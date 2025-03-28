@@ -3,6 +3,7 @@ package initialize
 import (
 	"go-backend-api/global"
 	consts "go-backend-api/internal/const"
+	"go-backend-api/internal/middlewares"
 	"go-backend-api/internal/routers"
 
 	"github.com/gin-gonic/gin"
@@ -19,7 +20,7 @@ func InitRouter() *gin.Engine {
 		r = gin.New()
 	}
 	// middleware
-	r.Use()
+	r.Use(middlewares.RateLimiterGlobalMiddlewareRedis())
 	manageRouter := routers.RouterGroupApp.Manage
 	loginRouter := routers.RouterGroupApp.Login
 	menuRouter := routers.RouterGroupApp.Menu
@@ -28,6 +29,11 @@ func InitRouter() *gin.Engine {
 	roleAccountRouter := routers.RouterGroupApp.RoleAccount
 	MainGroup := r.Group(consts.HOST_PREFIX)
 	{
+		MainGroup.GET("/ping", func(c *gin.Context) {
+			c.JSON(200, gin.H{
+				"status": "pong",
+			})
+		})
 		MainGroup.GET("/checkstatus") //tracking monitor
 	}
 	{

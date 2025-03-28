@@ -1,8 +1,8 @@
 config:
-  target: "http://localhost:8002/v1/2025/admin/get_all_account"
+  target: "http://localhost:8002/v1/2025/ping"
   phases:
-    - duration: 6  # Chạy trong 30 giây
-      arrivalRate: 1000  # 1000 requests mỗi giây (RPS)
+    - duration: 1  # Chạy trong 1 giây
+      arrivalRate: 1200  # 1000 requests mỗi giây (RPS)
 
 scenarios:
   - flow:
