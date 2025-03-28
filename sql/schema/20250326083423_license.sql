@@ -2,7 +2,7 @@
 -- +goose StatementBegin
 CREATE TABLE `license`(
     `id` CHAR(36) NOT NULL,
-    `license` VARCHAR(255) NOT NULL,
+    `license` TEXT NOT NULL,
     `date_start` DATETIME NOT NULL,
     `date_end` DATETIME NOT NULL,
     `created_at` TIMESTAMP NOT NULL,

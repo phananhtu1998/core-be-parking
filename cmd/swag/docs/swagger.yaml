@@ -34,6 +34,18 @@ definitions:
       oldpassword:
         type: string
     type: object
+  model.License:
+    properties:
+      dateend:
+        example: "2025-03-30 11:22:30"
+        type: string
+      datestart:
+        example: "2025-03-28 11:22:30"
+        type: string
+    required:
+    - dateend
+    - datestart
+    type: object
   model.LoginInput:
     properties:
       password:
@@ -422,6 +434,38 @@ paths:
       summary: RefreshToken
       tags:
       - Authenticate
+  /license/create_license:
+    post:
+      consumes:
+      - application/json
+      description: API này cho phép mới license
+      parameters:
+      - description: Thông tin License cần tạo
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/model.License'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ResponseData'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponseData'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponseData'
+      security:
+      - BearerAuth: []
+      summary: Tạo mới license
+      tags:
+      - License
   /menu/create_menu:
     post:
       consumes:

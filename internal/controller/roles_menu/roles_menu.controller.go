@@ -4,6 +4,7 @@ import (
 	"go-backend-api/internal/model"
 	"go-backend-api/internal/service"
 	"go-backend-api/pkg/response"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
@@ -27,14 +28,14 @@ type cRolesMenu struct {
 // @Router /rolesmenu/create_roles_menu [post]
 func (c *cRolesMenu) CreateRolesMenu(ctx *gin.Context) {
 	// Lấy dữ liệu từ request body
-	var input model.RolesMenu
-	if err := ctx.ShouldBindJSON(&input); err != nil {
-		response.ErrorResponse(ctx, response.ErrCodeRoleMenuError, err.Error())
+	var params model.RolesMenu
+	if err := ctx.ShouldBindJSON(&params); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input data"})
 		return
 	}
 
 	// Gọi service để tạo roles menu
-	code, result, err := service.RolesMenuItem().CreateRolesMenu(ctx, &input)
+	code, result, err := service.RolesMenuItem().CreateRolesMenu(ctx, &params)
 	if err != nil {
 		response.ErrorResponse(ctx, code, err.Error())
 		return

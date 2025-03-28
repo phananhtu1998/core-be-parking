@@ -12,18 +12,24 @@ import (
 )
 
 const createLicense = `-- name: CreateLicense :execresult
-INSERT INTO ` + "`" + `license` + "`" + ` (license, date_start, date_end, created_at, update_at, is_deleted)
-    VALUES (?, ?, ?, NOW(), NOW(), false)
+INSERT INTO ` + "`" + `license` + "`" + ` (id,license, date_start, date_end, created_at, update_at, is_deleted)
+    VALUES (?,?, ?, ?, NOW(), NOW(), false)
 `
 
 type CreateLicenseParams struct {
+	ID        string
 	License   string
 	DateStart time.Time
 	DateEnd   time.Time
 }
 
 func (q *Queries) CreateLicense(ctx context.Context, arg CreateLicenseParams) (sql.Result, error) {
-	return q.db.ExecContext(ctx, createLicense, arg.License, arg.DateStart, arg.DateEnd)
+	return q.db.ExecContext(ctx, createLicense,
+		arg.ID,
+		arg.License,
+		arg.DateStart,
+		arg.DateEnd,
+	)
 }
 
 const deleteLicense = `-- name: DeleteLicense :exec

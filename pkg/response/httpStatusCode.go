@@ -36,6 +36,8 @@ const (
 	ErrCodeRoleAccountValid    = 12004 //
 	// error code account
 	ErrCodeRoleAccountMaxNumber = 13002 // role account max number
+	// error code license
+	ErrCodeLicenseValid = 13000
 )
 
 // message
@@ -65,4 +67,5 @@ var msg = map[int]string{
 	ErrCodeRoleAccountNotFound:       "role account not found",
 	ErrCodeRoleAccountValid:          "role account valid",
 	ErrCodeRoleAccountMaxNumber:      "role account max number",
+	ErrCodeLicenseValid:              "License valid",
 }

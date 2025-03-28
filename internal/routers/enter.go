@@ -1,6 +1,7 @@
 package routers
 
 import (
+	"go-backend-api/internal/routers/license"
 	"go-backend-api/internal/routers/login"
 	"go-backend-api/internal/routers/manage"
 	"go-backend-api/internal/routers/menu"
@@ -16,6 +17,7 @@ type RouterGroup struct {
 	Role        role.RoleRouterGroup
 	RolesMenu   rolesmenu.RolesMenuRouterGroup
 	RoleAccount roleaccount.RoleAccountRouterGroup
+	License     license.LicenseRouterGroup
 }
 
 var RouterGroupApp = new(RouterGroup)

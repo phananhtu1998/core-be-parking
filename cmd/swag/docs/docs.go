@@ -416,6 +416,57 @@ const docTemplate = `{
                 }
             }
         },
+        "/license/create_license": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "API này cho phép mới license",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "License"
+                ],
+                "summary": "Tạo mới license",
+                "parameters": [
+                    {
+                        "description": "Thông tin License cần tạo",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.License"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResponseData"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponseData"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponseData"
+                        }
+                    }
+                }
+            }
+        },
         "/menu/create_menu": {
             "post": {
                 "security": [
@@ -1311,6 +1362,23 @@ const docTemplate = `{
                 },
                 "oldpassword": {
                     "type": "string"
+                }
+            }
+        },
+        "model.License": {
+            "type": "object",
+            "required": [
+                "dateend",
+                "datestart"
+            ],
+            "properties": {
+                "dateend": {
+                    "type": "string",
+                    "example": "2025-03-30 11:22:30"
+                },
+                "datestart": {
+                    "type": "string",
+                    "example": "2025-03-28 11:22:30"
                 }
             }
         },

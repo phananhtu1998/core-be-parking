@@ -9,8 +9,8 @@ FROM `license`
 WHERE is_deleted = false;
 
 -- name: CreateLicense :execresult
-INSERT INTO `license` (license, date_start, date_end, created_at, update_at, is_deleted)
-    VALUES (?, ?, ?, NOW(), NOW(), false);
+INSERT INTO `license` (id,license, date_start, date_end, created_at, update_at, is_deleted)
+    VALUES (?,?, ?, ?, NOW(), NOW(), false);
 
 -- name: UpdateLicense :exec
 UPDATE license

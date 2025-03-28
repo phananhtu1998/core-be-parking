@@ -48,14 +48,20 @@ func CreateToken(uuidToken string) (string, error) {
 		},
 	})
 }
-func CreateTokenNoExpiration(payload string) (string, error) {
-	return GenTokenJWT(&PayloadClaims{
-		StandardClaims: jwt.StandardClaims{
-			Id:      uuid.New().String(),
-			Issuer:  "parkingdevgo",
-			Subject: payload,
-		},
-	})
+func CreateTokenNoExpiration(dateStart, dateEnd string) (string, error) {
+	// Create custom claims
+	claims := jwt.MapClaims{
+		"jti":       uuid.New().String(),
+		"iss":       "parkingdevgo",
+		"datestart": dateStart,
+		"dateend":   dateEnd,
+	}
+
+	// Create token with custom claims
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+
+	// Sign and get the complete encoded token as a string
+	return token.SignedString([]byte(global.Config.JWT.API_SECRET_KEY))
 }
 func CreateRefreshToken(uuidToken string) (string, error) {
 	// 1. Set time expiration
