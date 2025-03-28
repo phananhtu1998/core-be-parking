@@ -1,16 +1,16 @@
 -- name: GetAccountById :one
-SELECT id, number, name, email, status,images,salt, password
+SELECT id, number, name,username, email, status,images,salt, password
 FROM `account`
 WHERE id = ? AND is_deleted = false;
 
 -- name: GetOneAccountInfoAdmin :one
-SELECT id, number, name, email, password,salt,status,create_at,update_at, images
+SELECT id, number, name, email,username, password,salt,status,create_at,update_at, images
 FROM `account`
-WHERE email = ? AND is_deleted = false;
+WHERE username = ? AND is_deleted = false;
 
 
 -- name: GetAllAccounts :many
-SELECT id, number, name, email, status, images
+SELECT id, number, name, email,username, status, images
 FROM `account`
 WHERE is_deleted = false;
 
@@ -18,6 +18,7 @@ WHERE is_deleted = false;
 INSERT INTO `account` (
     id,
     number,
+    username,
     name,
     email,
     password,
@@ -28,12 +29,13 @@ INSERT INTO `account` (
     create_at,
     update_at
 )
-VALUES(?,?,?,?,?,?,?,?,false,NOW(),NOW());
+VALUES(?,?,?,?,?,?,?,?,?,false,NOW(),NOW());
 
 -- name: EditAccountById :exec
 UPDATE account 
 SET
     name = ?,
+    username = ?,
     email = ?,
     password = ?,
     status = ?,

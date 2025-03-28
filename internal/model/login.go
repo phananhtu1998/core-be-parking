@@ -1,20 +1,20 @@
 package model
 
 type LoginInput struct {
-	Email    string `json:"email" binding:"required" example:"phananhtu1998@gmail.com"`
+	Username string `json:"user_name" binding:"required" example:"phananhtu1998"`
 	Password string `json:"password" binding:"required" example:"123"`
 }
 
 type LoginOutput struct {
 	ID           string `json:"id"`
-	Email        string `json:"email"`
+	UserName     string `json:"username"`
 	AccessToken  string `json:"accesstoken"`
 	RefreshToken string `json:"refreshToken"`
 }
 
 type GetCacheToken struct {
-	ID    string `json:"id"`
-	Email string `json:"email"`
+	ID       string `json:"id"`
+	UserName string `json:"username"`
 }
 
 type ChangePasswordInput struct {
@@ -24,7 +24,7 @@ type ChangePasswordInput struct {
 }
 
 type GetCacheTokenForChangePassword struct {
-	ID     string `json:"id"`
-	Email  string `json:"email"`
-	Number int64  `json:"number"`
+	ID       string `json:"id"`
+	UserName string `json:"username"`
+	Number   int64  `json:"number"`
 }

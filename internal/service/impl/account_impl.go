@@ -46,6 +46,7 @@ func (s *sAccount) CreateAccount(ctx context.Context, in *model.AccountInput) (c
 		ID:       newUUID,
 		Number:   rand.Int31(),
 		Name:     in.Name,
+		Username: in.UserName,
 		Email:    in.Email,
 		Password: accountBase.Password,
 		Salt:     userSalt,
@@ -57,11 +58,12 @@ func (s *sAccount) CreateAccount(ctx context.Context, in *model.AccountInput) (c
 		return response.ErrCodeParamInvalid, model.AccountOutput{}, err
 	}
 	accountOutput := model.AccountOutput{
-		ID:     newUUID,
-		Name:   in.Name,
-		Email:  in.Email,
-		Status: in.Status,
-		Images: in.Images,
+		ID:       newUUID,
+		Name:     in.Name,
+		Email:    in.Email,
+		UserName: in.UserName,
+		Status:   in.Status,
+		Images:   in.Images,
 	}
 	return response.ErrCodeSucces, accountOutput, err
 }
@@ -78,11 +80,12 @@ func (s *sAccount) GetAccountById(ctx context.Context, id string) (codeResult in
 	//log.Println("hashpass: ", hashpass)
 	log.Println("checkpass: ", checkpass)
 	return response.ErrCodeSucces, model.AccountOutput{
-		ID:     accountItem.ID,
-		Name:   accountItem.Name,
-		Email:  accountItem.Email,
-		Status: accountItem.Status,
-		Images: accountItem.Images,
+		ID:       accountItem.ID,
+		UserName: accountItem.Username,
+		Name:     accountItem.Name,
+		Email:    accountItem.Email,
+		Status:   accountItem.Status,
+		Images:   accountItem.Images,
 	}, nil
 }
 
@@ -105,11 +108,12 @@ func (s *sAccount) UpdateAccount(ctx context.Context, in *model.AccountInput, id
 		return response.ErrCodeParamInvalid, model.AccountOutput{}, err
 	}
 	accountOutput := model.AccountOutput{
-		ID:     updatedAccount.ID,
-		Name:   updatedAccount.Name,
-		Email:  updatedAccount.Email,
-		Status: updatedAccount.Status,
-		Images: updatedAccount.Images,
+		ID:       updatedAccount.ID,
+		Name:     updatedAccount.Name,
+		UserName: updatedAccount.Username,
+		Email:    updatedAccount.Email,
+		Status:   updatedAccount.Status,
+		Images:   updatedAccount.Images,
 	}
 	return response.ErrCodeSucces, accountOutput, nil
 }
@@ -132,11 +136,12 @@ func (s *sAccount) GetAllAccount(ctx context.Context) (codeResult int, out []mod
 	}
 	for _, item := range lst {
 		out = append(out, model.AccountOutput{
-			ID:     item.ID,
-			Name:   item.Name,
-			Email:  item.Email,
-			Status: item.Status,
-			Images: item.Images,
+			ID:       item.ID,
+			Name:     item.Name,
+			UserName: item.Username,
+			Email:    item.Email,
+			Status:   item.Status,
+			Images:   item.Images,
 		})
 	}
 

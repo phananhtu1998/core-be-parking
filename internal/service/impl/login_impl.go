@@ -29,12 +29,12 @@ func NewLoginImpl(r *database.Queries) *sLogin {
 }
 
 func (s *sLogin) Login(ctx context.Context, in *model.LoginInput) (codeResult int, out model.LoginOutput, err error) {
-	accountBase, err := s.r.GetOneAccountInfoAdmin(ctx, in.Email)
+	accountBase, err := s.r.GetOneAccountInfoAdmin(ctx, in.Username)
 	if err != nil {
 		return response.ErrCodeAuthFailed, out, err
 	}
 	out.ID = accountBase.ID
-	out.Email = accountBase.Email
+	out.UserName = accountBase.Username
 	log.Println("matching pass: ", crypto.MatchingPassword(accountBase.Password, in.Password, accountBase.Salt))
 	if !crypto.MatchingPassword(accountBase.Password, in.Password, accountBase.Salt) {
 		return response.ErrCodeAuthFailed, out, fmt.Errorf("does not match password")
@@ -143,7 +143,7 @@ func (s *sLogin) RefreshTokens(ctx context.Context) (codeResult int, out model.L
 		err := s.r.DeleteKey(ctx, infoUser.ID)
 		return response.ErrCodeAuthFailed, out, err
 	}
-	accountBase, err := s.r.GetOneAccountInfoAdmin(ctx, infoUser.Email)
+	accountBase, err := s.r.GetOneAccountInfoAdmin(ctx, infoUser.UserName)
 	if err != nil {
 		return response.ErrCodeAuthFailed, out, fmt.Errorf("Lỗi lấy thông tin tài khoản")
 	}
@@ -163,7 +163,7 @@ func (s *sLogin) RefreshTokens(ctx context.Context) (codeResult int, out model.L
 		return response.ErrCodeAuthFailed, out, fmt.Errorf("lỗi ở phần set vào redis")
 	}
 	out.ID = accountBase.ID
-	out.Email = accountBase.Email
+	out.UserName = accountBase.Username
 	out.AccessToken, err = auth.CreateToken(subToken)
 	out.RefreshToken, err = auth.CreateRefreshToken(subToken)
 	err = s.r.UpdateRefreshTokenAndUsedTokens(ctx, database.UpdateRefreshTokenAndUsedTokensParams{
@@ -216,7 +216,7 @@ func (s *sLogin) ChangePassword(ctx context.Context, in *model.ChangePasswordInp
 	}
 	// set lại thông tin cho output
 	out.ID = infoUser.ID
-	out.Email = infoUser.Email
+	out.UserName = infoUser.UserName
 	subToken := utils.GenerateCliTokenUUID(int(infoUser.Number))
 	out.AccessToken, err = auth.CreateToken(subToken)
 	out.RefreshToken, err = auth.CreateRefreshToken(subToken)

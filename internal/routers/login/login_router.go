@@ -1,7 +1,6 @@
 package login
 
 import (
-	"go-backend-api/global"
 	"go-backend-api/internal/controller/login"
 	"go-backend-api/internal/middlewares"
 
@@ -19,7 +18,7 @@ func (ar *LoginRouter) InitLoginRouter(Router *gin.RouterGroup) {
 	}
 	adminRouterPrivate := Router.Group("/auth")
 	adminRouterPrivate.Use(middlewares.AuthenMiddleware())
-	adminRouterPrivate.Use(middlewares.PermissionMiddleware(global.Enforcer))
+	//adminRouterPrivate.Use(middlewares.PermissionMiddleware(global.Enforcer))
 	{
 		adminRouterPrivate.POST("/logout", login.Logins.Logout)
 		adminRouterPrivate.POST("/change_password", login.Logins.ChangePassword)

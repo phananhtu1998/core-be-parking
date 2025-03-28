@@ -16,6 +16,7 @@ type Account struct {
 	Number   int32
 	Name     string
 	Email    string
+	Username string
 	Password string
 	Salt     string
 	// [active,inactive]

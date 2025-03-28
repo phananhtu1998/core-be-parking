@@ -1271,7 +1271,8 @@ const docTemplate = `{
             "required": [
                 "email",
                 "name",
-                "password"
+                "password",
+                "username"
             ],
             "properties": {
                 "email": {
@@ -1292,6 +1293,10 @@ const docTemplate = `{
                 },
                 "status": {
                     "type": "boolean"
+                },
+                "username": {
+                    "type": "string",
+                    "example": "admin"
                 }
             }
         },
@@ -1312,17 +1317,17 @@ const docTemplate = `{
         "model.LoginInput": {
             "type": "object",
             "required": [
-                "email",
-                "password"
+                "password",
+                "user_name"
             ],
             "properties": {
-                "email": {
-                    "type": "string",
-                    "example": "phananhtu1998@gmail.com"
-                },
                 "password": {
                     "type": "string",
                     "example": "123"
+                },
+                "user_name": {
+                    "type": "string",
+                    "example": "phananhtu1998"
                 }
             }
         },

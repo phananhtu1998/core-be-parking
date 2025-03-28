@@ -16,10 +16,14 @@ definitions:
         type: string
       status:
         type: boolean
+      username:
+        example: admin
+        type: string
     required:
     - email
     - name
     - password
+    - username
     type: object
   model.ChangePasswordInput:
     properties:
@@ -32,15 +36,15 @@ definitions:
     type: object
   model.LoginInput:
     properties:
-      email:
-        example: phananhtu1998@gmail.com
-        type: string
       password:
         example: "123"
         type: string
+      user_name:
+        example: phananhtu1998
+        type: string
     required:
-    - email
     - password
+    - user_name
     type: object
   model.MenuInput:
     properties:
