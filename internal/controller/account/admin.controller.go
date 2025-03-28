@@ -124,7 +124,8 @@ func (ac *cAccount) DeleteAccount(ctx *gin.Context) {
 // @Router       /admin/create_account [POST]
 func (ac *cAccount) CreateAccount(ctx *gin.Context) {
 	var params model.AccountInput
-
+	//  Lấy role account của tài khoản đang tạo
+	// Kiểm tra số lượng account được phép tạo
 	// check valid
 	if err := ctx.ShouldBindJSON(&params); err != nil {
 		ctx.JSON(response.ErrCodeParamInvalid, gin.H{"error": "Invalid input data"})
@@ -142,3 +143,5 @@ func (ac *cAccount) CreateAccount(ctx *gin.Context) {
 	// respone data
 	response.SuccessResponse(ctx, code, account)
 }
+
+// tạo người dùng thì truyền role_id
