@@ -220,7 +220,11 @@ func (s *sAccount) GetAllAccount(ctx context.Context) (codeResult int, out []mod
 	log.Println("Successfully fetched accounts:", len(out))
 	return response.ErrCodeSucces, out, nil
 }
-func (s *sAccount) CreateUser(ctx context.Context, in *model.AccountInput) (codeResult int, out model.AccountOutput, err error) {
-
+func (s *sAccount) CreateUser(ctx context.Context, in *model.UserInput) (codeResult int, out model.AccountOutput, err error) {
+	// Kiểm tra user và email có tồn tại hay chưa
+	//TODO: hash Password
+	// thêm vào bảng account
+	// thêm vào bảng role account
+	// Trả về kết quả
 	return codeResult, out, err
 }

@@ -15,3 +15,7 @@ type AccountOutput struct {
 	Status   bool   `json:"status"`
 	Images   string `json:"images"`
 }
+type UserInput struct {
+	RoleId string `json:"role_id" binding:"required" example:"2b796313-1134-44b3-b527-2c27d41a1624"`
+	AccountInput
+}
