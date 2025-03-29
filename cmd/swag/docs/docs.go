@@ -1322,6 +1322,7 @@ const docTemplate = `{
             "required": [
                 "email",
                 "name",
+                "role_id",
                 "username"
             ],
             "properties": {
@@ -1336,6 +1337,10 @@ const docTemplate = `{
                 "name": {
                     "type": "string",
                     "example": "Admin"
+                },
+                "role_id": {
+                    "type": "string",
+                    "example": "2b796313-1134-44b3-b527-2c27d41a1624"
                 },
                 "status": {
                     "type": "boolean"

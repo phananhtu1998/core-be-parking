@@ -11,6 +11,9 @@ definitions:
       name:
         example: Admin
         type: string
+      role_id:
+        example: 2b796313-1134-44b3-b527-2c27d41a1624
+        type: string
       status:
         type: boolean
       username:
@@ -19,6 +22,7 @@ definitions:
     required:
     - email
     - name
+    - role_id
     - username
     type: object
   model.ChangePasswordInput:

@@ -137,12 +137,8 @@ func (ac *cMenu) EditMenuById(ctx *gin.Context) {
 // @Router       /menu/delete/{id} [DELETE]
 func (ac *cMenu) DeleteMenu(ctx *gin.Context) {
 	id := ctx.Param("id")
-
-	// Lấy context chuẩn
-	requestCtx := ctx.Request.Context()
-
 	// Gọi service xóa menu
-	code, err := service.MenuItem().DeleteMenu(requestCtx, id)
+	code, err := service.MenuItem().DeleteMenu(ctx.Request.Context(), id)
 	if err != nil {
 		log.Printf("Error deleting menu: %v", err)
 		response.ErrorResponse(ctx, code, err.Error())

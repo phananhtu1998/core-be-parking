@@ -6,6 +6,7 @@ type AccountInput struct {
 	UserName string `json:"username" binding:"required" example:"admin"`
 	Status   bool   `json:"status"`
 	Images   string `json:"images" example:"/upload/images/phananhtu.jpg"`
+	RoleId   string `json:"role_id" binding:"required" example:"2b796313-1134-44b3-b527-2c27d41a1624"`
 }
 type AccountOutput struct {
 	ID       string `json:"id"`

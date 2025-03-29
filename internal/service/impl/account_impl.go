@@ -7,7 +7,6 @@ import (
 	"go-backend-api/global"
 	"go-backend-api/internal/database"
 	"go-backend-api/internal/model"
-	"go-backend-api/internal/utils/cache"
 	"go-backend-api/internal/utils/crypto"
 	"go-backend-api/pkg/response"
 	"log"
@@ -61,26 +60,13 @@ func (s *sAccount) CreateAccount(ctx context.Context, in *model.AccountInput) (c
 	if accountFound > 0 {
 		return response.ErrCodeUserHasExists, model.AccountOutput{}, fmt.Errorf("Username has already registered")
 	}
-	// TODO: Kiểm tra số lượng quyền được phép tạo
-	subjectUUID := ctx.Value("subjectUUID")
-	println("subjectUUID account: ", subjectUUID)
-	var infoUser model.GetCacheToken
-	// Lấy Id tài khoản đang đăng nhập từ context
-	if err := cache.GetCache(ctx, subjectUUID.(string), &infoUser); err != nil {
-		return 0, out, err
-	}
-	// Lấy role id và kiểm tra count là bao nhiêu
-	roleId, err := s.r.GetOneRoleAccountByAccountId(ctx, infoUser.ID)
-	if err != nil {
-		return response.ErrCodeUserOtpNotExists, model.AccountOutput{}, err
-	}
 	// Lấy số lượng tài khoản đã tạo theo role
-	countRoleId, err := s.r.CheckCountRoleId(ctx, roleId.RoleID)
+	countRoleId, err := s.r.CheckCountRoleId(ctx, in.RoleId)
 	if err != nil {
 		return response.ErrCodeRoleNotFound, model.AccountOutput{}, err
 	}
 	//Lấy số lượng tài khoản theo role được phép tạo
-	countmaxrole, err := s.r.GetRoleById(ctx, roleId.RoleID)
+	countmaxrole, err := s.r.GetRoleById(ctx, in.RoleId)
 	if err != nil {
 		return response.ErrCodeRoleNotFound, model.AccountOutput{}, err
 	}
@@ -116,7 +102,7 @@ func (s *sAccount) CreateAccount(ctx context.Context, in *model.AccountInput) (c
 	err = s.r.CreateRoleAccount(ctx, database.CreateRoleAccountParams{
 		ID:        newUUID,
 		AccountID: newUUID,
-		RoleID:    roleId.RoleID,
+		RoleID:    in.RoleId,
 		LicenseID: "",
 	})
 	if err != nil {

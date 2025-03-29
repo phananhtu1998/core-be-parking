@@ -32,7 +32,7 @@ func (c *cLogin) Login(ctx *gin.Context) {
 		response.ErrorResponse(ctx, response.ErrCodeParamInvalid, err.Error())
 		return
 	}
-	codeRs, dataRs, err := service.LoginItem().Login(ctx, &params)
+	codeRs, dataRs, err := service.LoginItem().Login(ctx.Request.Context(), &params)
 	if err != nil {
 		response.ErrorResponse(ctx, response.ErrCodeParamInvalid, err.Error())
 		return

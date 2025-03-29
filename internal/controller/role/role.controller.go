@@ -69,7 +69,7 @@ func (c *cRole) GetAllRoles(ctx *gin.Context) {
 			pageSize = ps
 		}
 	}
-	codeRole, dataRole, total, err := service.RoleItem().GetAllRoles(ctx, page, pageSize)
+	codeRole, dataRole, total, err := service.RoleItem().GetAllRoles(ctx.Request.Context(), page, pageSize)
 	if err != nil {
 		response.ErrorResponse(ctx, response.ErrCodeParamInvalid, err.Error())
 		return
@@ -92,7 +92,7 @@ func (c *cRole) GetAllRoles(ctx *gin.Context) {
 // @Router       /role/get_role_by_id/{id} [GET]
 func (c *cRole) GetRoleById(ctx *gin.Context) {
 	id := ctx.Param("id")
-	code, menu, err := service.RoleItem().GetRoleById(ctx, id)
+	code, menu, err := service.RoleItem().GetRoleById(ctx.Request.Context(), id)
 	if err != nil {
 		log.Printf("Error getting menu: %v", err)
 		response.ErrorResponse(ctx, code, err.Error())
@@ -115,7 +115,7 @@ func (c *cRole) GetRoleById(ctx *gin.Context) {
 // @Router       /role/delete_role/{id} [delete]
 func (c *cRole) DeleteRole(ctx *gin.Context) {
 	id := ctx.Param("id")
-	code, err := service.RoleItem().DeleteRole(ctx, id)
+	code, err := service.RoleItem().DeleteRole(ctx.Request.Context(), id)
 	if err != nil {
 		response.ErrorResponse(ctx, code, err.Error())
 		return

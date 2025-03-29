@@ -87,7 +87,7 @@ func (c *cRoleaccount) GetAllRoleAccountByAccountId(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid role id"})
 		return
 	}
-	code, result, err := service.RoleAccountItem().GetAllRoleAccountByAccountId(ctx, Id)
+	code, result, err := service.RoleAccountItem().GetAllRoleAccountByAccountId(ctx.Request.Context(), Id)
 	if err != nil {
 		response.ErrorResponse(ctx, code, err.Error())
 		return
@@ -119,7 +119,7 @@ func (c *cRoleaccount) DeleteRoleAccount(ctx *gin.Context) {
 			return
 		}
 	}
-	code, err := service.RoleAccountItem().DeleteRoleAccount(ctx, ids)
+	code, err := service.RoleAccountItem().DeleteRoleAccount(ctx.Request.Context(), ids)
 	if err != nil {
 		response.ErrorResponse(ctx, code, err.Error())
 		return
@@ -151,7 +151,7 @@ func (c *cRoleaccount) UpdateRoleAccount(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid role id"})
 		return
 	}
-	code, roleAccount, err := service.RoleAccountItem().UpdateRoleAccount(ctx, id, &modelRoleAccount)
+	code, roleAccount, err := service.RoleAccountItem().UpdateRoleAccount(ctx.Request.Context(), id, &modelRoleAccount)
 	if err != nil {
 		response.ErrorResponse(ctx, code, err.Error())
 		return

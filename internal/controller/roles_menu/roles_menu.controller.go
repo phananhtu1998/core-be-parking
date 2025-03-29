@@ -35,7 +35,7 @@ func (c *cRolesMenu) CreateRolesMenu(ctx *gin.Context) {
 	}
 
 	// Gọi service để tạo roles menu
-	code, result, err := service.RolesMenuItem().CreateRolesMenu(ctx, &params)
+	code, result, err := service.RolesMenuItem().CreateRolesMenu(ctx.Request.Context(), &params)
 	if err != nil {
 		response.ErrorResponse(ctx, code, err.Error())
 		return
@@ -60,7 +60,7 @@ func (c *cRolesMenu) CreateRolesMenu(ctx *gin.Context) {
 func (c *cRolesMenu) GetRoleMenuByRoleId(ctx *gin.Context) {
 	id := ctx.Param("id")
 	search := ctx.Query("search")
-	code, menu, err := service.RolesMenuItem().GetRoleMenuByRoleId(ctx, id, search)
+	code, menu, err := service.RolesMenuItem().GetRoleMenuByRoleId(ctx.Request.Context(), id, search)
 	if err != nil {
 		response.ErrorResponse(ctx, code, err.Error())
 		return
@@ -95,7 +95,7 @@ func (c *cRolesMenu) UpdateRolesMenu(ctx *gin.Context) {
 		return
 	}
 
-	code, result, err := service.RolesMenuItem().UpdateRolesMenu(ctx, id, &input)
+	code, result, err := service.RolesMenuItem().UpdateRolesMenu(ctx.Request.Context(), id, &input)
 	if err != nil {
 		response.ErrorResponse(ctx, code, err.Error())
 		return
@@ -118,7 +118,7 @@ func (c *cRolesMenu) UpdateRolesMenu(ctx *gin.Context) {
 // @Router       /rolesmenu/delete_roles_menu/{id} [delete]
 func (c *cRolesMenu) DeleteRolesMenu(ctx *gin.Context) {
 	id := ctx.Param("id")
-	code, err := service.RolesMenuItem().DeleteRolesMenu(ctx, id)
+	code, err := service.RolesMenuItem().DeleteRolesMenu(ctx.Request.Context(), id)
 	if err != nil {
 		response.ErrorResponse(ctx, code, err.Error())
 		return
