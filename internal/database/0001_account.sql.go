@@ -74,7 +74,6 @@ SET
     name = ?,
     username = ?,
     email = ?,
-    password = ?,
     status = ?,
     images = ?,
     update_at = NOW()
@@ -85,7 +84,6 @@ type EditAccountByIdParams struct {
 	Name     string
 	Username string
 	Email    string
-	Password string
 	Status   bool
 	Images   string
 	ID       string
@@ -96,7 +94,6 @@ func (q *Queries) EditAccountById(ctx context.Context, arg EditAccountByIdParams
 		arg.Name,
 		arg.Username,
 		arg.Email,
-		arg.Password,
 		arg.Status,
 		arg.Images,
 		arg.ID,

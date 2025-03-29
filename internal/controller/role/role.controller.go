@@ -33,7 +33,7 @@ func (c *cRole) CreateRole(ctx *gin.Context) {
 		response.ErrorResponse(ctx, response.ErrCodeParamInvalid, err.Error())
 		return
 	}
-	codeRole, dataRole, err := service.RoleItem().CreateRole(ctx, &params)
+	codeRole, dataRole, err := service.RoleItem().CreateRole(ctx.Request.Context(), &params)
 	if err != nil {
 		response.ErrorResponse(ctx, response.ErrCodeParamInvalid, err.Error())
 		return

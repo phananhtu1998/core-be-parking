@@ -37,7 +37,6 @@ SET
     name = ?,
     username = ?,
     email = ?,
-    password = ?,
     status = ?,
     images = ?,
     update_at = NOW()

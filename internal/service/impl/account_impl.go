@@ -94,7 +94,7 @@ func (s *sAccount) CreateAccount(ctx context.Context, in *model.AccountInput) (c
 	if err != nil {
 		return response.ErrCodeUserOtpNotExists, model.AccountOutput{}, err
 	}
-	accountBase.Password = crypto.HashPassword(in.Password, userSalt, global.Config.JWT.SECRET_KEY)
+	accountBase.Password = crypto.HashPassword(global.Config.JWT.PASSWORD, userSalt, global.Config.JWT.SECRET_KEY)
 	rand.Seed(time.Now().UnixNano())
 	newUUID := uuid.New().String()
 	_, err = s.r.InsertAccount(ctx, database.InsertAccountParams{
@@ -165,8 +165,8 @@ func (s *sAccount) GetAccountById(ctx context.Context, id string) (codeResult in
 func (s *sAccount) UpdateAccount(ctx context.Context, in *model.AccountInput, id string) (codeResult int, out model.AccountOutput, err error) {
 	err = s.r.EditAccountById(ctx, database.EditAccountByIdParams{
 		Name:     in.Name,
+		Username: in.UserName,
 		Email:    in.Email,
-		Password: in.Password,
 		Status:   in.Status,
 		Images:   in.Images,
 		ID:       id,
@@ -219,4 +219,8 @@ func (s *sAccount) GetAllAccount(ctx context.Context) (codeResult int, out []mod
 
 	log.Println("Successfully fetched accounts:", len(out))
 	return response.ErrCodeSucces, out, nil
+}
+func (s *sAccount) CreateUser(ctx context.Context, in *model.AccountInput) (codeResult int, out model.AccountOutput, err error) {
+
+	return codeResult, out, err
 }

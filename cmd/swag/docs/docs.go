@@ -1322,7 +1322,6 @@ const docTemplate = `{
             "required": [
                 "email",
                 "name",
-                "password",
                 "username"
             ],
             "properties": {
@@ -1337,10 +1336,6 @@ const docTemplate = `{
                 "name": {
                     "type": "string",
                     "example": "Admin"
-                },
-                "password": {
-                    "type": "string",
-                    "example": "hello@1234"
                 },
                 "status": {
                     "type": "boolean"

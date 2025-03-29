@@ -11,9 +11,6 @@ definitions:
       name:
         example: Admin
         type: string
-      password:
-        example: hello@1234
-        type: string
       status:
         type: boolean
       username:
@@ -22,7 +19,6 @@ definitions:
     required:
     - email
     - name
-    - password
     - username
     type: object
   model.ChangePasswordInput:

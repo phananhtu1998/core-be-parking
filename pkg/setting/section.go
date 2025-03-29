@@ -46,4 +46,5 @@ type JWTSettings struct {
 	SECRET_KEY          string `mapstructure:"SECRET_KEY"`
 	ACCESS_TOKEN        string `mapstructure:"ACCESS_TOKEN"`
 	REFRESH_TOKEN       string `mapstructure:"REFRESH_TOKEN"`
+	PASSWORD            string `mapstructure:"PASSWORD"`
 }

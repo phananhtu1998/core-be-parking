@@ -29,3 +29,4 @@ jwt:
   API_SECRET: "xxx.yyy.zzz"
   ACCESS_TOKEN: 72h #3 ngày
   REFRESH_TOKEN: 168h #7 ngày
+  PASSWORD: "thaco@1234"

@@ -9,6 +9,7 @@ import (
 	"go-backend-api/internal/model"
 	"go-backend-api/internal/service"
 	"go-backend-api/internal/utils"
+	"go-backend-api/internal/utils/cache"
 	"go-backend-api/pkg/response"
 	"time"
 
@@ -39,6 +40,13 @@ func (s *sRole) CreateRole(ctx context.Context, in *model.Role) (codeResult int,
 		return response.ErrCodeRoleError, model.Role{}, fmt.Errorf("failed to begin transaction: %w", err)
 	}
 	defer tx.Rollback()
+	subjectUUID := ctx.Value("subjectUUID")
+	println("subjectUUID account: ", subjectUUID)
+	var infoUser model.GetCacheToken
+	// Lấy Id tài khoản đang đăng nhập từ context
+	if err := cache.GetCache(ctx, subjectUUID.(string), &infoUser); err != nil {
+		return 0, out, err
+	}
 
 	// Nếu created_by trống, đây là node gốc
 	if in.Created_by == "" {
@@ -54,11 +62,14 @@ func (s *sRole) CreateRole(ctx context.Context, in *model.Role) (codeResult int,
 		rightValue = int32(maxRightValueInt64) + 2
 	} else {
 		// Lấy thông tin của node cha
-		parentRole, err := s.r.GetParentRoleInfo(ctx, in.Created_by)
+		RoleId, err := s.r.GetOneRoleAccountByAccountId(ctx, infoUser.ID)
+		if err != nil {
+			return response.ErrCodeRoleError, model.Role{}, fmt.Errorf("role id not found: %w", err)
+		}
+		parentRole, err := s.r.GetParentRoleInfo(ctx, RoleId.RoleID)
 		if err != nil {
 			return response.ErrCodeRoleError, model.Role{}, fmt.Errorf("parent role not found: %w", err)
 		}
-
 		// Cập nhật right values
 		err = s.r.UpdateRightValuesForInsert(ctx, parentRole.RoleRightValue)
 		if err != nil {
