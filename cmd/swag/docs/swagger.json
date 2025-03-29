@@ -69,6 +69,57 @@
                 }
             }
         },
+        "/admin/create_user": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "API này cho phép tạo người dùng mới",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Account management"
+                ],
+                "summary": "Tạo tài người dùng",
+                "parameters": [
+                    {
+                        "description": "Thông tin người dùng cần tạo",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.UserInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResponseData"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponseData"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponseData"
+                        }
+                    }
+                }
+            }
+        },
         "/admin/delete_account/{id}": {
             "delete": {
                 "security": [
@@ -1520,6 +1571,41 @@
                 "role_id": {
                     "type": "string",
                     "example": "role-123"
+                }
+            }
+        },
+        "model.UserInput": {
+            "type": "object",
+            "required": [
+                "email",
+                "name",
+                "role_id",
+                "role_id",
+                "username"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "example": "admin@gmail.com"
+                },
+                "images": {
+                    "type": "string",
+                    "example": "/upload/images/phananhtu.jpg"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Admin"
+                },
+                "role_id": {
+                    "type": "string",
+                    "example": "2b796313-1134-44b3-b527-2c27d41a1624"
+                },
+                "status": {
+                    "type": "boolean"
+                },
+                "username": {
+                    "type": "string",
+                    "example": "admin"
                 }
             }
         },
