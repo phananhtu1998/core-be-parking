@@ -58,4 +58,5 @@ type MinioSettings struct {
 	USESSL      bool   `mapstructure:"USESSL"`
 	BUCKET_NAME string `mapstructure:"BUCKET_NAME"`
 	CHUNK_SIZE  int    `mapstructure:"CHUNK_SIZE"`
+	USE_SSL     bool   `mapstructure:"USE_SSL"`
 }
