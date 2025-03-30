@@ -1432,3 +1432,6 @@
 {"level":"INFO","time":"2025-03-29T16:07:57.166+0700","caller":"initialize/run.go:17","msg":"config Log ok!","ok":"success"}
 {"level":"INFO","time":"2025-03-29T16:07:57.174+0700","caller":"initialize/mysql.go:29","msg":"Initializing MySQL Successfully"}
 {"level":"INFO","time":"2025-03-29T16:07:57.175+0700","caller":"initialize/mysqlc.go:25","msg":"Initializing MySQL Successfully"}
+{"level":"INFO","time":"2025-03-30T09:01:30.892+0700","caller":"initialize/run.go:17","msg":"config Log ok!","ok":"success"}
+{"level":"INFO","time":"2025-03-30T09:01:30.964+0700","caller":"initialize/mysql.go:29","msg":"Initializing MySQL Successfully"}
+{"level":"INFO","time":"2025-03-30T09:01:30.966+0700","caller":"initialize/mysqlc.go:25","msg":"Initializing MySQL Successfully"}
