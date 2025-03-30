@@ -20,6 +20,7 @@ func Run() *gin.Engine {
 	InitMysqlC()
 	InitServiceInterface()
 	InitRedis()
+	InitMinio()
 	GetServerInfo()
 
 	// Khởi tạo RBAC

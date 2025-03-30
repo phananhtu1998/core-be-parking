@@ -6,6 +6,7 @@ type Config struct {
 	Redis  RedisSetting  `mapstructure:"redis"`
 	Server ServerSetting `mapstructure:"server"`
 	JWT    JWTSettings   `mapstructure:"jwt"`
+	MinIO  MinioSettings `mapstructure:"minio"`
 }
 type ServerSetting struct {
 	Port int    `mapstructure:"port"`
@@ -47,4 +48,14 @@ type JWTSettings struct {
 	ACCESS_TOKEN        string `mapstructure:"ACCESS_TOKEN"`
 	REFRESH_TOKEN       string `mapstructure:"REFRESH_TOKEN"`
 	PASSWORD            string `mapstructure:"PASSWORD"`
+}
+
+// minio settings
+type MinioSettings struct {
+	ENDPOINT    string `mapstructure:"ENDPOINT"`
+	ACCESS_KEY  string `mapstructure:"ACCESS_KEY"`
+	SECRET_KEY  string `mapstructure:"SECRET_KEY"`
+	USESSL      bool   `mapstructure:"USESSL"`
+	BUCKET_NAME string `mapstructure:"BUCKET_NAME"`
+	CHUNK_SIZE  int    `mapstructure:"CHUNK_SIZE"`
 }

@@ -30,3 +30,10 @@ jwt:
   ACCESS_TOKEN: 72h #3 ngày
   REFRESH_TOKEN: 168h #7 ngày
   PASSWORD: "thaco@1234"
+MINIO:
+  ENDPOINT: localhost:9000
+  ACCESS_KEY: teamaithaco
+  SECRET_KEY: thaco@1234
+  USESSL: false
+  BUCKET_NAME: parkingbuckets
+  CHUNK_SIZE: 5 * 1024 * 1024 // 5MB mỗi phần (MinIO yêu cầu tối th
