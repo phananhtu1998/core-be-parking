@@ -67,6 +67,9 @@ SELECT COUNT(*)
 FROM `account`
 WHERE username = ?;
 
+-- name: CheckAccountExists :one
+SELECT COUNT(*) FROM `account`;
+
 -- name: GetLicenseByAccountId :one
 SELECT a.id,r.role_name,r.is_licensed,l.license
 FROM account as a
