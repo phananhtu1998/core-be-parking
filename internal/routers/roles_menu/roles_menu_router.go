@@ -12,6 +12,8 @@ type RolesMenuRouter struct{}
 func (ar *RolesMenuRouter) InitRolesMenuRouter(Router *gin.RouterGroup) {
 	rolesMenuRouterPrivate := Router.Group("/rolesmenu")
 	rolesMenuRouterPrivate.Use(middlewares.AuthenMiddleware())
+	rolesMenuRouterPrivate.Use(middlewares.RateLimiterPrivateMiddlewareRedis())
+	rolesMenuRouterPrivate.Use(middlewares.LicenseMiddleware())
 	{
 		rolesMenuRouterPrivate.POST("/create_roles_menu", roles_menu.RolesMenus.CreateRolesMenu)
 		rolesMenuRouterPrivate.GET("/get_role_menu_by_role_id/:id", roles_menu.RolesMenus.GetRoleMenuByRoleId)

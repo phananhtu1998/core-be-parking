@@ -18,13 +18,16 @@ func (ar *LoginRouter) InitLoginRouter(Router *gin.RouterGroup) {
 	}
 	adminRouterPrivate := Router.Group("/auth")
 	adminRouterPrivate.Use(middlewares.AuthenMiddleware())
-	//adminRouterPrivate.Use(middlewares.PermissionMiddleware(global.Enforcer))
+	adminRouterPrivate.Use(middlewares.RateLimiterPrivateMiddlewareRedis())
+	adminRouterPublic.Use(middlewares.LicenseMiddleware())
 	{
 		adminRouterPrivate.POST("/logout", login.Logins.Logout)
 		adminRouterPrivate.POST("/change_password", login.Logins.ChangePassword)
 	}
 	adminRouterRefreshToken := Router.Group("/auth")
 	adminRouterRefreshToken.Use(middlewares.AuthenMiddlewareV2())
+	adminRouterPrivate.Use(middlewares.RateLimiterPrivateMiddlewareRedis())
+	adminRouterPublic.Use(middlewares.LicenseMiddleware())
 	{
 		adminRouterRefreshToken.POST("/refresh-token", login.Logins.RefreshTokens)
 	}

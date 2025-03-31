@@ -474,6 +474,7 @@ paths:
             $ref: '#/definitions/response.ErrorResponseData'
       security:
       - BearerAuth: []
+      - ApiKeyAuth: []
       summary: Logout
       tags:
       - Authenticate
@@ -499,6 +500,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/response.ErrorResponseData'
+      security:
+      - ApiKeyAuth: []
       summary: RefreshToken
       tags:
       - Authenticate
@@ -531,6 +534,7 @@ paths:
             $ref: '#/definitions/response.ErrorResponseData'
       security:
       - BearerAuth: []
+      - ApiKeyAuth: []
       summary: Tạo mới license
       tags:
       - License
@@ -559,6 +563,7 @@ paths:
             $ref: '#/definitions/response.ErrorResponseData'
       security:
       - BearerAuth: []
+      - ApiKeyAuth: []
       summary: Tạo menu
       tags:
       - Menu
@@ -590,6 +595,7 @@ paths:
             $ref: '#/definitions/response.ErrorResponseData'
       security:
       - BearerAuth: []
+      - ApiKeyAuth: []
       summary: Xóa menu
       tags:
       - Menu
@@ -611,6 +617,7 @@ paths:
             $ref: '#/definitions/response.ErrorResponseData'
       security:
       - BearerAuth: []
+      - ApiKeyAuth: []
       summary: Lấy danh sách tất cả menu
       tags:
       - Menu
@@ -638,6 +645,7 @@ paths:
             $ref: '#/definitions/response.ErrorResponseData'
       security:
       - BearerAuth: []
+      - ApiKeyAuth: []
       summary: Lấy menu theo ID
       tags:
       - Menu
@@ -672,6 +680,7 @@ paths:
             $ref: '#/definitions/response.ErrorResponseData'
       security:
       - BearerAuth: []
+      - ApiKeyAuth: []
       summary: Cập nhật nhiều menu
       tags:
       - Menu
@@ -727,6 +736,7 @@ paths:
             $ref: '#/definitions/response.ErrorResponseData'
       security:
       - BearerAuth: []
+      - ApiKeyAuth: []
       summary: Xóa role
       tags:
       - Role
@@ -812,6 +822,7 @@ paths:
             $ref: '#/definitions/response.ErrorResponseData'
       security:
       - BearerAuth: []
+      - ApiKeyAuth: []
       summary: Tạo role account
       tags:
       - RoleAccount
@@ -846,6 +857,7 @@ paths:
             $ref: '#/definitions/response.ErrorResponseData'
       security:
       - BearerAuth: []
+      - ApiKeyAuth: []
       summary: Xóa nhiều Role Account
       tags:
       - RoleAccount
@@ -873,6 +885,7 @@ paths:
             $ref: '#/definitions/response.ErrorResponseData'
       security:
       - BearerAuth: []
+      - ApiKeyAuth: []
       summary: Lấy role account theo Account_Id
       tags:
       - RoleAccount
@@ -900,6 +913,7 @@ paths:
             $ref: '#/definitions/response.ErrorResponseData'
       security:
       - BearerAuth: []
+      - ApiKeyAuth: []
       summary: Lấy role account theo Role_Id
       tags:
       - RoleAccount
@@ -937,6 +951,7 @@ paths:
             $ref: '#/definitions/response.ErrorResponseData'
       security:
       - BearerAuth: []
+      - ApiKeyAuth: []
       summary: Cập nhật Role account
       tags:
       - RoleAccount
@@ -965,6 +980,7 @@ paths:
             $ref: '#/definitions/response.ErrorResponseData'
       security:
       - BearerAuth: []
+      - ApiKeyAuth: []
       summary: Tạo role menu
       tags:
       - RolesMenu
@@ -996,6 +1012,7 @@ paths:
             $ref: '#/definitions/response.ErrorResponseData'
       security:
       - BearerAuth: []
+      - ApiKeyAuth: []
       summary: Xóa role menu
       tags:
       - RolesMenu
@@ -1027,6 +1044,7 @@ paths:
             $ref: '#/definitions/response.ErrorResponseData'
       security:
       - BearerAuth: []
+      - ApiKeyAuth: []
       summary: Lấy role menu theo ID
       tags:
       - RolesMenu
@@ -1064,6 +1082,7 @@ paths:
             $ref: '#/definitions/response.ErrorResponseData'
       security:
       - BearerAuth: []
+      - ApiKeyAuth: []
       summary: Cập nhật role menu
       tags:
       - RolesMenu

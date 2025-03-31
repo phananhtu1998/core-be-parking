@@ -24,6 +24,7 @@ type cMenu struct {
 // @Accept       json
 // @Produce      json
 // @Security     BearerAuth
+// @Security     ApiKeyAuth
 // @Param        payload body model.MenuInput true "payload"
 // @Success      200  {object}  response.ResponseData
 // @Failure      500  {object}  response.ErrorResponseData
@@ -51,6 +52,7 @@ func (c *cMenu) CreateMenu(ctx *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Security     BearerAuth
+// @Security     ApiKeyAuth
 // @Success      200  {object}  response.ResponseData
 // @Failure      500  {object}  response.ErrorResponseData
 // @Router       /menu/get_all_menu [GET]
@@ -71,6 +73,7 @@ func (ac *cMenu) GetAllMenu(ctx *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Security     BearerAuth
+// @Security     ApiKeyAuth
 // @Param        id   path   string  true  "ID menu cần lấy"
 // @Success      200  {object}  response.ResponseData
 // @Failure      500  {object}  response.ErrorResponseData
@@ -94,6 +97,7 @@ func (ac *cMenu) GetMenuById(ctx *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Security     BearerAuth
+// @Security     ApiKeyAuth
 // @Param        body body   []model.MenuInput true "Danh sách menu cần cập nhật"
 // @Success      200  {object}  response.ResponseData
 // @Failure      400  {object}  response.ErrorResponseData
@@ -130,6 +134,7 @@ func (ac *cMenu) EditMenuById(ctx *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Security     BearerAuth
+// @Security     ApiKeyAuth
 // @Param        id   path      string  true  "Menu ID"
 // @Success      200  {object}  response.ResponseData
 // @Failure      400  {object}  response.ErrorResponseData

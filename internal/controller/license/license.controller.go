@@ -23,6 +23,7 @@ type cLicense struct {
 // @Accept       json
 // @Produce      json
 // @Security     BearerAuth
+// @Security     ApiKeyAuth
 // @Param        body  body   model.License  true  "Thông tin License cần tạo"
 // @Success      200   {object}  response.ResponseData
 // @Failure      400   {object}  response.ErrorResponseData

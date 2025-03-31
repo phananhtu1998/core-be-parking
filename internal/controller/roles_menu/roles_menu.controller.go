@@ -22,6 +22,7 @@ type cRolesMenu struct {
 // @Accept json
 // @Produce json
 // @Security BearerAuth
+// @Security     ApiKeyAuth
 // @Param payload body model.RolesMenu true "Role menu mapping details"
 // @Success 200 {object} response.ResponseData
 // @Failure 500 {object} response.ErrorResponseData "Server error"
@@ -52,6 +53,7 @@ func (c *cRolesMenu) CreateRolesMenu(ctx *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Security     BearerAuth
+// @Security     ApiKeyAuth
 // @Param        id   path   string  true  "ID role"
 // @Param        search query string false "Từ khóa tìm kiếm"
 // @Success      200  {object}  response.ResponseData
@@ -76,6 +78,7 @@ func (c *cRolesMenu) GetRoleMenuByRoleId(ctx *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Security     BearerAuth
+// @Security     ApiKeyAuth
 // @Param        id   path      string  true  "ID của role menu"
 // @Param        payload body model.RolesMenu true "Thông tin cần cập nhật"
 // @Success      200  {object}  response.ResponseData
@@ -111,6 +114,7 @@ func (c *cRolesMenu) UpdateRolesMenu(ctx *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Security     BearerAuth
+// @Security     ApiKeyAuth
 // @Param        id   path      string  true  "ID của role menu"
 // @Success      200  {object}  response.ResponseData
 // @Failure      400  {object}  response.ErrorResponseData

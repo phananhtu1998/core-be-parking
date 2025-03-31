@@ -17,7 +17,7 @@ type RouterGroup struct {
 	Menu        menu.MenuRouterGoup
 	Role        role.RoleRouterGroup
 	RolesMenu   rolesmenu.RolesMenuRouterGroup
-	RoleAccount roleaccount.RoleAccountRouterGroup
+	RoleAccount roleaccount.RoleAccountsRouterGroup
 	License     license.LicenseRouterGroup
 	Upload      upload.UploadRouterGroup
 }

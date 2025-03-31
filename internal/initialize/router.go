@@ -44,7 +44,7 @@ func InitRouter() *gin.Engine {
 		menuRouter.InitAdminRouter(MainGroup)
 		roleRouter.InitRoleRouter(MainGroup)
 		rolesMenuRouter.InitRolesMenuRouter(MainGroup)
-		roleAccountRouter.InitRoleAccountRouter(MainGroup)
+		roleAccountRouter.InitRoleAccountsRouter(MainGroup)
 		licenseRouter.InitLicenseRouter(MainGroup)
 		uploadRouter.InitUploadRouter(MainGroup)
 	}

@@ -47,6 +47,7 @@ func (c *cLogin) Login(ctx *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Security     BearerAuth
+// @Security     ApiKeyAuth
 // @Success      200  {object}  response.ResponseData
 // @Failure      500  {object}  response.ErrorResponseData
 // @Router       /auth/logout [post]
@@ -66,6 +67,7 @@ func (c *cLogin) Logout(ctx *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Param        RefreshToken  header  string  true  "Refresh Token"
+// @Security     ApiKeyAuth
 // @Success      200  {object}  response.ResponseData
 // @Failure      500  {object}  response.ErrorResponseData
 // @Router       /auth/refresh-token [post]

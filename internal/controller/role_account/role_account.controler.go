@@ -24,6 +24,7 @@ type cRoleaccount struct {
 // @Accept json
 // @Produce json
 // @Security BearerAuth
+// @Security     ApiKeyAuth
 // @Param payload body model.RoleAccount true "Role account mapping details"
 // @Success 200 {object} response.ResponseData
 // @Failure 500 {object} response.ErrorResponseData "Server error"
@@ -50,6 +51,7 @@ func (c *cRoleaccount) CreateRoleAccount(ctx *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Security     BearerAuth
+// @Security     ApiKeyAuth
 // @Param        id   path   string  true  "ID role"
 // @Success      200  {object}  response.ResponseData
 // @Failure      500  {object}  response.ErrorResponseData
@@ -76,6 +78,7 @@ func (c *cRoleaccount) GetAllRoleAccountByRoleId(ctx *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Security     BearerAuth
+// @Security     ApiKeyAuth
 // @Param        id   path   string  true  "ID account"
 // @Success      200  {object}  response.ResponseData
 // @Failure      500  {object}  response.ErrorResponseData
@@ -102,6 +105,7 @@ func (c *cRoleaccount) GetAllRoleAccountByAccountId(ctx *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Security     BearerAuth
+// @Security     ApiKeyAuth
 // @Param        ids body []string true "Danh sách ID cần xóa"
 // @Success      200  {object}  response.ResponseData
 // @Failure      400  {object}  response.ErrorResponseData
@@ -134,6 +138,7 @@ func (c *cRoleaccount) DeleteRoleAccount(ctx *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Security     BearerAuth
+// @Security     ApiKeyAuth
 // @Param        id   path   string  true  "ID role account cần cập nhật"
 // @Param        body body   model.RoleAccount true "Dữ liệu cập nhật role account"
 // @Success      200  {object}  response.ResponseData

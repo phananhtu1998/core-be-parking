@@ -13,6 +13,8 @@ func (ar *MenuRouter) InitAdminRouter(Router *gin.RouterGroup) {
 	// private router
 	menuRouterPrivate := Router.Group("/menu")
 	menuRouterPrivate.Use(middlewares.AuthenMiddleware())
+	menuRouterPrivate.Use(middlewares.RateLimiterPrivateMiddlewareRedis())
+	menuRouterPrivate.Use(middlewares.LicenseMiddleware())
 	{
 		menuRouterPrivate.POST("/create_menu", menu.Menus.CreateMenu)
 		menuRouterPrivate.GET("/get_all_menu", menu.Menus.GetAllMenu)

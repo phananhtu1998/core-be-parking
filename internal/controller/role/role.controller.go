@@ -109,6 +109,7 @@ func (c *cRole) GetRoleById(ctx *gin.Context) {
 // @Accept json
 // @Produce json
 // @Security     BearerAuth
+// @Security     ApiKeyAuth
 // @Param        id   path      string  true  "ID của role cần xóa"
 // @Success      200  {object}  response.ResponseData
 // @Failure      500  {object}  response.ErrorResponseData
