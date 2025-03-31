@@ -8,6 +8,7 @@ import (
 	"go-backend-api/internal/routers/role"
 	roleaccount "go-backend-api/internal/routers/role_account"
 	rolesmenu "go-backend-api/internal/routers/roles_menu"
+	"go-backend-api/internal/routers/upload"
 )
 
 type RouterGroup struct {
@@ -18,6 +19,7 @@ type RouterGroup struct {
 	RolesMenu   rolesmenu.RolesMenuRouterGroup
 	RoleAccount roleaccount.RoleAccountRouterGroup
 	License     license.LicenseRouterGroup
+	Upload      upload.UploadRouterGroup
 }
 
 var RouterGroupApp = new(RouterGroup)

@@ -1057,6 +1057,33 @@ paths:
       summary: Cập nhật role menu
       tags:
       - RolesMenu
+  /upload/upload_file:
+    post:
+      consumes:
+      - multipart/form-data
+      description: API upload file cho hệ thống
+      parameters:
+      - description: File cần upload
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ResponseData'
+        "500":
+          description: Server error
+          schema:
+            $ref: '#/definitions/response.ErrorResponseData'
+      security:
+      - BearerAuth: []
+      summary: Upload file
+      tags:
+      - Upload
 security:
 - "":
   - BearerAuth

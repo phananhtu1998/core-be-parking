@@ -20,7 +20,7 @@ func InitMinio() (*minio.Client, error) {
 		log.Println("Lỗi kết nối với minio: ", err)
 		return nil, err
 	}
-
+	global.MinioClient = minioClient
 	// Tạo bucket nếu chưa có
 	ctx := context.Background()
 	exists, err := minioClient.BucketExists(ctx, global.Config.MinIO.BUCKET_NAME)
@@ -37,15 +37,4 @@ func InitMinio() (*minio.Client, error) {
 	}
 
 	return minioClient, nil
-}
-
-func GetClient() (*minio.Client, error) {
-	if Client == nil {
-		var err error
-		Client, err = InitMinio()
-		if err != nil {
-			return nil, err
-		}
-	}
-	return Client, nil
 }
