@@ -16,7 +16,8 @@ func NewUploadImpl() *sUpload {
 	return &sUpload{}
 }
 func (s *sUpload) UploadFile(file multipart.File, header *multipart.FileHeader) (string, error) {
-	client := global.MinioClient
+	client := global.MinioClient // Sử dụng client từ global để tránh import cycle
+
 	if client == nil {
 		return "", fmt.Errorf("MinIO client chưa được khởi tạo")
 	}
@@ -32,30 +33,25 @@ func (s *sUpload) UploadFile(file multipart.File, header *multipart.FileHeader) 
 		contentType = "application/octet-stream"
 	}
 
-	// Cấu hình Upload
-	uploadOptions := minio.PutObjectOptions{
-		ContentType: contentType,
-		PartSize:    64 * 1024 * 1024, // 64MB mỗi phần
-	}
-
-	// Upload file lên MinIO (Multipart tự động)
+	// Upload file lên MinIO
 	_, err := client.PutObject(
 		ctx,
 		global.Config.MinIO.BUCKET_NAME,
 		objectName,
 		file,
 		header.Size,
-		uploadOptions,
+		minio.PutObjectOptions{ContentType: contentType},
 	)
 	if err != nil {
 		return "", fmt.Errorf("Lỗi khi tải lên file: %w", err)
 	}
 
-	// Tạo URL trả về
+	// Trả về URL file
 	protocol := "http"
 	if global.Config.MinIO.USESSL {
 		protocol = "https"
 	}
+
 	fileURL := fmt.Sprintf("%s://%s/%s/%s",
 		protocol,
 		global.Config.MinIO.ENDPOINT,
