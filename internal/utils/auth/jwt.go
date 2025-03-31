@@ -2,6 +2,7 @@ package auth
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"go-backend-api/global"
 	"go-backend-api/internal/model"
@@ -171,4 +172,20 @@ func CheckTokenRevoked(subtoken string, issuedAt int64) (bool, error) {
 	}
 
 	return false, nil
+}
+
+func ParseJwtTokenPayload(tokenString string) (map[string]interface{}, error) {
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		return []byte(global.Config.JWT.API_SECRET_KEY), nil
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		return claims, nil
+	}
+
+	return nil, errors.New("invalid token")
 }

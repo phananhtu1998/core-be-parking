@@ -40,6 +40,7 @@ type Keytoken struct {
 type License struct {
 	ID        string
 	License   string
+	RoleID    string
 	DateStart time.Time
 	DateEnd   time.Time
 	CreatedAt time.Time

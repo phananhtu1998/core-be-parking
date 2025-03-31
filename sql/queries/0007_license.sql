@@ -1,16 +1,16 @@
 -- name: GetLicenseById :one
-SELECT id, license, date_start, date_end, created_at, update_at
+SELECT id, license, role_id, date_start, date_end, created_at, update_at
 FROM `license`
 WHERE id = ? AND is_deleted = false;
 
 -- name: GetAllLicenses :many
-SELECT id, license, date_start, date_end, created_at, update_at
+SELECT id, license, date_start, role_id, date_end, created_at, update_at
 FROM `license`
 WHERE is_deleted = false;
 
 -- name: CreateLicense :execresult
-INSERT INTO `license` (id,license, date_start, date_end, created_at, update_at, is_deleted)
-    VALUES (?,?, ?, ?, NOW(), NOW(), false);
+INSERT INTO `license` (id,license, role_id, date_start, date_end, created_at, update_at, is_deleted)
+    VALUES (?, ?, ?, ?, ?, NOW(), NOW(), false);
 
 -- name: UpdateLicense :exec
 UPDATE license

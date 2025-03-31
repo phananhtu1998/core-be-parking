@@ -223,6 +223,9 @@ const docTemplate = `{
                 "security": [
                     {
                         "BearerAuth": []
+                    },
+                    {
+                        "ApiKeyAuth": []
                     }
                 ],
                 "description": "API này trả về danh sách tất cả tài khoản trong hệ thống",
@@ -1463,7 +1466,8 @@ const docTemplate = `{
             "type": "object",
             "required": [
                 "dateend",
-                "datestart"
+                "datestart",
+                "role_id"
             ],
             "properties": {
                 "dateend": {
@@ -1473,6 +1477,10 @@ const docTemplate = `{
                 "datestart": {
                     "type": "string",
                     "example": "2025-03-28 11:22:30"
+                },
+                "role_id": {
+                    "type": "string",
+                    "example": "2b796313-1134-44b3-b527-2c27d41a1624"
                 }
             }
         },

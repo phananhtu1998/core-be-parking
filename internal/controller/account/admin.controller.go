@@ -22,6 +22,7 @@ type cAccount struct {
 // @Accept       json
 // @Produce      json
 // @Security     BearerAuth
+// @Security     ApiKeyAuth
 // @Success      200  {object}  response.ResponseData
 // @Failure      500  {object}  response.ErrorResponseData
 // @Router       /admin/get_all_account [GET]

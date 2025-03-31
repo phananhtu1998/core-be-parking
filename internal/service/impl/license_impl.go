@@ -41,6 +41,7 @@ func (s *sLicense) CreateLicense(ctx context.Context, in *model.License) (codeRe
 	_, err = s.r.CreateLicense(ctx, database.CreateLicenseParams{
 		ID:        uuid.New().String(),
 		License:   license,
+		RoleID:    in.RoleId,
 		DateStart: dateStart,
 		DateEnd:   dateEnd,
 	})

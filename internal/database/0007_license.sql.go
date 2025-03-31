@@ -12,13 +12,14 @@ import (
 )
 
 const createLicense = `-- name: CreateLicense :execresult
-INSERT INTO ` + "`" + `license` + "`" + ` (id,license, date_start, date_end, created_at, update_at, is_deleted)
-    VALUES (?,?, ?, ?, NOW(), NOW(), false)
+INSERT INTO ` + "`" + `license` + "`" + ` (id,license, role_id, date_start, date_end, created_at, update_at, is_deleted)
+    VALUES (?, ?, ?, ?, ?, NOW(), NOW(), false)
 `
 
 type CreateLicenseParams struct {
 	ID        string
 	License   string
+	RoleID    string
 	DateStart time.Time
 	DateEnd   time.Time
 }
@@ -27,6 +28,7 @@ func (q *Queries) CreateLicense(ctx context.Context, arg CreateLicenseParams) (s
 	return q.db.ExecContext(ctx, createLicense,
 		arg.ID,
 		arg.License,
+		arg.RoleID,
 		arg.DateStart,
 		arg.DateEnd,
 	)
@@ -45,7 +47,7 @@ func (q *Queries) DeleteLicense(ctx context.Context, id string) error {
 }
 
 const getAllLicenses = `-- name: GetAllLicenses :many
-SELECT id, license, date_start, date_end, created_at, update_at
+SELECT id, license, date_start, role_id, date_end, created_at, update_at
 FROM ` + "`" + `license` + "`" + `
 WHERE is_deleted = false
 `
@@ -54,6 +56,7 @@ type GetAllLicensesRow struct {
 	ID        string
 	License   string
 	DateStart time.Time
+	RoleID    string
 	DateEnd   time.Time
 	CreatedAt time.Time
 	UpdateAt  time.Time
@@ -72,6 +75,7 @@ func (q *Queries) GetAllLicenses(ctx context.Context) ([]GetAllLicensesRow, erro
 			&i.ID,
 			&i.License,
 			&i.DateStart,
+			&i.RoleID,
 			&i.DateEnd,
 			&i.CreatedAt,
 			&i.UpdateAt,
@@ -90,7 +94,7 @@ func (q *Queries) GetAllLicenses(ctx context.Context) ([]GetAllLicensesRow, erro
 }
 
 const getLicenseById = `-- name: GetLicenseById :one
-SELECT id, license, date_start, date_end, created_at, update_at
+SELECT id, license, role_id, date_start, date_end, created_at, update_at
 FROM ` + "`" + `license` + "`" + `
 WHERE id = ? AND is_deleted = false
 `
@@ -98,6 +102,7 @@ WHERE id = ? AND is_deleted = false
 type GetLicenseByIdRow struct {
 	ID        string
 	License   string
+	RoleID    string
 	DateStart time.Time
 	DateEnd   time.Time
 	CreatedAt time.Time
@@ -110,6 +115,7 @@ func (q *Queries) GetLicenseById(ctx context.Context, id string) (GetLicenseById
 	err := row.Scan(
 		&i.ID,
 		&i.License,
+		&i.RoleID,
 		&i.DateStart,
 		&i.DateEnd,
 		&i.CreatedAt,
