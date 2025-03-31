@@ -60,6 +60,12 @@ func (s *sLogin) Login(ctx context.Context, in *model.LoginInput) (codeResult in
 	}
 	out.AccessToken, err = auth.CreateToken(subToken)
 	out.RefreshToken, err = auth.CreateRefreshToken(subToken)
+	// Lấy xapi key
+	xapikey, err := s.r.GetLicenseByAccountId(ctx, infoAccount.ID)
+	if err != nil {
+		return response.ErrCodeAuthFailed, out, fmt.Errorf("Lỗi lấy xapi key: %v", err)
+	}
+	out.X_Api_Key = xapikey.License
 	getAccountKT, err := s.r.CountByAccount(ctx, accountBase.ID)
 	if getAccountKT > 0 {
 		err := s.r.UpdateRefreshTokenAndUsedTokens(ctx, database.UpdateRefreshTokenAndUsedTokensParams{

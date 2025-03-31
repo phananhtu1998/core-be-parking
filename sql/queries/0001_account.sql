@@ -66,3 +66,11 @@ WHERE email = ?;
 SELECT COUNT(*)
 FROM `account`
 WHERE username = ?;
+
+-- name: GetLicenseByAccountId :one
+SELECT a.id,r.role_name,r.is_licensed,l.license
+FROM account as a
+JOIN role_account ra ON a.id = ra.account_id
+JOIN role r ON ra.role_id = r.id
+JOIN license l ON l.id = ra.license_id
+WHERE a.id = ? AND a.is_deleted = false AND ra.is_deleted = false AND r.is_deleted = false AND l.is_deleted = false;

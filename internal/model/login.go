@@ -10,6 +10,7 @@ type LoginOutput struct {
 	UserName     string `json:"username"`
 	AccessToken  string `json:"accesstoken"`
 	RefreshToken string `json:"refreshToken"`
+	X_Api_Key    string `json:"x_api_key"`
 }
 
 type GetCacheToken struct {
