@@ -31,8 +31,15 @@ func (s *sLicense) CreateLicense(ctx context.Context, in *model.License) (codeRe
 	if err != nil {
 		return response.ErrCodeLicenseValid, out, err
 	}
-
-	dateEnd, err := time.Parse("2006-01-02 15:04:05", in.DateEnd)
+	var dateEnd time.Time
+	if in.DateEnd == "NO_EXPIRATION" {
+		dateEnd = time.Now()
+	} else {
+		dateEnd, err = time.Parse("2006-01-02 15:04:05", in.DateEnd)
+		if err != nil {
+			return response.ErrCodeLicenseValid, out, err
+		}
+	}
 	if err != nil {
 		return response.ErrCodeLicenseValid, out, err
 	}
