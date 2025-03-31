@@ -154,32 +154,6 @@ definitions:
     - menu_id
     - role_id
     type: object
-  model.UserInput:
-    properties:
-      email:
-        example: admin@gmail.com
-        type: string
-      images:
-        example: /upload/images/phananhtu.jpg
-        type: string
-      name:
-        example: Admin
-        type: string
-      role_id:
-        example: 2b796313-1134-44b3-b527-2c27d41a1624
-        type: string
-      status:
-        type: boolean
-      username:
-        example: admin
-        type: string
-    required:
-    - email
-    - name
-    - role_id
-    - role_id
-    - username
-    type: object
   response.ErrorResponseData:
     properties:
       code:
@@ -260,7 +234,7 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/model.UserInput'
+          $ref: '#/definitions/model.AccountInput'
       produces:
       - application/json
       responses:
@@ -684,6 +658,35 @@ paths:
       summary: Cập nhật nhiều menu
       tags:
       - Menu
+  /role/create_func_package:
+    post:
+      consumes:
+      - application/json
+      description: Api tạo gói chức năng trong hệ thống
+      parameters:
+      - description: payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/model.Role'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ResponseData'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponseData'
+      security:
+      - BearerAuth: []
+      - ApiKeyAuth: []
+      summary: Tạo gói chức năng
+      tags:
+      - Role
   /role/create_role:
     post:
       consumes:
@@ -709,6 +712,7 @@ paths:
             $ref: '#/definitions/response.ErrorResponseData'
       security:
       - BearerAuth: []
+      - ApiKeyAuth: []
       summary: Tạo vai trò
       tags:
       - Role
@@ -767,6 +771,7 @@ paths:
             $ref: '#/definitions/response.ErrorResponseData'
       security:
       - BearerAuth: []
+      - ApiKeyAuth: []
       summary: Lấy danh sách role
       tags:
       - Role
@@ -794,6 +799,7 @@ paths:
             $ref: '#/definitions/response.ErrorResponseData'
       security:
       - BearerAuth: []
+      - ApiKeyAuth: []
       summary: Lấy role theo ID
       tags:
       - Role

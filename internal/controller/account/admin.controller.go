@@ -5,6 +5,7 @@ import (
 	"go-backend-api/internal/service"
 	"go-backend-api/pkg/response"
 	"log"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
@@ -133,7 +134,7 @@ func (ac *cAccount) CreateAccount(ctx *gin.Context) {
 	// Kiểm tra số lượng account được phép tạo
 	// check valid
 	if err := ctx.ShouldBindJSON(&params); err != nil {
-		ctx.JSON(response.ErrCodeParamInvalid, gin.H{"error": "Invalid input data"})
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input data"})
 		return
 	}
 
@@ -158,16 +159,17 @@ func (ac *cAccount) CreateAccount(ctx *gin.Context) {
 // @Produce      json
 // @Security     BearerAuth
 // @Security     ApiKeyAuth
-// @Param        body  body   model.UserInput  true  "Thông tin người dùng cần tạo"
+// @Param        body  body   model.AccountInput  true  "Thông tin người dùng cần tạo"
 // @Success      200   {object}  response.ResponseData
 // @Failure      400   {object}  response.ErrorResponseData
 // @Failure      500   {object}  response.ErrorResponseData
 // @Router       /admin/create_user [POST]
 func (ac *cAccount) CreateUser(ctx *gin.Context) {
-	var params model.UserInput
+	var params model.AccountInput
 	// check valid
 	if err := ctx.ShouldBindJSON(&params); err != nil {
-		ctx.JSON(response.ErrCodeParamInvalid, gin.H{"error": "Invalid input data"})
+		log.Printf("Binding error: %+v", err)
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input data", "details": err.Error()})
 		return
 	}
 

@@ -106,7 +106,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.UserInput"
+                            "$ref": "#/definitions/model.AccountInput"
                         }
                     }
                 ],
@@ -787,11 +787,62 @@ const docTemplate = `{
                 }
             }
         },
+        "/role/create_func_package": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Api tạo gói chức năng trong hệ thống",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Role"
+                ],
+                "summary": "Tạo gói chức năng",
+                "parameters": [
+                    {
+                        "description": "payload",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Role"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResponseData"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponseData"
+                        }
+                    }
+                }
+            }
+        },
         "/role/create_role": {
             "post": {
                 "security": [
                     {
                         "BearerAuth": []
+                    },
+                    {
+                        "ApiKeyAuth": []
                     }
                 ],
                 "description": "Api tạo vai trò trong hệ thống",
@@ -883,6 +934,9 @@ const docTemplate = `{
                 "security": [
                     {
                         "BearerAuth": []
+                    },
+                    {
+                        "ApiKeyAuth": []
                     }
                 ],
                 "description": "Api lấy danh sách role trong hệ thống",
@@ -931,6 +985,9 @@ const docTemplate = `{
                 "security": [
                     {
                         "BearerAuth": []
+                    },
+                    {
+                        "ApiKeyAuth": []
                     }
                 ],
                 "description": "API này trả về role theo ID",
@@ -1699,41 +1756,6 @@ const docTemplate = `{
                 "role_id": {
                     "type": "string",
                     "example": "role-123"
-                }
-            }
-        },
-        "model.UserInput": {
-            "type": "object",
-            "required": [
-                "email",
-                "name",
-                "role_id",
-                "role_id",
-                "username"
-            ],
-            "properties": {
-                "email": {
-                    "type": "string",
-                    "example": "admin@gmail.com"
-                },
-                "images": {
-                    "type": "string",
-                    "example": "/upload/images/phananhtu.jpg"
-                },
-                "name": {
-                    "type": "string",
-                    "example": "Admin"
-                },
-                "role_id": {
-                    "type": "string",
-                    "example": "2b796313-1134-44b3-b527-2c27d41a1624"
-                },
-                "status": {
-                    "type": "boolean"
-                },
-                "username": {
-                    "type": "string",
-                    "example": "admin"
                 }
             }
         },

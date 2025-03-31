@@ -23,6 +23,7 @@ type cRole struct {
 // @Accept json
 // @Produce json
 // @Security     BearerAuth
+// @Security     ApiKeyAuth
 // @Param        payload body model.Role true "payload"
 // @Success 200 {object} response.ResponseData
 // @Failure      500  {object}  response.ErrorResponseData
@@ -41,6 +42,32 @@ func (c *cRole) CreateRole(ctx *gin.Context) {
 	response.SuccessResponse(ctx, codeRole, dataRole)
 }
 
+// Role
+// @Summary Tạo gói chức năng
+// @Description Api tạo gói chức năng trong hệ thống
+// @Tags Role
+// @Accept json
+// @Produce json
+// @Security     BearerAuth
+// @Security     ApiKeyAuth
+// @Param        payload body model.Role true "payload"
+// @Success 200 {object} response.ResponseData
+// @Failure      500  {object}  response.ErrorResponseData
+// @Router /role/create_func_package [post]
+func (c *cRole) CreateFuncPackage(ctx *gin.Context) {
+	var params model.Role
+	if err := ctx.ShouldBindJSON(&params); err != nil {
+		response.ErrorResponse(ctx, response.ErrCodeParamInvalid, err.Error())
+		return
+	}
+	codeRole, dataRole, err := service.RoleItem().CreateFuncPackage(ctx.Request.Context(), &params)
+	if err != nil {
+		response.ErrorResponse(ctx, response.ErrCodeParamInvalid, err.Error())
+		return
+	}
+	response.SuccessResponse(ctx, codeRole, dataRole)
+}
+
 // GetAllRoles
 // @Summary Lấy danh sách role
 // @Description Api lấy danh sách role trong hệ thống
@@ -48,6 +75,7 @@ func (c *cRole) CreateRole(ctx *gin.Context) {
 // @Accept json
 // @Produce json
 // @Security     BearerAuth
+// @Security     ApiKeyAuth
 // @Param page query int false "Số trang (mặc định: 1)"
 // @Param page_size query int false "Số lượng mỗi trang (mặc định: 20)"
 // @Success 200 {object} response.ResponseData
@@ -86,6 +114,7 @@ func (c *cRole) GetAllRoles(ctx *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Security     BearerAuth
+// @Security     ApiKeyAuth
 // @Param        id   path   string  true  "ID role cần lấy"
 // @Success      200  {object}  response.ResponseData
 // @Failure      500  {object}  response.ErrorResponseData
