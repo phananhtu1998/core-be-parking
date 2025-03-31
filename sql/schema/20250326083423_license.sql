@@ -5,7 +5,7 @@ CREATE TABLE `license`(
     `license` TEXT NOT NULL,
     `role_id` CHAR(36) NOT NULL,
     `date_start` DATETIME NOT NULL,
-    `date_end` DATETIME NOT NULL,
+    `date_end` VARCHAR(255) NOT NULL,
     `created_at` TIMESTAMP NOT NULL,
     `update_at` TIMESTAMP NOT NULL,
     `is_deleted` BOOLEAN NOT NULL,

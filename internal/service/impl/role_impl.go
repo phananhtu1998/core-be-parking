@@ -9,6 +9,7 @@ import (
 	"go-backend-api/internal/model"
 	"go-backend-api/internal/service"
 	"go-backend-api/internal/utils"
+	"go-backend-api/internal/utils/auth"
 	"go-backend-api/internal/utils/cache"
 	"go-backend-api/pkg/response"
 	"time"
@@ -101,7 +102,21 @@ func (s *sRole) CreateRole(ctx context.Context, in *model.Role) (codeResult int,
 	if err != nil {
 		return response.ErrCodeRoleError, model.Role{}, fmt.Errorf("failed to create role: %w", err)
 	}
-
+	license, err := auth.CreateTokenNoExpiration(time.Now().Format("2006-01-02 15:04:05"), "NO_EXPIRATION")
+	if err != nil {
+		return response.ErrCodeLicenseValid, out, err
+	}
+	
+	// Tạo license vĩnh viễn
+	_, err = s.r.CreateLicense(ctx, database.CreateLicenseParams{
+		ID:        newID,
+		License:   license,
+		DateStart: time.Now(),
+		DateEnd:   "NO_EXPIRATION",
+	})
+	if err != nil {
+		return response.ErrCodeLicenseValid, out, err
+	}
 	// Commit transaction
 	if err = tx.Commit(); err != nil {
 		return response.ErrCodeRoleError, model.Role{}, fmt.Errorf("failed to commit transaction: %w", err)

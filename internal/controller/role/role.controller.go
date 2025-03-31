@@ -17,8 +17,8 @@ type cRole struct {
 }
 
 // Role
-// @Summary Tạo role
-// @Description Api tạo role trong hệ thống
+// @Summary Tạo vai trò
+// @Description Api tạo vai trò trong hệ thống
 // @Tags Role
 // @Accept json
 // @Produce json

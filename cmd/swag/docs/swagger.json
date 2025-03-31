@@ -23,6 +23,9 @@
                 "security": [
                     {
                         "BearerAuth": []
+                    },
+                    {
+                        "ApiKeyAuth": []
                     }
                 ],
                 "description": "API này cho phép tạo tài khoản mới",
@@ -74,6 +77,9 @@
                 "security": [
                     {
                         "BearerAuth": []
+                    },
+                    {
+                        "ApiKeyAuth": []
                     }
                 ],
                 "description": "API này cho phép tạo người dùng mới",
@@ -125,6 +131,9 @@
                 "security": [
                     {
                         "BearerAuth": []
+                    },
+                    {
+                        "ApiKeyAuth": []
                     }
                 ],
                 "description": "API này xóa tài khoản dựa trên ID",
@@ -174,6 +183,9 @@
                 "security": [
                     {
                         "BearerAuth": []
+                    },
+                    {
+                        "ApiKeyAuth": []
                     }
                 ],
                 "description": "API này trả về tài khoản theo ID",
@@ -254,6 +266,9 @@
                 "security": [
                     {
                         "BearerAuth": []
+                    },
+                    {
+                        "ApiKeyAuth": []
                     }
                 ],
                 "description": "API này cập nhật thông tin tài khoản dựa trên ID",
@@ -747,7 +762,7 @@
                         "BearerAuth": []
                     }
                 ],
-                "description": "Api tạo role trong hệ thống",
+                "description": "Api tạo vai trò trong hệ thống",
                 "consumes": [
                     "application/json"
                 ],
@@ -757,7 +772,7 @@
                 "tags": [
                     "Role"
                 ],
-                "summary": "Tạo role",
+                "summary": "Tạo vai trò",
                 "parameters": [
                     {
                         "description": "payload",

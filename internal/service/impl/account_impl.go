@@ -98,12 +98,19 @@ func (s *sAccount) CreateAccount(ctx context.Context, in *model.AccountInput) (c
 		log.Printf("Lỗi khi chèn tài khoản: %v", err)
 		return response.ErrCodeParamInvalid, model.AccountOutput{}, err
 	}
+	// lấy id của license bằng roleId
+	licenseID, err := s.r.GetLicenseByRoleId(ctx, in.RoleId)
+	if err != nil {
+		log.Printf("Lỗi khi lấy id license: %v", err)
+		return response.ErrCodeParamInvalid, model.AccountOutput{}, err
+	}
+	// nếu license tồn tại thì thêm vào bảng role account
 	// thêm vào bảng role account
 	err = s.r.CreateRoleAccount(ctx, database.CreateRoleAccountParams{
 		ID:        newUUID,
 		AccountID: newUUID,
 		RoleID:    in.RoleId,
-		LicenseID: "",
+		LicenseID: licenseID.ID,
 	})
 	if err != nil {
 		log.Printf("Lỗi khi chèn tài khoản vào bảng role account: %v", err)

@@ -43,6 +43,7 @@ func (ac *cAccount) GetAllAccount(ctx *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Security     BearerAuth
+// @Security     ApiKeyAuth
 // @Param        id   path   string  true  "ID tài khoản cần lấy"
 // @Success      200  {object}  response.ResponseData
 // @Failure      500  {object}  response.ErrorResponseData
@@ -66,6 +67,7 @@ func (ac *cAccount) GetAccountById(ctx *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Security     BearerAuth
+// @Security     ApiKeyAuth
 // @Param        id   path   string  true  "ID tài khoản cần cập nhật"
 // @Param        body body   model.AccountInput true "Dữ liệu cập nhật tài khoản"
 // @Success      200  {object}  response.ResponseData
@@ -95,6 +97,7 @@ func (ac *cAccount) UpdateAccount(ctx *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Security     BearerAuth
+// @Security     ApiKeyAuth
 // @Param        id   path   string  true  "ID của tài khoản cần xóa"
 // @Success      200  {object}  response.ResponseData
 // @Failure      400  {object}  response.ErrorResponseData
@@ -118,6 +121,7 @@ func (ac *cAccount) DeleteAccount(ctx *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Security     BearerAuth
+// @Security     ApiKeyAuth
 // @Param        body  body   model.AccountInput  true  "Thông tin tài khoản cần tạo"
 // @Success      200   {object}  response.ResponseData
 // @Failure      400   {object}  response.ErrorResponseData
@@ -153,6 +157,7 @@ func (ac *cAccount) CreateAccount(ctx *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Security     BearerAuth
+// @Security     ApiKeyAuth
 // @Param        body  body   model.UserInput  true  "Thông tin người dùng cần tạo"
 // @Success      200   {object}  response.ResponseData
 // @Failure      400   {object}  response.ErrorResponseData

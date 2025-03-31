@@ -29,6 +29,9 @@ const docTemplate = `{
                 "security": [
                     {
                         "BearerAuth": []
+                    },
+                    {
+                        "ApiKeyAuth": []
                     }
                 ],
                 "description": "API này cho phép tạo tài khoản mới",
@@ -80,6 +83,9 @@ const docTemplate = `{
                 "security": [
                     {
                         "BearerAuth": []
+                    },
+                    {
+                        "ApiKeyAuth": []
                     }
                 ],
                 "description": "API này cho phép tạo người dùng mới",
@@ -131,6 +137,9 @@ const docTemplate = `{
                 "security": [
                     {
                         "BearerAuth": []
+                    },
+                    {
+                        "ApiKeyAuth": []
                     }
                 ],
                 "description": "API này xóa tài khoản dựa trên ID",
@@ -180,6 +189,9 @@ const docTemplate = `{
                 "security": [
                     {
                         "BearerAuth": []
+                    },
+                    {
+                        "ApiKeyAuth": []
                     }
                 ],
                 "description": "API này trả về tài khoản theo ID",
@@ -260,6 +272,9 @@ const docTemplate = `{
                 "security": [
                     {
                         "BearerAuth": []
+                    },
+                    {
+                        "ApiKeyAuth": []
                     }
                 ],
                 "description": "API này cập nhật thông tin tài khoản dựa trên ID",
@@ -753,7 +768,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Api tạo role trong hệ thống",
+                "description": "Api tạo vai trò trong hệ thống",
                 "consumes": [
                     "application/json"
                 ],
@@ -763,7 +778,7 @@ const docTemplate = `{
                 "tags": [
                     "Role"
                 ],
-                "summary": "Tạo role",
+                "summary": "Tạo vai trò",
                 "parameters": [
                     {
                         "description": "payload",

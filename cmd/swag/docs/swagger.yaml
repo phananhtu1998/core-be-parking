@@ -245,6 +245,7 @@ paths:
             $ref: '#/definitions/response.ErrorResponseData'
       security:
       - BearerAuth: []
+      - ApiKeyAuth: []
       summary: Tạo tài khoản mới
       tags:
       - Account management
@@ -277,6 +278,7 @@ paths:
             $ref: '#/definitions/response.ErrorResponseData'
       security:
       - BearerAuth: []
+      - ApiKeyAuth: []
       summary: Tạo tài người dùng
       tags:
       - Account management
@@ -308,6 +310,7 @@ paths:
             $ref: '#/definitions/response.ErrorResponseData'
       security:
       - BearerAuth: []
+      - ApiKeyAuth: []
       summary: Xóa tài khoản
       tags:
       - Account management
@@ -335,6 +338,7 @@ paths:
             $ref: '#/definitions/response.ErrorResponseData'
       security:
       - BearerAuth: []
+      - ApiKeyAuth: []
       summary: Lấy tài khoản theo ID
       tags:
       - Account management
@@ -394,6 +398,7 @@ paths:
             $ref: '#/definitions/response.ErrorResponseData'
       security:
       - BearerAuth: []
+      - ApiKeyAuth: []
       summary: Cập nhật tài khoản
       tags:
       - Account management
@@ -674,7 +679,7 @@ paths:
     post:
       consumes:
       - application/json
-      description: Api tạo role trong hệ thống
+      description: Api tạo vai trò trong hệ thống
       parameters:
       - description: payload
         in: body
@@ -695,7 +700,7 @@ paths:
             $ref: '#/definitions/response.ErrorResponseData'
       security:
       - BearerAuth: []
-      summary: Tạo role
+      summary: Tạo vai trò
       tags:
       - Role
   /role/delete_role/{id}:

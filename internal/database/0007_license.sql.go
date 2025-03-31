@@ -21,7 +21,7 @@ type CreateLicenseParams struct {
 	License   string
 	RoleID    string
 	DateStart time.Time
-	DateEnd   time.Time
+	DateEnd   string
 }
 
 func (q *Queries) CreateLicense(ctx context.Context, arg CreateLicenseParams) (sql.Result, error) {
@@ -47,6 +47,8 @@ func (q *Queries) DeleteLicense(ctx context.Context, id string) error {
 }
 
 const getAllLicenses = `-- name: GetAllLicenses :many
+;
+
 SELECT id, license, date_start, role_id, date_end, created_at, update_at
 FROM ` + "`" + `license` + "`" + `
 WHERE is_deleted = false
@@ -57,7 +59,7 @@ type GetAllLicensesRow struct {
 	License   string
 	DateStart time.Time
 	RoleID    string
-	DateEnd   time.Time
+	DateEnd   string
 	CreatedAt time.Time
 	UpdateAt  time.Time
 }
@@ -104,7 +106,7 @@ type GetLicenseByIdRow struct {
 	License   string
 	RoleID    string
 	DateStart time.Time
-	DateEnd   time.Time
+	DateEnd   string
 	CreatedAt time.Time
 	UpdateAt  time.Time
 }
@@ -112,6 +114,37 @@ type GetLicenseByIdRow struct {
 func (q *Queries) GetLicenseById(ctx context.Context, id string) (GetLicenseByIdRow, error) {
 	row := q.db.QueryRowContext(ctx, getLicenseById, id)
 	var i GetLicenseByIdRow
+	err := row.Scan(
+		&i.ID,
+		&i.License,
+		&i.RoleID,
+		&i.DateStart,
+		&i.DateEnd,
+		&i.CreatedAt,
+		&i.UpdateAt,
+	)
+	return i, err
+}
+
+const getLicenseByRoleId = `-- name: GetLicenseByRoleId :one
+SELECT id, license, role_id, date_start, date_end, created_at, update_at
+FROM ` + "`" + `license` + "`" + `
+WHERE role_id = ? AND is_deleted = false
+`
+
+type GetLicenseByRoleIdRow struct {
+	ID        string
+	License   string
+	RoleID    string
+	DateStart time.Time
+	DateEnd   string
+	CreatedAt time.Time
+	UpdateAt  time.Time
+}
+
+func (q *Queries) GetLicenseByRoleId(ctx context.Context, roleID string) (GetLicenseByRoleIdRow, error) {
+	row := q.db.QueryRowContext(ctx, getLicenseByRoleId, roleID)
+	var i GetLicenseByRoleIdRow
 	err := row.Scan(
 		&i.ID,
 		&i.License,
@@ -137,7 +170,7 @@ WHERE id = ?
 type UpdateLicenseParams struct {
 	License   string
 	DateStart time.Time
-	DateEnd   time.Time
+	DateEnd   string
 	ID        string
 }
 

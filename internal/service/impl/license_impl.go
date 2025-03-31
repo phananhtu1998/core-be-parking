@@ -31,17 +31,18 @@ func (s *sLicense) CreateLicense(ctx context.Context, in *model.License) (codeRe
 	if err != nil {
 		return response.ErrCodeLicenseValid, out, err
 	}
-	var dateEnd time.Time
+
+	// Xử lý DateEnd
+	var dateEnd string
 	if in.DateEnd == "NO_EXPIRATION" {
-		dateEnd = time.Now()
+		dateEnd = "NO_EXPIRATION"
 	} else {
-		dateEnd, err = time.Parse("2006-01-02 15:04:05", in.DateEnd)
+		// Kiểm tra DateEnd có đúng định dạng không
+		_, err = time.Parse("2006-01-02 15:04:05", in.DateEnd)
 		if err != nil {
 			return response.ErrCodeLicenseValid, out, err
 		}
-	}
-	if err != nil {
-		return response.ErrCodeLicenseValid, out, err
+		dateEnd = in.DateEnd // Lưu dưới dạng string vì DB là VARCHAR(255)
 	}
 
 	// Tạo license trong database
@@ -50,11 +51,12 @@ func (s *sLicense) CreateLicense(ctx context.Context, in *model.License) (codeRe
 		License:   license,
 		RoleID:    in.RoleId,
 		DateStart: dateStart,
-		DateEnd:   dateEnd,
+		DateEnd:   dateEnd, // Giữ nguyên kiểu string
 	})
 	if err != nil {
 		return response.ErrCodeLicenseValid, out, err
 	}
+
 	out.License = license
 	return response.ErrCodeSucces, out, nil
 }

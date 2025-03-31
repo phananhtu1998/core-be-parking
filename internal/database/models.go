@@ -42,7 +42,7 @@ type License struct {
 	License   string
 	RoleID    string
 	DateStart time.Time
-	DateEnd   time.Time
+	DateEnd   string
 	CreatedAt time.Time
 	UpdateAt  time.Time
 	IsDeleted bool
