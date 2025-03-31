@@ -9,6 +9,8 @@ import (
 	"github.com/minio/minio-go/v7/pkg/credentials"
 )
 
+var Client *minio.Client
+
 func InitMinio() (*minio.Client, error) {
 	minioClient, err := minio.New(global.Config.MinIO.ENDPOINT, &minio.Options{
 		Creds:  credentials.NewStaticV4(global.Config.MinIO.ACCESS_KEY, global.Config.MinIO.SECRET_KEY, ""),
@@ -35,4 +37,15 @@ func InitMinio() (*minio.Client, error) {
 	}
 
 	return minioClient, nil
+}
+
+func GetClient() (*minio.Client, error) {
+	if Client == nil {
+		var err error
+		Client, err = InitMinio()
+		if err != nil {
+			return nil, err
+		}
+	}
+	return Client, nil
 }
