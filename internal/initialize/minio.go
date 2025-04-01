@@ -9,16 +9,14 @@ import (
 	"github.com/minio/minio-go/v7/pkg/credentials"
 )
 
-var Client *minio.Client
-
-func InitMinio() (*minio.Client, error) {
+func InitMinio() error {
 	minioClient, err := minio.New(global.Config.MinIO.ENDPOINT, &minio.Options{
 		Creds:  credentials.NewStaticV4(global.Config.MinIO.ACCESS_KEY, global.Config.MinIO.SECRET_KEY, ""),
 		Secure: global.Config.MinIO.USESSL,
 	})
 	if err != nil {
 		log.Println("Lỗi kết nối với minio: ", err)
-		return nil, err
+		return err
 	}
 	global.MinioClient = minioClient
 	// Tạo bucket nếu chưa có
@@ -26,15 +24,15 @@ func InitMinio() (*minio.Client, error) {
 	exists, err := minioClient.BucketExists(ctx, global.Config.MinIO.BUCKET_NAME)
 	if err != nil {
 		log.Println("Lỗi kết nối với minio: ", err)
-		return nil, err
+		return err
 	}
 	if !exists {
 		err = minioClient.MakeBucket(ctx, global.Config.MinIO.BUCKET_NAME, minio.MakeBucketOptions{})
 		if err != nil {
-			return nil, err
+			return err
 		}
 		log.Println("Bucket đã được tạo:", global.Config.MinIO.BUCKET_NAME)
 	}
 
-	return minioClient, nil
+	return nil
 }

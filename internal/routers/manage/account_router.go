@@ -26,7 +26,7 @@ func (ar *AdminRouter) InitAdminRouter(Router *gin.RouterGroup) {
 	}
 	// private router
 	adminRouterPrivate := Router.Group("/admin/user")
-	// adminRouterPrivate.Use(limiter())
+	//adminRouterPrivate.Use(limiter())
 	// adminRouterPrivate.Use(Authen())
 	// adminRouterPrivate.Use(Permission())
 	{

@@ -1,0 +1,32 @@
+-- name: InsertAccountData :execresult
+INSERT INTO `account` (
+    id,
+    number,
+    username,
+    name,
+    email,
+    password,
+    salt,
+    status,
+    images,
+    is_deleted,
+    create_at,
+    update_at
+)
+VALUES('872ab326-b40b-4fb7-b28b-c5f8157fea7c',457262737,'Admin','Admin','admin@gmail.com','61870d2110c706703b709c1348759522e051e8bd25f2a5092df72756967713b0','4c724d523767fd7b19a89b46d68d9c33',true,'/upload/images/phananhtu.jpg',false,NOW(),NOW());
+
+-- name: CreateRoleData :execresult
+INSERT INTO `role` (
+  id, code, role_name, role_left_value, role_right_value, 
+  role_max_number, is_licensed, created_by, create_at, update_at
+) VALUES (
+  'eb6d9850-2b77-47fc-ae2a-0a0ba9842280', 'ADMIN', 'ADMIN', 1, 2, 1000, false, '', NOW(), NOW()
+);
+
+-- name: CreateLicenseData :execresult
+INSERT INTO `license` (id,license, role_id, date_start, date_end, created_at, update_at, is_deleted)
+    VALUES ('3375f96b-dcc5-492a-ab49-cb3b0af401a1', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRlZW5kIjoiTk9fRVhQSVJBVElPTiIsImRhdGVzdGFydCI6IjIwMjUtMDMtMjggMTE6MjI6MzAiLCJpc3MiOiJwYXJraW5nZGV2Z28iLCJqdGkiOiIzMDE0MjZlNS1lOWQwLTRkNWMtYjYzNi1lNGI4YmI0Y2JkZmYifQ.PP9HPqdaioyRZYyQrgkNx5pUu_GZENVfioDSq3J0xxo', 'eb6d9850-2b77-47fc-ae2a-0a0ba9842280', '2025-03-28 18:22:30', 'NO_EXPIRATION', NOW(), NOW(), false);
+
+-- name: CreateRoleAccountData :exec
+INSERT INTO `role_account` (id, account_id, role_id, license_id, is_deleted, create_at, update_at)
+VALUES ('369f54a1-300a-4ded-9ab0-b37e71cdc3e9', '872ab326-b40b-4fb7-b28b-c5f8157fea7c', 'eb6d9850-2b77-47fc-ae2a-0a0ba9842280', '3375f96b-dcc5-492a-ab49-cb3b0af401a1', false, NOW(), NOW());

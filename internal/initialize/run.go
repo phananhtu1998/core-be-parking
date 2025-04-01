@@ -3,6 +3,7 @@ package initialize
 import (
 	"fmt"
 	"go-backend-api/global"
+	"go-backend-api/internal/database"
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
@@ -22,7 +23,8 @@ func Run() *gin.Engine {
 	InitRedis()
 	InitMinio()
 	GetServerInfo()
-
+	queries := database.New(global.Mdbc)
+	InsertData(ctx, queries)
 	// Khởi tạo RBAC
 	enforcer, err := InitializeRBAC(global.Mdb)
 	if err != nil {
