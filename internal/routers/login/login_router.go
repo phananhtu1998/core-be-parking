@@ -20,6 +20,7 @@ func (ar *LoginRouter) InitLoginRouter(Router *gin.RouterGroup) {
 	adminRouterPrivate.Use(middlewares.AuthenMiddleware())
 	adminRouterPrivate.Use(middlewares.RateLimiterPrivateMiddlewareRedis())
 	adminRouterPublic.Use(middlewares.LicenseMiddleware())
+	//adminRouterPrivate.Use(middlewares.PermissionMiddleware(global.Enforcer))
 	{
 		adminRouterPrivate.POST("/logout", login.Logins.Logout)
 		adminRouterPrivate.POST("/change_password", login.Logins.ChangePassword)
