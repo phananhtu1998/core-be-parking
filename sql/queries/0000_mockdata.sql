@@ -28,5 +28,5 @@ INSERT INTO `license` (id,license, role_id, date_start, date_end, created_at, up
     VALUES ('3375f96b-dcc5-492a-ab49-cb3b0af401a1', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRlZW5kIjoiTk9fRVhQSVJBVElPTiIsImRhdGVzdGFydCI6IjIwMjUtMDMtMjggMTE6MjI6MzAiLCJpc3MiOiJwYXJraW5nZGV2Z28iLCJqdGkiOiIzMDE0MjZlNS1lOWQwLTRkNWMtYjYzNi1lNGI4YmI0Y2JkZmYifQ.PP9HPqdaioyRZYyQrgkNx5pUu_GZENVfioDSq3J0xxo', 'eb6d9850-2b77-47fc-ae2a-0a0ba9842280', '2025-03-28 18:22:30', 'NO_EXPIRATION', NOW(), NOW(), false);
 
 -- name: CreateRoleAccountData :exec
-INSERT INTO `role_account` (id, account_id, role_id, license_id, is_deleted, create_at, update_at)
-VALUES ('369f54a1-300a-4ded-9ab0-b37e71cdc3e9', '872ab326-b40b-4fb7-b28b-c5f8157fea7c', 'eb6d9850-2b77-47fc-ae2a-0a0ba9842280', '3375f96b-dcc5-492a-ab49-cb3b0af401a1', false, NOW(), NOW());
+INSERT INTO `role_account` (id, account_id, role_id, license_id, created_by, is_deleted, create_at, update_at)
+VALUES ('369f54a1-300a-4ded-9ab0-b37e71cdc3e9', '872ab326-b40b-4fb7-b28b-c5f8157fea7c', 'eb6d9850-2b77-47fc-ae2a-0a0ba9842280', '3375f96b-dcc5-492a-ab49-cb3b0af401a1','', false, NOW(), NOW());

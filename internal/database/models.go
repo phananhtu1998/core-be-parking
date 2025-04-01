@@ -81,6 +81,7 @@ type RoleAccount struct {
 	AccountID string
 	RoleID    string
 	LicenseID string
+	CreatedBy sql.NullString
 	IsDeleted bool
 	CreateAt  time.Time
 	UpdateAt  time.Time

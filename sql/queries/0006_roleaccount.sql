@@ -19,8 +19,8 @@ FROM `role_account`
 WHERE is_deleted = false AND role_id = ?;
 
 -- name: CreateRoleAccount :exec
-INSERT INTO `role_account` (id, account_id, role_id, license_id, is_deleted, create_at, update_at)
-VALUES (?, ?, ?, ?, false, NOW(), NOW());
+INSERT INTO `role_account` (id, account_id, role_id, license_id,created_by, is_deleted, create_at, update_at)
+VALUES (?, ?, ?, ?, ?, false, NOW(), NOW());
 
 -- name: UpdateRoleAccount :exec
 UPDATE `role_account`

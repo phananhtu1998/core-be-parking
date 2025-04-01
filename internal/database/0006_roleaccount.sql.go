@@ -7,6 +7,7 @@ package database
 
 import (
 	"context"
+	"database/sql"
 	"time"
 )
 
@@ -24,8 +25,8 @@ func (q *Queries) CheckCountRoleId(ctx context.Context, roleID string) (int64, e
 }
 
 const createRoleAccount = `-- name: CreateRoleAccount :exec
-INSERT INTO ` + "`" + `role_account` + "`" + ` (id, account_id, role_id, license_id, is_deleted, create_at, update_at)
-VALUES (?, ?, ?, ?, false, NOW(), NOW())
+INSERT INTO ` + "`" + `role_account` + "`" + ` (id, account_id, role_id, license_id,created_by, is_deleted, create_at, update_at)
+VALUES (?, ?, ?, ?, ?, false, NOW(), NOW())
 `
 
 type CreateRoleAccountParams struct {
@@ -33,6 +34,7 @@ type CreateRoleAccountParams struct {
 	AccountID string
 	RoleID    string
 	LicenseID string
+	CreatedBy sql.NullString
 }
 
 func (q *Queries) CreateRoleAccount(ctx context.Context, arg CreateRoleAccountParams) error {
@@ -41,6 +43,7 @@ func (q *Queries) CreateRoleAccount(ctx context.Context, arg CreateRoleAccountPa
 		arg.AccountID,
 		arg.RoleID,
 		arg.LicenseID,
+		arg.CreatedBy,
 	)
 	return err
 }
