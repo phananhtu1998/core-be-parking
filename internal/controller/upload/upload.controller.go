@@ -15,6 +15,7 @@ import (
 // @Accept multipart/form-data
 // @Produce json
 // @Security BearerAuth
+// @Security     ApiKeyAuth
 // @Param file formData file true "File cần upload"
 // @Success 200 {object} response.ResponseData
 // @Failure 500 {object} response.ErrorResponseData "Server error"

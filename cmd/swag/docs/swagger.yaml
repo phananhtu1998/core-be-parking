@@ -1178,6 +1178,7 @@ paths:
             $ref: '#/definitions/response.ErrorResponseData'
       security:
       - BearerAuth: []
+      - ApiKeyAuth: []
       summary: Upload file
       tags:
       - Upload
