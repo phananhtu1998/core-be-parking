@@ -24,4 +24,5 @@ func InitServiceInterface() {
 	service.InitLicenseItem(impl.NewLicenseImpl(queries))
 	service.InitUploadItem(impl.NewUploadImpl())
 	service.InitUserItem(impl.NewUserImpl(queries, tx, global.Mdbc))
+	service.InitFuncpackageItem(impl.NewFuncpackageImpl(queries, tx, global.Mdbc))
 }

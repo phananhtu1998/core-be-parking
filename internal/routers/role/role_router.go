@@ -18,7 +18,6 @@ func (ar *RoleRouter) InitRoleRouter(Router *gin.RouterGroup) {
 	roleRouterPrivate.Use(middlewares.PermissionMiddleware(global.Enforcer))
 	{
 		roleRouterPrivate.POST("/create_role", role.Roles.CreateRole)
-		roleRouterPrivate.POST("/create_func_package", role.Roles.CreateFuncPackage)
 		roleRouterPrivate.GET("/get_all_roles", role.Roles.GetAllRoles)
 		roleRouterPrivate.GET("/get_role_by_id/:id", role.Roles.GetRoleById)
 		roleRouterPrivate.DELETE("/delete_role/:id", role.Roles.DeleteRole)

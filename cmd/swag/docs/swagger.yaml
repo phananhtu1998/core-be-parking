@@ -446,6 +446,35 @@ paths:
       summary: RefreshToken
       tags:
       - Authenticate
+  /funcpackage/create_func_package:
+    post:
+      consumes:
+      - application/json
+      description: Api tạo gói chức năng trong hệ thống
+      parameters:
+      - description: payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/model.Role'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ResponseData'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponseData'
+      security:
+      - BearerAuth: []
+      - ApiKeyAuth: []
+      summary: Tạo gói chức năng
+      tags:
+      - Func packages
   /license/create_license:
     post:
       consumes:
@@ -656,35 +685,6 @@ paths:
       summary: Cập nhật nhiều menu
       tags:
       - Menu
-  /role/create_func_package:
-    post:
-      consumes:
-      - application/json
-      description: Api tạo gói chức năng trong hệ thống
-      parameters:
-      - description: payload
-        in: body
-        name: payload
-        required: true
-        schema:
-          $ref: '#/definitions/model.Role'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.ResponseData'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/response.ErrorResponseData'
-      security:
-      - BearerAuth: []
-      - ApiKeyAuth: []
-      summary: Tạo gói chức năng
-      tags:
-      - Role
   /role/create_role:
     post:
       consumes:
