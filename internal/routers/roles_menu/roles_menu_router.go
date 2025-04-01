@@ -16,6 +16,7 @@ func (ar *RolesMenuRouter) InitRolesMenuRouter(Router *gin.RouterGroup) {
 	rolesMenuRouterPrivate.Use(middlewares.LicenseMiddleware())
 	{
 		rolesMenuRouterPrivate.POST("/create_roles_menu", roles_menu.RolesMenus.CreateRolesMenu)
+		rolesMenuRouterPrivate.POST("/create_roles_menu_multiple", roles_menu.RolesMenus.CreateMultipleRoleMenus)
 		rolesMenuRouterPrivate.GET("/get_role_menu_by_role_id/:id", roles_menu.RolesMenus.GetRoleMenuByRoleId)
 		rolesMenuRouterPrivate.PUT("/update_roles_menu/:id", roles_menu.RolesMenus.UpdateRolesMenu)
 		rolesMenuRouterPrivate.DELETE("/delete_roles_menu/:id", roles_menu.RolesMenus.DeleteRolesMenu)

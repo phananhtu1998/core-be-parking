@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json"
+	"fmt"
 	"go-backend-api/internal/database"
 	"go-backend-api/internal/model"
 	"go-backend-api/internal/service"
@@ -119,4 +120,44 @@ func (s *sRolesMenu) DeleteRolesMenu(ctx context.Context, id string) (int, error
 	}
 
 	return response.ErrCodeRoleMenuSucces, nil
+}
+
+func (s *sRolesMenu) CreateMultipleRoleMenus(ctx context.Context, inputs []model.RolesMenu) (codeResult int, out []model.RolesMenu, err error) {
+	tx, err := s.db.BeginTx(ctx, nil)
+	if err != nil {
+		return response.ErrCodeMenuErrror, nil, fmt.Errorf("failed to begin transaction: %w", err)
+	}
+
+	var committed bool
+	defer func() {
+		if !committed {
+			tx.Rollback()
+		}
+	}()
+	outputs := make([]model.RolesMenu, 0, len(inputs))
+	for _, input := range inputs {
+		newUUID := uuid.New().String()
+		listMethodJSON, err := json.Marshal(input.ListMethod)
+		if err != nil {
+			return response.ErrCodeRoleMenuError, out, err
+		}
+		if err := s.r.CreateRolesMenu(ctx, database.CreateRolesMenuParams{
+			ID:         newUUID,
+			MenuID:     input.Menu_id,
+			RoleID:     input.Role_id,
+			ListMethod: listMethodJSON,
+		}); err != nil {
+			return response.ErrCodeMenuErrror, nil, err
+		}
+		outputs = append(outputs, model.RolesMenu{
+			Menu_id:    input.Menu_id,
+			Role_id:    input.Role_id,
+			ListMethod: input.ListMethod,
+		})
+	}
+	if err = tx.Commit(); err != nil {
+		return response.ErrCodeMenuErrror, nil, fmt.Errorf("failed to commit transaction: %w", err)
+	}
+	committed = true
+	return response.ErrCodeSucces, outputs, nil
 }

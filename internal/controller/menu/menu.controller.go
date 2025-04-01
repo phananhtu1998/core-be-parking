@@ -152,3 +152,30 @@ func (ac *cMenu) DeleteMenu(ctx *gin.Context) {
 
 	response.SuccessResponse(ctx, code, nil)
 }
+
+// CreateMultipleMenus
+// @Summary      Tạo nhiều menu
+// @Description  API tạo nhiều menu cùng lúc trong hệ thống
+// @Tags         Menu
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Security     ApiKeyAuth
+// @Param        payload body []model.MenuInput true "payload"
+// @Success      200  {object}  response.ResponseData
+// @Failure      500  {object}  response.ErrorResponseData
+// @Router       /menu/create_multiple_menus [post]
+func (c *cMenu) CreateMultipleMenus(ctx *gin.Context) {
+	var params []model.MenuInput
+	if err := ctx.ShouldBindJSON(&params); err != nil {
+		response.ErrorResponse(ctx, response.ErrCodeParamInvalid, err.Error())
+		return
+	}
+
+	codeMenu, dataMenu, err := service.MenuItem().CreateMultipleMenus(ctx, params)
+	if err != nil {
+		response.ErrorResponse(ctx, response.ErrCodeParamInvalid, err.Error())
+		return
+	}
+	response.SuccessResponse(ctx, codeMenu, dataMenu)
+}

@@ -36,4 +36,3 @@ MINIO:
   SECRET_KEY: thaco@1234
   USESSL: false
   BUCKET_NAME: parkingbuckets
-  CHUNK_SIZE: 5 * 1024 * 1024 // 5MB mỗi phần (MinIO yêu cầu tối th

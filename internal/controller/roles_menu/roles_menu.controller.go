@@ -129,3 +129,33 @@ func (c *cRolesMenu) DeleteRolesMenu(ctx *gin.Context) {
 	}
 	response.SuccessResponse(ctx, code, nil)
 }
+
+// CreateRolesMenuMultiple
+// @Summary Tạo nhiều menu theo role
+// @Description Api tạo nhiều menu theo role cho hệ thống
+// @Tags RolesMenu
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Security     ApiKeyAuth
+// @Param payload body []model.RolesMenu true "Role menu mapping details"
+// @Success 200 {object} response.ResponseData
+// @Failure 500 {object} response.ErrorResponseData "Server error"
+// @Router /rolesmenu/create_roles_menu_multiple [post]
+func (c *cRolesMenu) CreateMultipleRoleMenus(ctx *gin.Context) {
+	// Lấy dữ liệu từ request body
+	var params []model.RolesMenu
+	if err := ctx.ShouldBindJSON(&params); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input data"})
+		return
+	}
+
+	// Gọi service để tạo roles menu
+	code, result, err := service.RolesMenuItem().CreateMultipleRoleMenus(ctx.Request.Context(), params)
+	if err != nil {
+		response.ErrorResponse(ctx, code, err.Error())
+		return
+	}
+	// Trả về kết quả thành công
+	response.SuccessResponse(ctx, code, result)
+}

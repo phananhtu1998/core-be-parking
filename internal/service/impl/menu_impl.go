@@ -69,6 +69,77 @@ func (s *sMenu) CreateMenu(ctx context.Context, in *model.MenuInput) (int, model
 	// Trả về kết quả thành công
 	return response.ErrCodeSucces, output, nil
 }
+
+func (s *sMenu) CreateMultipleMenus(ctx context.Context, inputs []model.MenuInput) (int, []model.MenuOutput, error) {
+	// Bắt đầu transaction
+	tx, err := s.db.BeginTx(ctx, nil)
+	if err != nil {
+		return response.ErrCodeMenuErrror, nil, fmt.Errorf("failed to begin transaction: %w", err)
+	}
+
+	var committed bool
+	defer func() {
+		if !committed {
+			tx.Rollback()
+		}
+	}()
+
+	// Kiểm tra URLs trùng lặp trong input
+	urlMap := make(map[string]bool)
+	for _, input := range inputs {
+		if urlMap[input.Menu_url] {
+			return response.ErrCodeMenuHasExists, nil, fmt.Errorf("duplicate menu URL: %s", input.Menu_url)
+		}
+		urlMap[input.Menu_url] = true
+
+		// Kiểm tra URL đã tồn tại trong DB
+		if urlFound, err := s.r.CountMenuByURL(ctx, input.Menu_url); err != nil {
+			return response.ErrCodeMenuErrror, nil, err
+		} else if urlFound > 0 {
+			return response.ErrCodeMenuHasExists, nil, fmt.Errorf("menu URL already exists: %s", input.Menu_url)
+		}
+	}
+
+	// Tạo slice để lưu kết quả
+	outputs := make([]model.MenuOutput, 0, len(inputs))
+
+	// Thêm từng menu vào DB
+	for _, input := range inputs {
+		newUUID := uuid.New().String()
+
+		if _, err := s.r.InsertMenu(ctx, database.InsertMenuParams{
+			ID:              newUUID,
+			MenuName:        input.Menu_name,
+			MenuIcon:        input.Menu_icon,
+			MenuUrl:         input.Menu_url,
+			MenuParentID:    sql.NullString{String: input.Menu_parent_id, Valid: true},
+			MenuLevel:       int32(input.Menu_level),
+			MenuNumberOrder: int32(input.Menu_Number_order),
+			MenuGroupName:   input.Menu_group_name,
+		}); err != nil {
+			return response.ErrCodeMenuErrror, nil, err
+		}
+
+		outputs = append(outputs, model.MenuOutput{
+			Id:                newUUID,
+			Menu_name:         input.Menu_name,
+			Menu_icon:         input.Menu_icon,
+			Menu_url:          input.Menu_url,
+			Menu_parent_id:    input.Menu_parent_id,
+			Menu_level:        input.Menu_level,
+			Menu_Number_order: input.Menu_Number_order,
+			Menu_group_name:   input.Menu_group_name,
+		})
+	}
+
+	// Commit transaction
+	if err = tx.Commit(); err != nil {
+		return response.ErrCodeMenuErrror, nil, fmt.Errorf("failed to commit transaction: %w", err)
+	}
+	committed = true
+
+	return response.ErrCodeSucces, outputs, nil
+}
 func (s *sMenu) GetAllMenu(ctx context.Context) (int, []model.MenuOutput, error) {
 	// Lấy danh sách menu từ database
 	lstMenu, err := s.r.GetAllMenus(ctx)

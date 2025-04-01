@@ -541,6 +541,37 @@ paths:
       summary: Tạo menu
       tags:
       - Menu
+  /menu/create_multiple_menus:
+    post:
+      consumes:
+      - application/json
+      description: API tạo nhiều menu cùng lúc trong hệ thống
+      parameters:
+      - description: payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          items:
+            $ref: '#/definitions/model.MenuInput'
+          type: array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ResponseData'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponseData'
+      security:
+      - BearerAuth: []
+      - ApiKeyAuth: []
+      summary: Tạo nhiều menu
+      tags:
+      - Menu
   /menu/delete/{id}:
     delete:
       consumes:
@@ -988,6 +1019,37 @@ paths:
       - BearerAuth: []
       - ApiKeyAuth: []
       summary: Tạo role menu
+      tags:
+      - RolesMenu
+  /rolesmenu/create_roles_menu_multiple:
+    post:
+      consumes:
+      - application/json
+      description: Api tạo nhiều menu theo role cho hệ thống
+      parameters:
+      - description: Role menu mapping details
+        in: body
+        name: payload
+        required: true
+        schema:
+          items:
+            $ref: '#/definitions/model.RolesMenu'
+          type: array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ResponseData'
+        "500":
+          description: Server error
+          schema:
+            $ref: '#/definitions/response.ErrorResponseData'
+      security:
+      - BearerAuth: []
+      - ApiKeyAuth: []
+      summary: Tạo nhiều menu theo role
       tags:
       - RolesMenu
   /rolesmenu/delete_roles_menu/{id}:
