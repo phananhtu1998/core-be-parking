@@ -8,7 +8,6 @@ import (
 type (
 	Iaccount interface {
 		CreateAccount(ctx context.Context, in *model.AccountInput) (codeResult int, out model.AccountOutput, err error)
-		CreateUser(ctx context.Context, in *model.AccountInput) (codeResult int, out model.AccountOutput, err error)
 		GetAccountById(ctx context.Context, id string) (codeResult int, out model.AccountOutput, err error)
 		UpdateAccount(ctx context.Context, in *model.AccountInput, id string) (codeResult int, out model.AccountOutput, err error)
 		DeleteAccount(ctx context.Context, id string) (codeResult int, err error)

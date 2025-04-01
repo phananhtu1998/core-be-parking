@@ -29,6 +29,7 @@ func InitRouter() *gin.Engine {
 	roleAccountRouter := routers.RouterGroupApp.RoleAccount
 	licenseRouter := routers.RouterGroupApp.License
 	uploadRouter := routers.RouterGroupApp.Upload
+	userRouter := routers.RouterGroupApp.User
 	MainGroup := r.Group(consts.HOST_PREFIX)
 	{
 		MainGroup.GET("/ping", func(c *gin.Context) {
@@ -47,6 +48,7 @@ func InitRouter() *gin.Engine {
 		roleAccountRouter.InitRoleAccountsRouter(MainGroup)
 		licenseRouter.InitLicenseRouter(MainGroup)
 		uploadRouter.InitUploadRouter(MainGroup)
+		userRouter.InitUserRouter(MainGroup)
 	}
 	return r
 }
