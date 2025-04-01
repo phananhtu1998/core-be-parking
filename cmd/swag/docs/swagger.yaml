@@ -483,7 +483,7 @@ paths:
     post:
       consumes:
       - application/json
-      description: API này cho phép mới license
+      description: API tạo mới license cho gói chức năng
       parameters:
       - description: Thông tin License cần tạo
         in: body
@@ -509,7 +509,7 @@ paths:
       security:
       - BearerAuth: []
       - ApiKeyAuth: []
-      summary: Tạo mới license
+      summary: Tạo mới license cho gói chức năng
       tags:
       - License
   /menu/create_menu:

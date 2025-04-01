@@ -503,7 +503,7 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "API này cho phép mới license",
+                "description": "API tạo mới license cho gói chức năng",
                 "consumes": [
                     "application/json"
                 ],
@@ -513,7 +513,7 @@ const docTemplate = `{
                 "tags": [
                     "License"
                 ],
-                "summary": "Tạo mới license",
+                "summary": "Tạo mới license cho gói chức năng",
                 "parameters": [
                     {
                         "description": "Thông tin License cần tạo",

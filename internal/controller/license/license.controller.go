@@ -17,8 +17,8 @@ type cLicense struct {
 }
 
 // CreateLicense
-// @Summary      Tạo mới license
-// @Description  API này cho phép mới license
+// @Summary      Tạo mới license cho gói chức năng
+// @Description  API tạo mới license cho gói chức năng
 // @Tags         License
 // @Accept       json
 // @Produce      json
