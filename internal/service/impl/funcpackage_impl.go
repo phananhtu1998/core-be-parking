@@ -10,7 +10,6 @@ import (
 	"go-backend-api/internal/utils/cache"
 	"go-backend-api/pkg/response"
 	"log"
-	"strconv"
 	"time"
 
 	"github.com/google/uuid"
@@ -92,17 +91,14 @@ func (s *sFuncpackage) CreateFuncPackage(ctx context.Context, in *model.Role) (c
 			return response.ErrCodeRoleError, model.Role{}, fmt.Errorf("failed to get total accounts: %w", err)
 		}
 		// Chuyển đổi RoleMaxNumber từ string sang int
-		maxNumber, err := strconv.Atoi(maxNumberParents.RoleMaxNumber)
-		if err != nil {
-			return response.ErrCodeRoleError, model.Role{}, fmt.Errorf("failed to convert RoleMaxNumber to integer: %w", err)
-		}
-		log.Printf("Type of totalAccounts.Totalaccount: %T, Value: %v", totalAccounts.Totalaccount, totalAccounts.Totalaccount)
-		if totalAccounts.Totalaccount.(int64) < int64(maxNumber) || totalAccounts.IsMax == 0 {
-			return response.ErrCodeRoleError, model.Role{}, fmt.Errorf("Func package maximum account number: %w", err)
-		}
+
 		// Đặt giá trị cho node mới
 		leftValue = parentRole.RoleRightValue
 		rightValue = parentRole.RoleRightValue + 1
+		log.Printf("Type of totalAccounts.Totalaccount: %T, Value: %v", totalAccounts.Totalaccount, totalAccounts.Totalaccount)
+		if totalAccounts.Totalaccount.(int64) < int64(maxNumberParents.RoleMaxNumber) {
+			return response.ErrCodeRoleError, model.Role{}, fmt.Errorf("Func package maximum account number: %w", err)
+		}
 	}
 
 	// Tạo role mới
@@ -112,7 +108,7 @@ func (s *sFuncpackage) CreateFuncPackage(ctx context.Context, in *model.Role) (c
 		RoleName:       in.Role_name,
 		RoleLeftValue:  leftValue,
 		RoleRightValue: rightValue,
-		RoleMaxNumber:  in.Role_max_number,
+		RoleMaxNumber:  int32(in.Role_max_number),
 		CreatedBy:      in.Created_by,
 	})
 	if err != nil {

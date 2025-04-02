@@ -27,7 +27,7 @@ type CreateRoleParams struct {
 	RoleName       string
 	RoleLeftValue  int32
 	RoleRightValue int32
-	RoleMaxNumber  string
+	RoleMaxNumber  int32
 	CreatedBy      string
 }
 
@@ -170,7 +170,7 @@ type GetAllRoleRow struct {
 	RoleName       string
 	RoleLeftValue  int32
 	RoleRightValue int32
-	RoleMaxNumber  string
+	RoleMaxNumber  int32
 	CreatedBy      string
 	CreateAt       time.Time
 	UpdateAt       time.Time
@@ -222,7 +222,7 @@ type GetChildRolesByParentIdRow struct {
 	RoleName       string
 	RoleLeftValue  int32
 	RoleRightValue int32
-	RoleMaxNumber  string
+	RoleMaxNumber  int32
 	CreatedBy      string
 	CreateAt       time.Time
 	UpdateAt       time.Time
@@ -304,7 +304,7 @@ type GetRoleByIdRow struct {
 	RoleName       string
 	RoleLeftValue  int32
 	RoleRightValue int32
-	RoleMaxNumber  string
+	RoleMaxNumber  int32
 	CreatedBy      string
 	CreateAt       time.Time
 	UpdateAt       time.Time
@@ -347,7 +347,7 @@ type GetRoleWithChildrenRow struct {
 	RoleName       string
 	RoleLeftValue  int32
 	RoleRightValue int32
-	RoleMaxNumber  string
+	RoleMaxNumber  int32
 	CreatedBy      string
 	CreateAt       time.Time
 	UpdateAt       time.Time
@@ -404,7 +404,7 @@ type GetRolesWithPaginationRow struct {
 	RoleName       string
 	RoleLeftValue  int32
 	RoleRightValue int32
-	RoleMaxNumber  string
+	RoleMaxNumber  int32
 	CreatedBy      string
 	CreateAt       time.Time
 	UpdateAt       time.Time
@@ -444,29 +444,14 @@ func (q *Queries) GetRolesWithPagination(ctx context.Context, arg GetRolesWithPa
 }
 
 const getTotalAccounts = `-- name: GetTotalAccounts :one
-SELECT 
-    SUM(CASE WHEN r.role_max_number REGEXP '^[0-9]+$' 
-             THEN CAST(r.role_max_number AS UNSIGNED) 
-             ELSE 0 
-        END) AS TotalAccount,
-    CASE 
-        WHEN COUNT(CASE WHEN r.role_max_number = 'MAX' THEN 1 END) > 0 THEN 1
-        ELSE 0
-    END AS is_max
-FROM ` + "`" + `role` + "`" + ` AS r
-WHERE r.created_by = ?
+SELECT SUM(role_max_number) as MaxNumberAccount FROM ` + "`" + `role` + "`" + ` WHERE created_by= ? AND is_deleted = false
 `
 
-type GetTotalAccountsRow struct {
-	Totalaccount interface{}
-	IsMax        int32
-}
-
-func (q *Queries) GetTotalAccounts(ctx context.Context, createdBy string) (GetTotalAccountsRow, error) {
+func (q *Queries) GetTotalAccounts(ctx context.Context, createdBy string) (interface{}, error) {
 	row := q.db.QueryRowContext(ctx, getTotalAccounts, createdBy)
-	var i GetTotalAccountsRow
-	err := row.Scan(&i.Totalaccount, &i.IsMax)
-	return i, err
+	var maxnumberaccount interface{}
+	err := row.Scan(&maxnumberaccount)
+	return maxnumberaccount, err
 }
 
 const getTotalRoles = `-- name: GetTotalRoles :one
@@ -530,7 +515,7 @@ type UpdateRoleParams struct {
 	RoleName       string
 	RoleLeftValue  int32
 	RoleRightValue int32
-	RoleMaxNumber  string
+	RoleMaxNumber  int32
 	CreatedBy      string
 	ID             string
 }

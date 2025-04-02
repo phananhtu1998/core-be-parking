@@ -1802,7 +1802,7 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "role_max_number": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "role_name": {
                     "type": "string"

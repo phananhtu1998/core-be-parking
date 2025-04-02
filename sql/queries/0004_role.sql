@@ -98,16 +98,6 @@ JOIN menu m ON m.id = rm.menu_id
 WHERE a.is_deleted = false AND r.is_deleted = false AND m.is_deleted = false AND a.id = ?;
 
 -- name: GetTotalAccounts :one
-SELECT 
-    SUM(CASE WHEN r.role_max_number REGEXP '^[0-9]+$' 
-             THEN CAST(r.role_max_number AS UNSIGNED) 
-             ELSE 0 
-        END) AS TotalAccount,
-    CASE 
-        WHEN COUNT(CASE WHEN r.role_max_number = 'MAX' THEN 1 END) > 0 THEN 1
-        ELSE 0
-    END AS is_max
-FROM `role` AS r
-WHERE r.created_by = ?;
+SELECT SUM(role_max_number) as MaxNumberAccount FROM `role` WHERE created_by= ? AND is_deleted = false;  
 
 

@@ -95,7 +95,7 @@ func (s *sRole) CreateRole(ctx context.Context, in *model.Role) (codeResult int,
 		RoleName:       in.Role_name,
 		RoleLeftValue:  leftValue,
 		RoleRightValue: rightValue,
-		RoleMaxNumber:  in.Role_max_number,
+		RoleMaxNumber:  int32(in.Role_left_value),
 		CreatedBy:      in.Created_by,
 	})
 	if err != nil {
@@ -354,7 +354,7 @@ func (s *sRole) CreateFuncPackage(ctx context.Context, in *model.Role) (codeResu
 		RoleName:       in.Role_name,
 		RoleLeftValue:  leftValue,
 		RoleRightValue: rightValue,
-		RoleMaxNumber:  in.Role_max_number,
+		RoleMaxNumber:  int32(in.Role_max_number),
 		CreatedBy:      in.Created_by,
 	})
 	if err != nil {

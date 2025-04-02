@@ -8,7 +8,7 @@ type Role struct {
 	Role_name        string    `json:"role_name"`
 	Role_left_value  int       `json:"role_left_value"`
 	Role_right_value int       `json:"role_right_value"`
-	Role_max_number  string    `json:"role_max_number"`
+	Role_max_number  int       `json:"role_max_number"`
 	Is_licensed      bool      `json:"is_licensed"`
 	Created_by       string    `json:"created_by"`
 	Is_deleted       bool      `json:"is_deleted"`
