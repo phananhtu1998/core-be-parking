@@ -34,7 +34,7 @@ INSERT INTO ` + "`" + `role` + "`" + ` (
   id, code, role_name, role_left_value, role_right_value, 
   role_max_number, created_by, create_at, update_at
 ) VALUES (
-  'eb6d9850-2b77-47fc-ae2a-0a0ba9842280', 'ADMIN', 'ADMIN', 1, 2, 'MAX', '', NOW(), NOW()
+  'eb6d9850-2b77-47fc-ae2a-0a0ba9842280', 'ADMIN', 'ADMIN', 1, 2, 999999999, '', NOW(), NOW()
 )
 `
 

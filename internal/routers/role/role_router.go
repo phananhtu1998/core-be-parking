@@ -1,7 +1,6 @@
 package role
 
 import (
-	"go-backend-api/global"
 	"go-backend-api/internal/controller/role"
 	"go-backend-api/internal/middlewares"
 
@@ -15,7 +14,7 @@ func (ar *RoleRouter) InitRoleRouter(Router *gin.RouterGroup) {
 	roleRouterPrivate.Use(middlewares.AuthenMiddleware())
 	roleRouterPrivate.Use(middlewares.RateLimiterPrivateMiddlewareRedis())
 	roleRouterPrivate.Use(middlewares.LicenseMiddleware())
-	roleRouterPrivate.Use(middlewares.PermissionMiddleware(global.Enforcer))
+	//roleRouterPrivate.Use(middlewares.PermissionMiddleware(global.Enforcer))
 	{
 		roleRouterPrivate.POST("/create_role", role.Roles.CreateRole)
 		roleRouterPrivate.GET("/get_all_roles", role.Roles.GetAllRoles)
