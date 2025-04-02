@@ -56,17 +56,7 @@ func (s *sFuncpackage) CreateFuncPackage(ctx context.Context, in *model.Role) (c
 	if err != nil {
 		return response.ErrCodeRoleError, model.Role{}, fmt.Errorf("parent role not found: %w", err)
 	}
-	// Cập nhật right values
-	err = s.r.UpdateRightValuesForInsert(ctx, parentRole.RoleRightValue)
-	if err != nil {
-		return response.ErrCodeRoleError, model.Role{}, fmt.Errorf("failed to update right values: %w", err)
-	}
 
-	// Cập nhật left values
-	err = s.r.UpdateLeftValuesForInsert(ctx, parentRole.RoleRightValue)
-	if err != nil {
-		return response.ErrCodeRoleError, model.Role{}, fmt.Errorf("failed to update left values: %w", err)
-	}
 	// Lấy giá trị role max number của tài khoản hiện tại
 	rolemaxnumber, err := s.r.GetRoleById(ctx, RoleId.RoleID)
 	if err != nil {
@@ -91,8 +81,22 @@ func (s *sFuncpackage) CreateFuncPackage(ctx context.Context, in *model.Role) (c
 	if int64(rolemaxnumber.RoleMaxNumber) <= (summaxnumberInt64 + 1 + int64(in.Role_max_number) + accountCreated) {
 		return response.ErrCodeRoleError, model.Role{}, fmt.Errorf("Số lượng tài khoản tạo đã vượt quá số lượng quy định")
 	}
+
+	// Cập nhật right values
+	err = s.r.UpdateRightValuesForInsert(ctx, parentRole.RoleRightValue)
+	if err != nil {
+		return response.ErrCodeRoleError, model.Role{}, fmt.Errorf("failed to update right values: %w", err)
+	}
+
+	// Cập nhật left values
+	err = s.r.UpdateLeftValuesForInsert(ctx, parentRole.RoleRightValue)
+	if err != nil {
+		return response.ErrCodeRoleError, model.Role{}, fmt.Errorf("failed to update left values: %w", err)
+	}
+
 	leftValue = parentRole.RoleRightValue
 	rightValue = parentRole.RoleRightValue + 1
+
 	// Tạo role mới
 	_, err = s.r.CreateRole(ctx, database.CreateRoleParams{
 		ID:             newID,
