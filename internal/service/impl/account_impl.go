@@ -61,19 +61,19 @@ func (s *sAccount) CreateAccount(ctx context.Context, in *model.AccountInput) (c
 		return response.ErrCodeUserHasExists, model.AccountOutput{}, fmt.Errorf("Username has already registered")
 	}
 	// Lấy số lượng tài khoản đã tạo theo role
-	countRoleId, err := s.r.CheckCountRoleId(ctx, in.RoleId)
-	if err != nil {
-		return response.ErrCodeRoleNotFound, model.AccountOutput{}, err
-	}
-	//Lấy số lượng tài khoản theo role được phép tạo
-	countmaxrole, err := s.r.GetRoleById(ctx, in.RoleId)
-	if err != nil {
-		return response.ErrCodeRoleNotFound, model.AccountOutput{}, err
-	}
+	// countRoleId, err := s.r.CheckCountRoleId(ctx, in.RoleId)
+	// if err != nil {
+	// 	return response.ErrCodeRoleNotFound, model.AccountOutput{}, err
+	// }
+	// //Lấy số lượng tài khoản theo role được phép tạo
+	// countmaxrole, err := s.r.GetRoleById(ctx, in.RoleId)
+	// if err != nil {
+	// 	return response.ErrCodeRoleNotFound, model.AccountOutput{}, err
+	// }
 	// Kiểm tra số lượng tài khoản đã tạo theo role có lớn hơn số lượng tài khoản được phép tạo hay không
-	if countRoleId >= countmaxrole.RoleMaxNumber {
-		return response.ErrCodeRoleAccountMaxNumber, model.AccountOutput{}, fmt.Errorf("Role đã đạt số lượng tài khoản tối đa")
-	}
+	// if countRoleId >= countmaxrole.RoleMaxNumber {
+	// 	return response.ErrCodeRoleAccountMaxNumber, model.AccountOutput{}, fmt.Errorf("Role đã đạt số lượng tài khoản tối đa")
+	// }
 	// TODO: hash Password
 	accountBase := database.Account{}
 	userSalt, err := crypto.GenerateSalt(16)
@@ -214,4 +214,3 @@ func (s *sAccount) GetAllAccount(ctx context.Context) (codeResult int, out []mod
 	log.Println("Successfully fetched accounts:", len(out))
 	return response.ErrCodeSucces, out, nil
 }
-

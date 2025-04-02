@@ -1796,7 +1796,7 @@
                     "type": "integer"
                 },
                 "role_max_number": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "role_name": {
                     "type": "string"

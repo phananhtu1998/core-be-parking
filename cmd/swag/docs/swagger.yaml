@@ -111,7 +111,7 @@ definitions:
       role_left_value:
         type: integer
       role_max_number:
-        type: integer
+        type: string
       role_name:
         type: string
       role_right_value:

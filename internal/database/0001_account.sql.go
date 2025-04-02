@@ -195,7 +195,7 @@ func (q *Queries) GetAllAccounts(ctx context.Context) ([]GetAllAccountsRow, erro
 }
 
 const getLicenseByAccountId = `-- name: GetLicenseByAccountId :one
-SELECT a.id,r.role_name,r.is_licensed,l.license
+SELECT a.id,r.role_name,l.license
 FROM account as a
 JOIN role_account ra ON a.id = ra.account_id
 JOIN role r ON ra.role_id = r.id
@@ -204,21 +204,15 @@ WHERE a.id = ? AND a.is_deleted = false AND ra.is_deleted = false AND r.is_delet
 `
 
 type GetLicenseByAccountIdRow struct {
-	ID         string
-	RoleName   string
-	IsLicensed bool
-	License    string
+	ID       string
+	RoleName string
+	License  string
 }
 
 func (q *Queries) GetLicenseByAccountId(ctx context.Context, id string) (GetLicenseByAccountIdRow, error) {
 	row := q.db.QueryRowContext(ctx, getLicenseByAccountId, id)
 	var i GetLicenseByAccountIdRow
-	err := row.Scan(
-		&i.ID,
-		&i.RoleName,
-		&i.IsLicensed,
-		&i.License,
-	)
+	err := row.Scan(&i.ID, &i.RoleName, &i.License)
 	return i, err
 }
 

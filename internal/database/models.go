@@ -68,8 +68,7 @@ type Role struct {
 	RoleName       string
 	RoleLeftValue  int32
 	RoleRightValue int32
-	RoleMaxNumber  int64
-	IsLicensed     bool
+	RoleMaxNumber  string
 	CreatedBy      string
 	IsDeleted      bool
 	CreateAt       time.Time

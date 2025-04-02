@@ -71,7 +71,7 @@ WHERE username = ?;
 SELECT COUNT(*) FROM `account`;
 
 -- name: GetLicenseByAccountId :one
-SELECT a.id,r.role_name,r.is_licensed,l.license
+SELECT a.id,r.role_name,l.license
 FROM account as a
 JOIN role_account ra ON a.id = ra.account_id
 JOIN role r ON ra.role_id = r.id

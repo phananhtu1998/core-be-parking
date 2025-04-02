@@ -13,8 +13,7 @@ func ConvertToModelRole(dbRole database.GetAllRoleRow) model.Role {
 		Role_name:        dbRole.RoleName,
 		Role_left_value:  int(dbRole.RoleLeftValue),
 		Role_right_value: int(dbRole.RoleRightValue),
-		Role_max_number:  int(dbRole.RoleMaxNumber),
-		Is_licensed:      dbRole.IsLicensed,
+		Role_max_number:  dbRole.RoleMaxNumber,
 		Created_by:       dbRole.CreatedBy,
 		Created_at:       dbRole.CreateAt,
 	}

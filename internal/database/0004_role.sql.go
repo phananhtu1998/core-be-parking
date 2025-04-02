@@ -15,9 +15,9 @@ import (
 const createRole = `-- name: CreateRole :execresult
 INSERT INTO ` + "`" + `role` + "`" + ` (
   id, code, role_name, role_left_value, role_right_value, 
-  role_max_number, is_licensed, created_by, create_at, update_at
+  role_max_number, created_by, create_at, update_at
 ) VALUES (
-  ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW()
+  ?, ?, ?, ?, ?, ?, ?, NOW(), NOW()
 )
 `
 
@@ -27,8 +27,7 @@ type CreateRoleParams struct {
 	RoleName       string
 	RoleLeftValue  int32
 	RoleRightValue int32
-	RoleMaxNumber  int64
-	IsLicensed     bool
+	RoleMaxNumber  string
 	CreatedBy      string
 }
 
@@ -40,7 +39,6 @@ func (q *Queries) CreateRole(ctx context.Context, arg CreateRoleParams) (sql.Res
 		arg.RoleLeftValue,
 		arg.RoleRightValue,
 		arg.RoleMaxNumber,
-		arg.IsLicensed,
 		arg.CreatedBy,
 	)
 }
@@ -154,8 +152,7 @@ func (q *Queries) GetAllPermissionsByAccountId(ctx context.Context, id string) (
 }
 
 const getAllRole = `-- name: GetAllRole :many
-SELECT id, code, role_name, role_left_value, role_right_value, role_max_number,
-is_licensed, created_by, create_at, update_at
+SELECT id, code, role_name, role_left_value, role_right_value, role_max_number, created_by, create_at, update_at
 FROM ` + "`" + `role` + "`" + `
 WHERE is_deleted = false
 ORDER BY role_left_value DESC
@@ -173,8 +170,7 @@ type GetAllRoleRow struct {
 	RoleName       string
 	RoleLeftValue  int32
 	RoleRightValue int32
-	RoleMaxNumber  int64
-	IsLicensed     bool
+	RoleMaxNumber  string
 	CreatedBy      string
 	CreateAt       time.Time
 	UpdateAt       time.Time
@@ -196,7 +192,6 @@ func (q *Queries) GetAllRole(ctx context.Context, arg GetAllRoleParams) ([]GetAl
 			&i.RoleLeftValue,
 			&i.RoleRightValue,
 			&i.RoleMaxNumber,
-			&i.IsLicensed,
 			&i.CreatedBy,
 			&i.CreateAt,
 			&i.UpdateAt,
@@ -215,8 +210,7 @@ func (q *Queries) GetAllRole(ctx context.Context, arg GetAllRoleParams) ([]GetAl
 }
 
 const getChildRolesByParentId = `-- name: GetChildRolesByParentId :many
-SELECT id, code, role_name, role_left_value, role_right_value, role_max_number,
-is_licensed, created_by, create_at, update_at
+SELECT id, code, role_name, role_left_value, role_right_value, role_max_number, created_by, create_at, update_at
 FROM ` + "`" + `role` + "`" + `
 WHERE created_by = ? AND is_deleted = false
 ORDER BY role_left_value ASC
@@ -228,8 +222,7 @@ type GetChildRolesByParentIdRow struct {
 	RoleName       string
 	RoleLeftValue  int32
 	RoleRightValue int32
-	RoleMaxNumber  int64
-	IsLicensed     bool
+	RoleMaxNumber  string
 	CreatedBy      string
 	CreateAt       time.Time
 	UpdateAt       time.Time
@@ -251,7 +244,6 @@ func (q *Queries) GetChildRolesByParentId(ctx context.Context, createdBy string)
 			&i.RoleLeftValue,
 			&i.RoleRightValue,
 			&i.RoleMaxNumber,
-			&i.IsLicensed,
 			&i.CreatedBy,
 			&i.CreateAt,
 			&i.UpdateAt,
@@ -301,8 +293,7 @@ func (q *Queries) GetParentRoleInfo(ctx context.Context, id string) (GetParentRo
 }
 
 const getRoleById = `-- name: GetRoleById :one
-SELECT id, code, role_name,role_left_value,role_right_value,role_max_number,
-is_licensed,created_by,create_at,update_at
+SELECT id, code, role_name,role_left_value,role_right_value,role_max_number,created_by,create_at,update_at
 FROM ` + "`" + `role` + "`" + `
 WHERE id = ? AND is_deleted = false
 `
@@ -313,8 +304,7 @@ type GetRoleByIdRow struct {
 	RoleName       string
 	RoleLeftValue  int32
 	RoleRightValue int32
-	RoleMaxNumber  int64
-	IsLicensed     bool
+	RoleMaxNumber  string
 	CreatedBy      string
 	CreateAt       time.Time
 	UpdateAt       time.Time
@@ -330,7 +320,6 @@ func (q *Queries) GetRoleById(ctx context.Context, id string) (GetRoleByIdRow, e
 		&i.RoleLeftValue,
 		&i.RoleRightValue,
 		&i.RoleMaxNumber,
-		&i.IsLicensed,
 		&i.CreatedBy,
 		&i.CreateAt,
 		&i.UpdateAt,
@@ -339,8 +328,7 @@ func (q *Queries) GetRoleById(ctx context.Context, id string) (GetRoleByIdRow, e
 }
 
 const getRoleWithChildren = `-- name: GetRoleWithChildren :many
-SELECT r.id, r.code, r.role_name, r.role_left_value, r.role_right_value, r.role_max_number,
-r.is_licensed, r.created_by, r.create_at, r.update_at
+SELECT r.id, r.code, r.role_name, r.role_left_value, r.role_right_value, r.role_max_number, r.created_by, r.create_at, r.update_at
 FROM ` + "`" + `role` + "`" + ` r
 WHERE r.role_left_value >= (SELECT r2.role_left_value FROM ` + "`" + `role` + "`" + ` r2 WHERE r2.id = ? AND r2.is_deleted = false)
 AND r.role_right_value <= (SELECT r3.role_right_value FROM ` + "`" + `role` + "`" + ` r3 WHERE r3.id = ? AND r3.is_deleted = false)
@@ -359,8 +347,7 @@ type GetRoleWithChildrenRow struct {
 	RoleName       string
 	RoleLeftValue  int32
 	RoleRightValue int32
-	RoleMaxNumber  int64
-	IsLicensed     bool
+	RoleMaxNumber  string
 	CreatedBy      string
 	CreateAt       time.Time
 	UpdateAt       time.Time
@@ -382,7 +369,6 @@ func (q *Queries) GetRoleWithChildren(ctx context.Context, arg GetRoleWithChildr
 			&i.RoleLeftValue,
 			&i.RoleRightValue,
 			&i.RoleMaxNumber,
-			&i.IsLicensed,
 			&i.CreatedBy,
 			&i.CreateAt,
 			&i.UpdateAt,
@@ -401,8 +387,7 @@ func (q *Queries) GetRoleWithChildren(ctx context.Context, arg GetRoleWithChildr
 }
 
 const getRolesWithPagination = `-- name: GetRolesWithPagination :many
-SELECT id, code, role_name, role_left_value, role_right_value, role_max_number,
-is_licensed, created_by, create_at, update_at
+SELECT id, code, role_name, role_left_value, role_right_value, role_max_number, created_by, create_at, update_at
 FROM ` + "`" + `role` + "`" + `
 WHERE is_deleted = false
 ORDER BY role_left_value ASC LIMIT ? OFFSET ?
@@ -419,8 +404,7 @@ type GetRolesWithPaginationRow struct {
 	RoleName       string
 	RoleLeftValue  int32
 	RoleRightValue int32
-	RoleMaxNumber  int64
-	IsLicensed     bool
+	RoleMaxNumber  string
 	CreatedBy      string
 	CreateAt       time.Time
 	UpdateAt       time.Time
@@ -442,7 +426,6 @@ func (q *Queries) GetRolesWithPagination(ctx context.Context, arg GetRolesWithPa
 			&i.RoleLeftValue,
 			&i.RoleRightValue,
 			&i.RoleMaxNumber,
-			&i.IsLicensed,
 			&i.CreatedBy,
 			&i.CreateAt,
 			&i.UpdateAt,
@@ -458,6 +441,32 @@ func (q *Queries) GetRolesWithPagination(ctx context.Context, arg GetRolesWithPa
 		return nil, err
 	}
 	return items, nil
+}
+
+const getTotalAccounts = `-- name: GetTotalAccounts :one
+SELECT 
+    SUM(CASE WHEN r.role_max_number REGEXP '^[0-9]+$' 
+             THEN CAST(r.role_max_number AS UNSIGNED) 
+             ELSE 0 
+        END) AS TotalAccount,
+    CASE 
+        WHEN COUNT(CASE WHEN r.role_max_number = 'MAX' THEN 1 END) > 0 THEN 1
+        ELSE 0
+    END AS is_max
+FROM ` + "`" + `role` + "`" + ` AS r
+WHERE r.created_by = ?
+`
+
+type GetTotalAccountsRow struct {
+	Totalaccount interface{}
+	IsMax        int32
+}
+
+func (q *Queries) GetTotalAccounts(ctx context.Context, createdBy string) (GetTotalAccountsRow, error) {
+	row := q.db.QueryRowContext(ctx, getTotalAccounts, createdBy)
+	var i GetTotalAccountsRow
+	err := row.Scan(&i.Totalaccount, &i.IsMax)
+	return i, err
 }
 
 const getTotalRoles = `-- name: GetTotalRoles :one
@@ -512,8 +521,7 @@ func (q *Queries) UpdateRightValuesForInsert(ctx context.Context, roleRightValue
 
 const updateRole = `-- name: UpdateRole :exec
 UPDATE ` + "`" + `role` + "`" + `
-SET code = ?, role_name = ?,role_left_value = ?,role_right_value = ?,role_max_number = ?,
-is_licensed = ?,created_by = ?,update_at = NOW()
+SET code = ?, role_name = ?,role_left_value = ?,role_right_value = ?,role_max_number = ?,created_by = ?,update_at = NOW()
 WHERE id = ?
 `
 
@@ -522,8 +530,7 @@ type UpdateRoleParams struct {
 	RoleName       string
 	RoleLeftValue  int32
 	RoleRightValue int32
-	RoleMaxNumber  int64
-	IsLicensed     bool
+	RoleMaxNumber  string
 	CreatedBy      string
 	ID             string
 }
@@ -535,7 +542,6 @@ func (q *Queries) UpdateRole(ctx context.Context, arg UpdateRoleParams) error {
 		arg.RoleLeftValue,
 		arg.RoleRightValue,
 		arg.RoleMaxNumber,
-		arg.IsLicensed,
 		arg.CreatedBy,
 		arg.ID,
 	)
