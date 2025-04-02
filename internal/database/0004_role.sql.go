@@ -14,7 +14,7 @@ import (
 
 const createRole = `-- name: CreateRole :execresult
 INSERT INTO ` + "`" + `role` + "`" + ` (
-  id, code, role_name, role_left_value, role_right_value, 
+  id, code, role_name, role_left_value, role_right_value,
   role_max_number, created_by, create_at, update_at
 ) VALUES (
   ?, ?, ?, ?, ?, ?, ?, NOW(), NOW()
@@ -57,6 +57,19 @@ type DeleteRoleParams struct {
 func (q *Queries) DeleteRole(ctx context.Context, arg DeleteRoleParams) error {
 	_, err := q.db.ExecContext(ctx, deleteRole, arg.UpdateAt, arg.ID)
 	return err
+}
+
+const getAccountCreated = `-- name: GetAccountCreated :one
+SELECT COUNT(*) 
+FROM ` + "`" + `role` + "`" + ` 
+WHERE created_by = ? AND is_deleted = false
+`
+
+func (q *Queries) GetAccountCreated(ctx context.Context, createdBy string) (int64, error) {
+	row := q.db.QueryRowContext(ctx, getAccountCreated, createdBy)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
 }
 
 const getAllPermissions = `-- name: GetAllPermissions :many
@@ -444,11 +457,20 @@ func (q *Queries) GetRolesWithPagination(ctx context.Context, arg GetRolesWithPa
 }
 
 const getTotalAccounts = `-- name: GetTotalAccounts :one
-SELECT SUM(role_max_number) as MaxNumberAccount FROM ` + "`" + `role` + "`" + ` WHERE created_by= ? AND is_deleted = false
+SELECT COALESCE(CAST(SUM(role_max_number) AS SIGNED), 0) AS MaxNumberAccount
+FROM ` + "`" + `role` + "`" + `
+WHERE (created_by = ? OR ? IS NULL OR ? = '')
+    AND is_deleted = false
 `
 
-func (q *Queries) GetTotalAccounts(ctx context.Context, createdBy string) (interface{}, error) {
-	row := q.db.QueryRowContext(ctx, getTotalAccounts, createdBy)
+type GetTotalAccountsParams struct {
+	CreatedBy string
+	Column2   interface{}
+	Column3   interface{}
+}
+
+func (q *Queries) GetTotalAccounts(ctx context.Context, arg GetTotalAccountsParams) (interface{}, error) {
+	row := q.db.QueryRowContext(ctx, getTotalAccounts, arg.CreatedBy, arg.Column2, arg.Column3)
 	var maxnumberaccount interface{}
 	err := row.Scan(&maxnumberaccount)
 	return maxnumberaccount, err
@@ -483,8 +505,8 @@ func (q *Queries) SoftDeleteRolesByRange(ctx context.Context, arg SoftDeleteRole
 }
 
 const updateLeftValuesForInsert = `-- name: UpdateLeftValuesForInsert :exec
-UPDATE ` + "`" + `role` + "`" + ` 
-SET role_left_value = role_left_value + 2 
+UPDATE ` + "`" + `role` + "`" + `
+SET role_left_value = role_left_value + 2
 WHERE role_left_value > ? AND is_deleted = false
 `
 
@@ -494,8 +516,8 @@ func (q *Queries) UpdateLeftValuesForInsert(ctx context.Context, roleLeftValue i
 }
 
 const updateRightValuesForInsert = `-- name: UpdateRightValuesForInsert :exec
-UPDATE ` + "`" + `role` + "`" + ` 
-SET role_right_value = role_right_value + 2 
+UPDATE ` + "`" + `role` + "`" + `
+SET role_right_value = role_right_value + 2
 WHERE role_right_value >= ? AND is_deleted = false
 `
 

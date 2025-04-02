@@ -31,18 +31,18 @@ SET is_deleted = true, update_at = ?
 WHERE id = ?;
 
 -- name: UpdateRightValuesForInsert :exec
-UPDATE `role` 
-SET role_right_value = role_right_value + 2 
+UPDATE `role`
+SET role_right_value = role_right_value + 2
 WHERE role_right_value >= ? AND is_deleted = false;
 
 -- name: UpdateLeftValuesForInsert :exec
-UPDATE `role` 
-SET role_left_value = role_left_value + 2 
+UPDATE `role`
+SET role_left_value = role_left_value + 2
 WHERE role_left_value > ? AND is_deleted = false;
 
 -- name: CreateRole :execresult
 INSERT INTO `role` (
-  id, code, role_name, role_left_value, role_right_value, 
+  id, code, role_name, role_left_value, role_right_value,
   role_max_number, created_by, create_at, update_at
 ) VALUES (
   ?, ?, ?, ?, ?, ?, ?, NOW(), NOW()
@@ -98,6 +98,13 @@ JOIN menu m ON m.id = rm.menu_id
 WHERE a.is_deleted = false AND r.is_deleted = false AND m.is_deleted = false AND a.id = ?;
 
 -- name: GetTotalAccounts :one
-SELECT SUM(role_max_number) as MaxNumberAccount FROM `role` WHERE created_by= ? AND is_deleted = false;  
+SELECT COALESCE(CAST(SUM(role_max_number) AS SIGNED), 0) AS MaxNumberAccount
+FROM `role`
+WHERE (created_by = ? OR ? IS NULL OR ? = '')
+    AND is_deleted = false;
 
+-- name: GetAccountCreated :one
+SELECT COUNT(*) 
+FROM `role` 
+WHERE created_by = ? AND is_deleted = false;
 

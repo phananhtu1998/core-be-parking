@@ -41,66 +41,58 @@ func (s *sFuncpackage) CreateFuncPackage(ctx context.Context, in *model.Role) (c
 	subjectUUID := ctx.Value("subjectUUID")
 	println("subjectUUID account: ", subjectUUID)
 	var infoUser model.GetCacheToken
-	var role_id string
 	// Lấy Id tài khoản đang đăng nhập từ context
 	if err := cache.GetCache(ctx, subjectUUID.(string), &infoUser); err != nil {
 		return 0, out, err
 	}
 	// Nếu created_by trống, đây là node gốc
-	if in.Created_by == "" {
-		// Lấy giá trị right lớn nhất
-		maxRightValue, err := s.r.GetMaxRightValue(ctx)
-		if err != nil {
-			return response.ErrCodeRoleError, model.Role{}, fmt.Errorf("failed to get max right value: %w", err)
-		}
 
-		// Đặt node mới là root - Sửa phần này
-		maxRightValueInt64 := maxRightValue.(int64)
-		leftValue = int32(maxRightValueInt64) + 1
-		rightValue = int32(maxRightValueInt64) + 2
-	} else {
-		// Lấy thông tin của node cha
-		RoleId, err := s.r.GetOneRoleAccountByAccountId(ctx, infoUser.ID)
-		if err != nil {
-			return response.ErrCodeRoleError, model.Role{}, fmt.Errorf("role id not found: %w", err)
-		}
-		role_id = RoleId.RoleID
-		parentRole, err := s.r.GetParentRoleInfo(ctx, RoleId.RoleID)
-		if err != nil {
-			return response.ErrCodeRoleError, model.Role{}, fmt.Errorf("parent role not found: %w", err)
-		}
-		// Cập nhật right values
-		err = s.r.UpdateRightValuesForInsert(ctx, parentRole.RoleRightValue)
-		if err != nil {
-			return response.ErrCodeRoleError, model.Role{}, fmt.Errorf("failed to update right values: %w", err)
-		}
-
-		// Cập nhật left values
-		err = s.r.UpdateLeftValuesForInsert(ctx, parentRole.RoleRightValue)
-		if err != nil {
-			return response.ErrCodeRoleError, model.Role{}, fmt.Errorf("failed to update left values: %w", err)
-		}
-		// Lấy giá trị role max number của tài khoản hiện tại
-		rolemaxnumber, err := s.r.GetRoleById(ctx, RoleId.RoleID)
-		if err != nil {
-			return response.ErrCodeRoleError, model.Role{}, fmt.Errorf("failed to get role max number: %w", err)
-		}
-		log.Println("rolemaxnumber: ", rolemaxnumber.RoleMaxNumber)
-		// Lấy tổng giá trị mà được phép tạo của tài khoản hiện tại
-		log.Println("infoUser: ", infoUser.ID)
-		summaxnumber, err := s.r.GetTotalAccounts(ctx, infoUser.ID)
-		if err != nil {
-			return response.ErrCodeRoleError, model.Role{}, fmt.Errorf("failed to get total accounts: %w", err)
-		}
-		if summaxnumber.(int64) < int64(rolemaxnumber.RoleMaxNumber) {
-			return response.ErrCodeRoleError, model.Role{}, fmt.Errorf("failed to get total accounts: %w", err)
-		}
-		// log.Println("summaxnumber: ", summaxnumber)
-		// Đặt giá trị cho node mới
-		leftValue = parentRole.RoleRightValue
-		rightValue = parentRole.RoleRightValue + 1
+	// Lấy thông tin của node cha
+	RoleId, err := s.r.GetOneRoleAccountByAccountId(ctx, infoUser.ID)
+	if err != nil {
+		return response.ErrCodeRoleError, model.Role{}, fmt.Errorf("role id not found: %w", err)
+	}
+	parentRole, err := s.r.GetParentRoleInfo(ctx, RoleId.RoleID)
+	if err != nil {
+		return response.ErrCodeRoleError, model.Role{}, fmt.Errorf("parent role not found: %w", err)
+	}
+	// Cập nhật right values
+	err = s.r.UpdateRightValuesForInsert(ctx, parentRole.RoleRightValue)
+	if err != nil {
+		return response.ErrCodeRoleError, model.Role{}, fmt.Errorf("failed to update right values: %w", err)
 	}
 
+	// Cập nhật left values
+	err = s.r.UpdateLeftValuesForInsert(ctx, parentRole.RoleRightValue)
+	if err != nil {
+		return response.ErrCodeRoleError, model.Role{}, fmt.Errorf("failed to update left values: %w", err)
+	}
+	// Lấy giá trị role max number của tài khoản hiện tại
+	rolemaxnumber, err := s.r.GetRoleById(ctx, RoleId.RoleID)
+	if err != nil {
+		return response.ErrCodeRoleError, model.Role{}, fmt.Errorf("failed to get role max number: %w", err)
+	}
+	log.Println("RoleId: ", RoleId.RoleID)
+	log.Println("rolemaxnumber: ", rolemaxnumber.RoleMaxNumber)
+	// Lấy tổng giá trị mà được phép tạo của tài khoản hiện tại
+	log.Println("infoUser: ", infoUser.ID)
+	summaxnumber, err := s.r.GetTotalAccounts(ctx, database.GetTotalAccountsParams{
+		CreatedBy: infoUser.ID,
+		Column2:   infoUser.ID,
+		Column3:   infoUser.ID,
+	})
+	if err != nil {
+		return response.ErrCodeRoleError, model.Role{}, fmt.Errorf("Lỗi khi lấy tổng số tài khoản được phép tạo: %w", err)
+	}
+	summaxnumberInt64 := summaxnumber.(int64)
+	log.Println("Tổng:", summaxnumberInt64+1+int64(in.Role_max_number))
+	accountCreated, err := s.r.GetAccountCreated(ctx, infoUser.ID)
+	log.Println("accountCreated: ", accountCreated)
+	if int64(rolemaxnumber.RoleMaxNumber) <= (summaxnumberInt64 + 1 + int64(in.Role_max_number) + accountCreated) {
+		return response.ErrCodeRoleError, model.Role{}, fmt.Errorf("Số lượng tài khoản tạo đã vượt quá số lượng quy định")
+	}
+	leftValue = parentRole.RoleRightValue
+	rightValue = parentRole.RoleRightValue + 1
 	// Tạo role mới
 	_, err = s.r.CreateRole(ctx, database.CreateRoleParams{
 		ID:             newID,
@@ -109,7 +101,7 @@ func (s *sFuncpackage) CreateFuncPackage(ctx context.Context, in *model.Role) (c
 		RoleLeftValue:  leftValue,
 		RoleRightValue: rightValue,
 		RoleMaxNumber:  int32(in.Role_max_number),
-		CreatedBy:      role_id,
+		CreatedBy:      infoUser.ID,
 	})
 	if err != nil {
 		return response.ErrCodeRoleError, model.Role{}, fmt.Errorf("failed to create role: %w", err)
