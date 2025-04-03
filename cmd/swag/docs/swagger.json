@@ -18,7 +18,7 @@
     "host": "localhost:8002",
     "basePath": "/v1/2025",
     "paths": {
-        "/admin/create_account": {
+        "/account/create_account": {
             "post": {
                 "security": [
                     {
@@ -72,7 +72,7 @@
                 }
             }
         },
-        "/admin/delete_account/{id}": {
+        "/account/delete_account/{id}": {
             "delete": {
                 "security": [
                     {
@@ -124,7 +124,7 @@
                 }
             }
         },
-        "/admin/get_account_by_id/{id}": {
+        "/account/get_account_by_id/{id}": {
             "get": {
                 "security": [
                     {
@@ -170,7 +170,7 @@
                 }
             }
         },
-        "/admin/get_all_account": {
+        "/account/get_all_account": {
             "get": {
                 "security": [
                     {
@@ -207,7 +207,7 @@
                 }
             }
         },
-        "/admin/update_account/{id}": {
+        "/account/update_account/{id}": {
             "put": {
                 "security": [
                     {

@@ -561,6 +561,22 @@ func (q *Queries) UpdateLeftValuesForInsert(ctx context.Context, roleLeftValue i
 	return err
 }
 
+const updateLicenseByRoleId = `-- name: UpdateLicenseByRoleId :exec
+UPDATE ` + "`" + `role` + "`" + `
+SET license_id = ?
+WHERE id = ? AND is_deleted = false
+`
+
+type UpdateLicenseByRoleIdParams struct {
+	LicenseID string
+	ID        string
+}
+
+func (q *Queries) UpdateLicenseByRoleId(ctx context.Context, arg UpdateLicenseByRoleIdParams) error {
+	_, err := q.db.ExecContext(ctx, updateLicenseByRoleId, arg.LicenseID, arg.ID)
+	return err
+}
+
 const updateRightValuesForInsert = `-- name: UpdateRightValuesForInsert :exec
 UPDATE ` + "`" + `role` + "`" + `
 SET role_right_value = role_right_value + 2

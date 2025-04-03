@@ -114,3 +114,8 @@ FROM `role`
 WHERE is_deleted = false AND created_by = ? 
 ORDER BY role_left_value DESC;
 
+
+-- name: UpdateLicenseByRoleId :exec
+UPDATE `role`
+SET license_id = ?
+WHERE id = ? AND is_deleted = false;

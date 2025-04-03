@@ -21,7 +21,7 @@ func InitServiceInterface() {
 	service.InitRoleItem(impl.NewRoleImpl(queries, tx, global.Mdbc))
 	service.InitRolesMenuItem(impl.NewRolesMenuImpl(queries, tx, global.Mdbc))
 	service.InitRoleAccountItem(impl.NewRoleAccountImpl(queries, tx, global.Mdbc))
-	service.InitLicenseItem(impl.NewLicenseImpl(queries))
+	service.InitLicenseItem(impl.NewLicenseImpl(queries, tx, global.Mdbc))
 	service.InitUploadItem(impl.NewUploadImpl())
 	service.InitFuncpackageItem(impl.NewFuncpackageImpl(queries, tx, global.Mdbc))
 }

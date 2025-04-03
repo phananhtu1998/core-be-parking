@@ -26,7 +26,7 @@ type cAccount struct {
 // @Security     ApiKeyAuth
 // @Success      200  {object}  response.ResponseData
 // @Failure      500  {object}  response.ErrorResponseData
-// @Router       /admin/get_all_account [GET]
+// @Router       /account/get_all_account [GET]
 func (ac *cAccount) GetAllAccount(ctx *gin.Context) {
 	code, accounts, err := service.AccountItem().GetAllAccount(ctx)
 	if err != nil {
@@ -48,7 +48,7 @@ func (ac *cAccount) GetAllAccount(ctx *gin.Context) {
 // @Param        id   path   string  true  "ID tài khoản cần lấy"
 // @Success      200  {object}  response.ResponseData
 // @Failure      500  {object}  response.ErrorResponseData
-// @Router       /admin/get_account_by_id/{id} [GET]
+// @Router       /account/get_account_by_id/{id} [GET]
 func (ac *cAccount) GetAccountById(ctx *gin.Context) {
 	id := ctx.Param("id") // Lấy ID từ request
 	code, account, err := service.AccountItem().GetAccountById(ctx, id)
@@ -74,7 +74,7 @@ func (ac *cAccount) GetAccountById(ctx *gin.Context) {
 // @Success      200  {object}  response.ResponseData
 // @Failure      400  {object}  response.ErrorResponseData
 // @Failure      500  {object}  response.ErrorResponseData
-// @Router       /admin/update_account/{id} [PUT]
+// @Router       /account/update_account/{id} [PUT]
 func (ac *cAccount) UpdateAccount(ctx *gin.Context) {
 	id := ctx.Param("id")
 	var modelAccount model.AccountInput
@@ -103,7 +103,7 @@ func (ac *cAccount) UpdateAccount(ctx *gin.Context) {
 // @Success      200  {object}  response.ResponseData
 // @Failure      400  {object}  response.ErrorResponseData
 // @Failure      500  {object}  response.ErrorResponseData
-// @Router       /admin/delete_account/{id} [DELETE]
+// @Router       /account/delete_account/{id} [DELETE]
 func (ac *cAccount) DeleteAccount(ctx *gin.Context) {
 	id := ctx.Param("id")
 	codeResult, err := service.AccountItem().DeleteAccount(ctx, id)
@@ -127,7 +127,7 @@ func (ac *cAccount) DeleteAccount(ctx *gin.Context) {
 // @Success      200   {object}  response.ResponseData
 // @Failure      400   {object}  response.ErrorResponseData
 // @Failure      500   {object}  response.ErrorResponseData
-// @Router       /admin/create_account [POST]
+// @Router       /account/create_account [POST]
 func (ac *cAccount) CreateAccount(ctx *gin.Context) {
 	var params model.AccountInput
 	//  Lấy role account của tài khoản đang tạo

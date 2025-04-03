@@ -24,7 +24,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/admin/create_account": {
+        "/account/create_account": {
             "post": {
                 "security": [
                     {
@@ -78,7 +78,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/admin/delete_account/{id}": {
+        "/account/delete_account/{id}": {
             "delete": {
                 "security": [
                     {
@@ -130,7 +130,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/admin/get_account_by_id/{id}": {
+        "/account/get_account_by_id/{id}": {
             "get": {
                 "security": [
                     {
@@ -176,7 +176,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/admin/get_all_account": {
+        "/account/get_all_account": {
             "get": {
                 "security": [
                     {
@@ -213,7 +213,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/admin/update_account/{id}": {
+        "/account/update_account/{id}": {
             "put": {
                 "security": [
                     {

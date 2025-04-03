@@ -159,7 +159,7 @@ info:
   title: API DOCUMENTATION PARKING BACKEND
   version: 1.0.0
 paths:
-  /admin/create_account:
+  /account/create_account:
     post:
       consumes:
       - application/json
@@ -192,7 +192,7 @@ paths:
       summary: Tạo tài khoản mới
       tags:
       - Account
-  /admin/delete_account/{id}:
+  /account/delete_account/{id}:
     delete:
       consumes:
       - application/json
@@ -224,7 +224,7 @@ paths:
       summary: Xóa tài khoản
       tags:
       - Account
-  /admin/get_account_by_id/{id}:
+  /account/get_account_by_id/{id}:
     get:
       consumes:
       - application/json
@@ -252,7 +252,7 @@ paths:
       summary: Lấy tài khoản theo ID
       tags:
       - Account
-  /admin/get_all_account:
+  /account/get_all_account:
     get:
       consumes:
       - application/json
@@ -274,7 +274,7 @@ paths:
       summary: Lấy danh sách tất cả tài khoản
       tags:
       - Account
-  /admin/update_account/{id}:
+  /account/update_account/{id}:
     put:
       consumes:
       - application/json
