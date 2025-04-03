@@ -44,7 +44,7 @@ func LicenseMiddleware() gin.HandlerFunc {
 			log.Println("Missing 'dateend' field in token")
 			c.AbortWithStatusJSON(401, gin.H{
 				"code":    response.ErrUnauthorized,
-				"message": "Missing expiration date",
+				"message": "Key đã hết hạn vui lòng gia hạn lại key!",
 			})
 			return
 		}
