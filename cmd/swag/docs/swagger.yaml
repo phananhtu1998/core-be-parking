@@ -62,10 +62,10 @@ definitions:
   model.LoginInput:
     properties:
       password:
-        example: "123"
+        example: thaco@1234
         type: string
       username:
-        example: phananhtu1998
+        example: Admin
         type: string
     required:
     - password

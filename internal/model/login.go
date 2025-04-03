@@ -1,8 +1,8 @@
 package model
 
 type LoginInput struct {
-	Username string `json:"username" binding:"required" example:"phananhtu1998"`
-	Password string `json:"password" binding:"required" example:"123"`
+	Username string `json:"username" binding:"required" example:"Admin"`
+	Password string `json:"password" binding:"required" example:"thaco@1234"`
 }
 
 type LoginOutput struct {

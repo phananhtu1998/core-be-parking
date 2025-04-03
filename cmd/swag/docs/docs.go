@@ -1274,11 +1274,11 @@ const docTemplate = `{
             "properties": {
                 "password": {
                     "type": "string",
-                    "example": "123"
+                    "example": "thaco@1234"
                 },
                 "username": {
                     "type": "string",
-                    "example": "phananhtu1998"
+                    "example": "Admin"
                 }
             }
         },
