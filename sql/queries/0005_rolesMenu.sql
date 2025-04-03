@@ -8,6 +8,11 @@ SELECT id, menu_id, role_id, list_method
 FROM `roles_menu`
 WHERE role_id = ? AND is_deleted = false;
 
+-- name: GetRolesMenuByID :many
+SELECT id, menu_id, role_id, list_method
+FROM `roles_menu`
+WHERE id = ? AND is_deleted = false;
+
 -- name: CreateRolesMenu :exec
 INSERT INTO `roles_menu` (id, menu_id, role_id, list_method, is_deleted, create_at, update_at)
 VALUES (?, ?, ?, ?, false, NOW(), NOW());

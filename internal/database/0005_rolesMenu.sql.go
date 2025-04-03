@@ -160,6 +160,47 @@ func (q *Queries) GetRoleMenuByRoleId(ctx context.Context, arg GetRoleMenuByRole
 	return items, nil
 }
 
+const getRolesMenuByID = `-- name: GetRolesMenuByID :many
+SELECT id, menu_id, role_id, list_method
+FROM ` + "`" + `roles_menu` + "`" + `
+WHERE id = ? AND is_deleted = false
+`
+
+type GetRolesMenuByIDRow struct {
+	ID         string
+	MenuID     string
+	RoleID     string
+	ListMethod json.RawMessage
+}
+
+func (q *Queries) GetRolesMenuByID(ctx context.Context, id string) ([]GetRolesMenuByIDRow, error) {
+	rows, err := q.db.QueryContext(ctx, getRolesMenuByID, id)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []GetRolesMenuByIDRow
+	for rows.Next() {
+		var i GetRolesMenuByIDRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.MenuID,
+			&i.RoleID,
+			&i.ListMethod,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getRolesMenuByRoleId = `-- name: GetRolesMenuByRoleId :many
 SELECT id, menu_id, role_id, list_method
 FROM ` + "`" + `roles_menu` + "`" + `

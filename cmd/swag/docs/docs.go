@@ -534,7 +534,7 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "Api tạo Funcpackage menu cho hệ thống",
+                "description": "Api tạo gói chức năng menu cho hệ thống",
                 "consumes": [
                     "application/json"
                 ],
@@ -544,7 +544,7 @@ const docTemplate = `{
                 "tags": [
                     "FuncPackageMenu"
                 ],
-                "summary": "Tạo Funcpackage menu",
+                "summary": "Tạo gói chức năng menu",
                 "parameters": [
                     {
                         "description": "Funcpackage menu mapping details",
@@ -582,7 +582,7 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "Api tạo nhiều menu theo Funcpackage cho hệ thống",
+                "description": "Api tạo nhiều menu theo gói chức năng cho hệ thống",
                 "consumes": [
                     "application/json"
                 ],
@@ -592,7 +592,7 @@ const docTemplate = `{
                 "tags": [
                     "FuncPackageMenu"
                 ],
-                "summary": "Tạo nhiều menu theo Funcpackage",
+                "summary": "Tạo nhiều menu theo gói chức năng",
                 "parameters": [
                     {
                         "description": "Funcpackage menu mapping details",
@@ -633,7 +633,7 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "Api xóa Funcpackage menu",
+                "description": "Api xóa gói chức năng menu",
                 "consumes": [
                     "application/json"
                 ],
@@ -643,7 +643,7 @@ const docTemplate = `{
                 "tags": [
                     "FuncPackageMenu"
                 ],
-                "summary": "Xóa Funcpackage menu",
+                "summary": "Xóa gói chức năng menu",
                 "parameters": [
                     {
                         "type": "string",
@@ -685,7 +685,7 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "API này trả về role menu theo ID",
+                "description": "API này trả về gói chức năng menu theo ID",
                 "consumes": [
                     "application/json"
                 ],
@@ -695,7 +695,7 @@ const docTemplate = `{
                 "tags": [
                     "FuncPackageMenu"
                 ],
-                "summary": "Lấy role menu theo ID",
+                "summary": "Lấy gói chức năng menu theo ID",
                 "parameters": [
                     {
                         "type": "string",
@@ -737,7 +737,7 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "Api cập nhật phân quyền menu cho Funcpackage",
+                "description": "Api cập nhật phân quyền menu cho gói chức năng",
                 "consumes": [
                     "application/json"
                 ],
@@ -747,7 +747,7 @@ const docTemplate = `{
                 "tags": [
                     "FuncPackageMenu"
                 ],
-                "summary": "Cập nhật Funcpackage menu",
+                "summary": "Cập nhật gói chức năng menu",
                 "parameters": [
                     {
                         "type": "string",
