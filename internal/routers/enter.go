@@ -10,7 +10,6 @@ import (
 	roleaccount "go-backend-api/internal/routers/role_account"
 	rolesmenu "go-backend-api/internal/routers/roles_menu"
 	"go-backend-api/internal/routers/upload"
-	"go-backend-api/internal/routers/user"
 )
 
 type RouterGroup struct {
@@ -22,7 +21,6 @@ type RouterGroup struct {
 	RoleAccount roleaccount.RoleAccountsRouterGroup
 	License     license.LicenseRouterGroup
 	Upload      upload.UploadRouterGroup
-	User        user.UserRouterGroup
 	Funcpackage funcpackage.FuncpackageRouterGroup
 }
 

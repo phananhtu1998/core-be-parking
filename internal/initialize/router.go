@@ -29,7 +29,6 @@ func InitRouter() *gin.Engine {
 	roleAccountRouter := routers.RouterGroupApp.RoleAccount
 	licenseRouter := routers.RouterGroupApp.License
 	uploadRouter := routers.RouterGroupApp.Upload
-	userRouter := routers.RouterGroupApp.User
 	funcpackageRouter := routers.RouterGroupApp.Funcpackage
 	MainGroup := r.Group(consts.HOST_PREFIX)
 	{
@@ -49,7 +48,6 @@ func InitRouter() *gin.Engine {
 		roleAccountRouter.InitRoleAccountsRouter(MainGroup)
 		licenseRouter.InitLicenseRouter(MainGroup)
 		uploadRouter.InitUploadRouter(MainGroup)
-		userRouter.InitUserRouter(MainGroup)
 		funcpackageRouter.InitFuncpackageRouter(MainGroup)
 	}
 	return r
