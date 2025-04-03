@@ -518,6 +518,270 @@
                 }
             }
         },
+        "/funcpackagesmenu/create_funcpackage_menu": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Api tạo Funcpackage menu cho hệ thống",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "FuncPackageMenu"
+                ],
+                "summary": "Tạo Funcpackage menu",
+                "parameters": [
+                    {
+                        "description": "Funcpackage menu mapping details",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.RolesMenu"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResponseData"
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponseData"
+                        }
+                    }
+                }
+            }
+        },
+        "/funcpackagesmenu/create_funcpackage_menu_multiple": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Api tạo nhiều menu theo Funcpackage cho hệ thống",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "FuncPackageMenu"
+                ],
+                "summary": "Tạo nhiều menu theo Funcpackage",
+                "parameters": [
+                    {
+                        "description": "Funcpackage menu mapping details",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.RolesMenu"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResponseData"
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponseData"
+                        }
+                    }
+                }
+            }
+        },
+        "/funcpackagesmenu/delete_funcpackage_menu/{id}": {
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Api xóa Funcpackage menu",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "FuncPackageMenu"
+                ],
+                "summary": "Xóa Funcpackage menu",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID của Funcpackage menu",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResponseData"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponseData"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponseData"
+                        }
+                    }
+                }
+            }
+        },
+        "/funcpackagesmenu/get_funcpackage_menu_by_funcpackage_id/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "API này trả về role menu theo ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "FuncPackageMenu"
+                ],
+                "summary": "Lấy role menu theo ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID function package",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Từ khóa tìm kiếm",
+                        "name": "search",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResponseData"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponseData"
+                        }
+                    }
+                }
+            }
+        },
+        "/funcpackagesmenu/update_funcpackage_menu/{id}": {
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Api cập nhật phân quyền menu cho Funcpackage",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "FuncPackageMenu"
+                ],
+                "summary": "Cập nhật Funcpackage menu",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID của role menu",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Thông tin cần cập nhật",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.RolesMenu"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResponseData"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponseData"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponseData"
+                        }
+                    }
+                }
+            }
+        },
         "/license/create_license": {
             "post": {
                 "security": [
@@ -863,719 +1127,6 @@
                 }
             }
         },
-        "/role/create_role": {
-            "post": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    },
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "Api tạo vai trò trong hệ thống",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Role"
-                ],
-                "summary": "Tạo vai trò",
-                "parameters": [
-                    {
-                        "description": "payload",
-                        "name": "payload",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/model.Role"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.ResponseData"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrorResponseData"
-                        }
-                    }
-                }
-            }
-        },
-        "/role/delete_role/{id}": {
-            "delete": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    },
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "API xóa mềm role trong hệ thống",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Role"
-                ],
-                "summary": "Xóa role",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "ID của role cần xóa",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.ResponseData"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrorResponseData"
-                        }
-                    }
-                }
-            }
-        },
-        "/role/get_all_roles": {
-            "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    },
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "Api lấy danh sách role trong hệ thống",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Role"
-                ],
-                "summary": "Lấy danh sách role",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Số trang (mặc định: 1)",
-                        "name": "page",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "description": "Số lượng mỗi trang (mặc định: 20)",
-                        "name": "page_size",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.ResponseData"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrorResponseData"
-                        }
-                    }
-                }
-            }
-        },
-        "/role/get_role_by_id/{id}": {
-            "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    },
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "API này trả về role theo ID",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Role"
-                ],
-                "summary": "Lấy role theo ID",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "ID role cần lấy",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.ResponseData"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrorResponseData"
-                        }
-                    }
-                }
-            }
-        },
-        "/roleaccount/create_roles_account": {
-            "post": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    },
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "Api tạo role account cho hệ thống",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "RoleAccount"
-                ],
-                "summary": "Tạo role account",
-                "parameters": [
-                    {
-                        "description": "Role account mapping details",
-                        "name": "payload",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/model.RoleAccount"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.ResponseData"
-                        }
-                    },
-                    "500": {
-                        "description": "Server error",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrorResponseData"
-                        }
-                    }
-                }
-            }
-        },
-        "/roleaccount/delete_multiple_role_account": {
-            "delete": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    },
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "API này xóa danh sách Role Account dựa trên danh sách ID",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "RoleAccount"
-                ],
-                "summary": "Xóa nhiều Role Account",
-                "parameters": [
-                    {
-                        "description": "Danh sách ID cần xóa",
-                        "name": "ids",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.ResponseData"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrorResponseData"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrorResponseData"
-                        }
-                    }
-                }
-            }
-        },
-        "/roleaccount/get_role_account_by_account_id/{id}": {
-            "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    },
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "API này trả về role account theo Account_Id",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "RoleAccount"
-                ],
-                "summary": "Lấy role account theo Account_Id",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "ID account",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.ResponseData"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrorResponseData"
-                        }
-                    }
-                }
-            }
-        },
-        "/roleaccount/get_role_account_by_role_id/{id}": {
-            "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    },
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "API này trả về role account theo role_Id",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "RoleAccount"
-                ],
-                "summary": "Lấy role account theo Role_Id",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "ID role",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.ResponseData"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrorResponseData"
-                        }
-                    }
-                }
-            }
-        },
-        "/roleaccount/update_role_account/{id}": {
-            "put": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    },
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "API này cập nhật thông tin role account dựa trên ID",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "RoleAccount"
-                ],
-                "summary": "Cập nhật Role account",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "ID role account cần cập nhật",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "Dữ liệu cập nhật role account",
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/model.RoleAccount"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.ResponseData"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrorResponseData"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrorResponseData"
-                        }
-                    }
-                }
-            }
-        },
-        "/rolesmenu/create_roles_menu": {
-            "post": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    },
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "Api tạo role menu cho hệ thống",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "RolesMenu"
-                ],
-                "summary": "Tạo role menu",
-                "parameters": [
-                    {
-                        "description": "Role menu mapping details",
-                        "name": "payload",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/model.RolesMenu"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.ResponseData"
-                        }
-                    },
-                    "500": {
-                        "description": "Server error",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrorResponseData"
-                        }
-                    }
-                }
-            }
-        },
-        "/rolesmenu/create_roles_menu_multiple": {
-            "post": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    },
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "Api tạo nhiều menu theo role cho hệ thống",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "RolesMenu"
-                ],
-                "summary": "Tạo nhiều menu theo role",
-                "parameters": [
-                    {
-                        "description": "Role menu mapping details",
-                        "name": "payload",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/model.RolesMenu"
-                            }
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.ResponseData"
-                        }
-                    },
-                    "500": {
-                        "description": "Server error",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrorResponseData"
-                        }
-                    }
-                }
-            }
-        },
-        "/rolesmenu/delete_roles_menu/{id}": {
-            "delete": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    },
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "Api xóa role menu",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "RolesMenu"
-                ],
-                "summary": "Xóa role menu",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "ID của role menu",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.ResponseData"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrorResponseData"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrorResponseData"
-                        }
-                    }
-                }
-            }
-        },
-        "/rolesmenu/get_role_menu_by_role_id/{id}": {
-            "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    },
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "API này trả về role menu theo ID",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "RolesMenu"
-                ],
-                "summary": "Lấy role menu theo ID",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "ID role",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Từ khóa tìm kiếm",
-                        "name": "search",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.ResponseData"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrorResponseData"
-                        }
-                    }
-                }
-            }
-        },
-        "/rolesmenu/update_roles_menu/{id}": {
-            "put": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    },
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "Api cập nhật phân quyền menu cho role",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "RolesMenu"
-                ],
-                "summary": "Cập nhật role menu",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "ID của role menu",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "Thông tin cần cập nhật",
-                        "name": "payload",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/model.RolesMenu"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.ResponseData"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrorResponseData"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrorResponseData"
-                        }
-                    }
-                }
-            }
-        },
         "/upload/upload_file": {
             "post": {
                 "security": [
@@ -1765,65 +1316,6 @@
                 "menu_url": {
                     "type": "string",
                     "example": "/dashboard"
-                }
-            }
-        },
-        "model.Role": {
-            "type": "object",
-            "properties": {
-                "code": {
-                    "type": "string"
-                },
-                "created_at": {
-                    "type": "string"
-                },
-                "created_by": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "is_deleted": {
-                    "type": "boolean"
-                },
-                "is_licensed": {
-                    "type": "boolean"
-                },
-                "role_left_value": {
-                    "type": "integer"
-                },
-                "role_max_number": {
-                    "type": "integer"
-                },
-                "role_name": {
-                    "type": "string"
-                },
-                "role_right_value": {
-                    "type": "integer"
-                },
-                "updated_by": {
-                    "type": "string"
-                }
-            }
-        },
-        "model.RoleAccount": {
-            "type": "object",
-            "required": [
-                "account_id",
-                "role_id"
-            ],
-            "properties": {
-                "account_id": {
-                    "type": "string",
-                    "example": "b16fdfbc-da22-4ab2-b045-614677e536d6"
-                },
-                "license_id": {
-                    "type": "string",
-                    "example": "xxx-yyyy-zzz"
-                },
-                "role_id": {
-                    "type": "string",
-                    "example": "351ec27d-2134-4993-b120-b72a950f5574"
                 }
             }
         },

@@ -15,18 +15,18 @@ type cRolesMenu struct {
 	rolesMenuService service.IRolesMenu
 }
 
-// CreateRolesMenu
-// @Summary Tạo role menu
-// @Description Api tạo role menu cho hệ thống
-// @Tags RolesMenu
+// CreateFuncPackageMenu
+// @Summary Tạo Funcpackage menu
+// @Description Api tạo Funcpackage menu cho hệ thống
+// @Tags FuncPackageMenu
 // @Accept json
 // @Produce json
 // @Security BearerAuth
 // @Security     ApiKeyAuth
-// @Param payload body model.RolesMenu true "Role menu mapping details"
+// @Param payload body model.RolesMenu true "Funcpackage menu mapping details"
 // @Success 200 {object} response.ResponseData
 // @Failure 500 {object} response.ErrorResponseData "Server error"
-// @Router /rolesmenu/create_roles_menu [post]
+// @Router /funcpackagesmenu/create_funcpackage_menu [post]
 func (c *cRolesMenu) CreateRolesMenu(ctx *gin.Context) {
 	// Lấy dữ liệu từ request body
 	var params model.RolesMenu
@@ -35,7 +35,7 @@ func (c *cRolesMenu) CreateRolesMenu(ctx *gin.Context) {
 		return
 	}
 
-	// Gọi service để tạo roles menu
+	// Gọi service để tạo funcpackage menu
 	code, result, err := service.RolesMenuItem().CreateRolesMenu(ctx.Request.Context(), &params)
 	if err != nil {
 		response.ErrorResponse(ctx, code, err.Error())
@@ -46,19 +46,19 @@ func (c *cRolesMenu) CreateRolesMenu(ctx *gin.Context) {
 	response.SuccessResponse(ctx, code, result)
 }
 
-// GetRoleMenuByRoleId
+// GetFuncpackageMenuByRoleId
 // @Summary      Lấy role menu theo ID
 // @Description  API này trả về role menu theo ID
-// @Tags         RolesMenu
+// @Tags         FuncPackageMenu
 // @Accept       json
 // @Produce      json
 // @Security     BearerAuth
 // @Security     ApiKeyAuth
-// @Param        id   path   string  true  "ID role"
+// @Param        id   path   string  true  "ID function package"
 // @Param        search query string false "Từ khóa tìm kiếm"
 // @Success      200  {object}  response.ResponseData
 // @Failure      500  {object}  response.ErrorResponseData
-// @Router       /rolesmenu/get_role_menu_by_role_id/{id} [GET]
+// @Router       /funcpackagesmenu/get_funcpackage_menu_by_funcpackage_id/{id} [GET]
 func (c *cRolesMenu) GetRoleMenuByRoleId(ctx *gin.Context) {
 	id := ctx.Param("id")
 	search := ctx.Query("search")
@@ -71,10 +71,10 @@ func (c *cRolesMenu) GetRoleMenuByRoleId(ctx *gin.Context) {
 	response.SuccessResponse(ctx, code, menu)
 }
 
-// UpdateRolesMenu godoc
-// @Summary      Cập nhật role menu
-// @Description  Api cập nhật phân quyền menu cho role
-// @Tags         RolesMenu
+// UpdateFuncpackageMenu godoc
+// @Summary      Cập nhật Funcpackage menu
+// @Description  Api cập nhật phân quyền menu cho Funcpackage
+// @Tags         FuncPackageMenu
 // @Accept       json
 // @Produce      json
 // @Security     BearerAuth
@@ -84,7 +84,7 @@ func (c *cRolesMenu) GetRoleMenuByRoleId(ctx *gin.Context) {
 // @Success      200  {object}  response.ResponseData
 // @Failure      400  {object}  response.ErrorResponseData
 // @Failure      500  {object}  response.ErrorResponseData
-// @Router       /rolesmenu/update_roles_menu/{id} [put]
+// @Router       /funcpackagesmenu/update_funcpackage_menu/{id} [put]
 func (c *cRolesMenu) UpdateRolesMenu(ctx *gin.Context) {
 	id := ctx.Param("id")
 	if id == "" {
@@ -107,19 +107,19 @@ func (c *cRolesMenu) UpdateRolesMenu(ctx *gin.Context) {
 	response.SuccessResponse(ctx, code, result)
 }
 
-// DeleteRolesMenu godoc
-// @Summary      Xóa role menu
-// @Description  Api xóa role menu
-// @Tags         RolesMenu
+// DeleteFuncpackageMenu godoc
+// @Summary      Xóa Funcpackage menu
+// @Description  Api xóa Funcpackage menu
+// @Tags         FuncPackageMenu
 // @Accept       json
 // @Produce      json
 // @Security     BearerAuth
 // @Security     ApiKeyAuth
-// @Param        id   path      string  true  "ID của role menu"
+// @Param        id   path      string  true  "ID của Funcpackage menu"
 // @Success      200  {object}  response.ResponseData
 // @Failure      400  {object}  response.ErrorResponseData
 // @Failure      500  {object}  response.ErrorResponseData
-// @Router       /rolesmenu/delete_roles_menu/{id} [delete]
+// @Router       /funcpackagesmenu/delete_funcpackage_menu/{id} [delete]
 func (c *cRolesMenu) DeleteRolesMenu(ctx *gin.Context) {
 	id := ctx.Param("id")
 	code, err := service.RolesMenuItem().DeleteRolesMenu(ctx.Request.Context(), id)
@@ -130,18 +130,18 @@ func (c *cRolesMenu) DeleteRolesMenu(ctx *gin.Context) {
 	response.SuccessResponse(ctx, code, nil)
 }
 
-// CreateRolesMenuMultiple
-// @Summary Tạo nhiều menu theo role
-// @Description Api tạo nhiều menu theo role cho hệ thống
-// @Tags RolesMenu
+// CreateFuncpackageMenuMultiple
+// @Summary Tạo nhiều menu theo Funcpackage
+// @Description Api tạo nhiều menu theo Funcpackage cho hệ thống
+// @Tags FuncPackageMenu
 // @Accept json
 // @Produce json
 // @Security BearerAuth
 // @Security     ApiKeyAuth
-// @Param payload body []model.RolesMenu true "Role menu mapping details"
+// @Param payload body []model.RolesMenu true "Funcpackage menu mapping details"
 // @Success 200 {object} response.ResponseData
 // @Failure 500 {object} response.ErrorResponseData "Server error"
-// @Router /rolesmenu/create_roles_menu_multiple [post]
+// @Router /funcpackagesmenu/create_funcpackage_menu_multiple [post]
 func (c *cRolesMenu) CreateMultipleRoleMenus(ctx *gin.Context) {
 	// Lấy dữ liệu từ request body
 	var params []model.RolesMenu

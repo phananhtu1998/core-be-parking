@@ -24,9 +24,9 @@ func InitRouter() *gin.Engine {
 	manageRouter := routers.RouterGroupApp.Manage
 	loginRouter := routers.RouterGroupApp.Login
 	menuRouter := routers.RouterGroupApp.Menu
-	roleRouter := routers.RouterGroupApp.Role
+	// roleRouter := routers.RouterGroupApp.Role
 	rolesMenuRouter := routers.RouterGroupApp.RolesMenu
-	roleAccountRouter := routers.RouterGroupApp.RoleAccount
+	//roleAccountRouter := routers.RouterGroupApp.RoleAccount
 	licenseRouter := routers.RouterGroupApp.License
 	uploadRouter := routers.RouterGroupApp.Upload
 	funcpackageRouter := routers.RouterGroupApp.Funcpackage
@@ -43,9 +43,9 @@ func InitRouter() *gin.Engine {
 		manageRouter.InitAdminRouter(MainGroup)
 		loginRouter.InitLoginRouter(MainGroup)
 		menuRouter.InitAdminRouter(MainGroup)
-		roleRouter.InitRoleRouter(MainGroup)
+		//roleRouter.InitRoleRouter(MainGroup)
 		rolesMenuRouter.InitRolesMenuRouter(MainGroup)
-		roleAccountRouter.InitRoleAccountsRouter(MainGroup)
+		//roleAccountRouter.InitRoleAccountsRouter(MainGroup)
 		licenseRouter.InitLicenseRouter(MainGroup)
 		uploadRouter.InitUploadRouter(MainGroup)
 		funcpackageRouter.InitFuncpackageRouter(MainGroup)

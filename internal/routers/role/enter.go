@@ -1,5 +1,5 @@
 package role
 
-type RoleRouterGroup struct {
-	RoleRouter
-}
+// type RoleRouterGroup struct {
+// 	RoleRouter
+// }

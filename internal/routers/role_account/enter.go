@@ -1,3 +1,3 @@
 package roleaccount
 
-type RoleAccountRouter struct{}
+//type RoleAccountRouter struct{}

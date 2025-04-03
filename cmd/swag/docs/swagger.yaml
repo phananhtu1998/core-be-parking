@@ -103,46 +103,6 @@ definitions:
     - menu_number_order
     - menu_url
     type: object
-  model.Role:
-    properties:
-      code:
-        type: string
-      created_at:
-        type: string
-      created_by:
-        type: string
-      id:
-        type: string
-      is_deleted:
-        type: boolean
-      is_licensed:
-        type: boolean
-      role_left_value:
-        type: integer
-      role_max_number:
-        type: integer
-      role_name:
-        type: string
-      role_right_value:
-        type: integer
-      updated_by:
-        type: string
-    type: object
-  model.RoleAccount:
-    properties:
-      account_id:
-        example: b16fdfbc-da22-4ab2-b045-614677e536d6
-        type: string
-      license_id:
-        example: xxx-yyyy-zzz
-        type: string
-      role_id:
-        example: 351ec27d-2134-4993-b120-b72a950f5574
-        type: string
-    required:
-    - account_id
-    - role_id
-    type: object
   model.RolesMenu:
     properties:
       list_method:
@@ -506,6 +466,168 @@ paths:
       summary: Lấy gói chức năng
       tags:
       - Func packages
+  /funcpackagesmenu/create_funcpackage_menu:
+    post:
+      consumes:
+      - application/json
+      description: Api tạo Funcpackage menu cho hệ thống
+      parameters:
+      - description: Funcpackage menu mapping details
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/model.RolesMenu'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ResponseData'
+        "500":
+          description: Server error
+          schema:
+            $ref: '#/definitions/response.ErrorResponseData'
+      security:
+      - BearerAuth: []
+      - ApiKeyAuth: []
+      summary: Tạo Funcpackage menu
+      tags:
+      - FuncPackageMenu
+  /funcpackagesmenu/create_funcpackage_menu_multiple:
+    post:
+      consumes:
+      - application/json
+      description: Api tạo nhiều menu theo Funcpackage cho hệ thống
+      parameters:
+      - description: Funcpackage menu mapping details
+        in: body
+        name: payload
+        required: true
+        schema:
+          items:
+            $ref: '#/definitions/model.RolesMenu'
+          type: array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ResponseData'
+        "500":
+          description: Server error
+          schema:
+            $ref: '#/definitions/response.ErrorResponseData'
+      security:
+      - BearerAuth: []
+      - ApiKeyAuth: []
+      summary: Tạo nhiều menu theo Funcpackage
+      tags:
+      - FuncPackageMenu
+  /funcpackagesmenu/delete_funcpackage_menu/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Api xóa Funcpackage menu
+      parameters:
+      - description: ID của Funcpackage menu
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ResponseData'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponseData'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponseData'
+      security:
+      - BearerAuth: []
+      - ApiKeyAuth: []
+      summary: Xóa Funcpackage menu
+      tags:
+      - FuncPackageMenu
+  /funcpackagesmenu/get_funcpackage_menu_by_funcpackage_id/{id}:
+    get:
+      consumes:
+      - application/json
+      description: API này trả về role menu theo ID
+      parameters:
+      - description: ID function package
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Từ khóa tìm kiếm
+        in: query
+        name: search
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ResponseData'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponseData'
+      security:
+      - BearerAuth: []
+      - ApiKeyAuth: []
+      summary: Lấy role menu theo ID
+      tags:
+      - FuncPackageMenu
+  /funcpackagesmenu/update_funcpackage_menu/{id}:
+    put:
+      consumes:
+      - application/json
+      description: Api cập nhật phân quyền menu cho Funcpackage
+      parameters:
+      - description: ID của role menu
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Thông tin cần cập nhật
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/model.RolesMenu'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ResponseData'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponseData'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponseData'
+      security:
+      - BearerAuth: []
+      - ApiKeyAuth: []
+      summary: Cập nhật Funcpackage menu
+      tags:
+      - FuncPackageMenu
   /license/create_license:
     post:
       consumes:
@@ -716,442 +838,6 @@ paths:
       summary: Cập nhật nhiều menu
       tags:
       - Menu
-  /role/create_role:
-    post:
-      consumes:
-      - application/json
-      description: Api tạo vai trò trong hệ thống
-      parameters:
-      - description: payload
-        in: body
-        name: payload
-        required: true
-        schema:
-          $ref: '#/definitions/model.Role'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.ResponseData'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/response.ErrorResponseData'
-      security:
-      - BearerAuth: []
-      - ApiKeyAuth: []
-      summary: Tạo vai trò
-      tags:
-      - Role
-  /role/delete_role/{id}:
-    delete:
-      consumes:
-      - application/json
-      description: API xóa mềm role trong hệ thống
-      parameters:
-      - description: ID của role cần xóa
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.ResponseData'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/response.ErrorResponseData'
-      security:
-      - BearerAuth: []
-      - ApiKeyAuth: []
-      summary: Xóa role
-      tags:
-      - Role
-  /role/get_all_roles:
-    get:
-      consumes:
-      - application/json
-      description: Api lấy danh sách role trong hệ thống
-      parameters:
-      - description: 'Số trang (mặc định: 1)'
-        in: query
-        name: page
-        type: integer
-      - description: 'Số lượng mỗi trang (mặc định: 20)'
-        in: query
-        name: page_size
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.ResponseData'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/response.ErrorResponseData'
-      security:
-      - BearerAuth: []
-      - ApiKeyAuth: []
-      summary: Lấy danh sách role
-      tags:
-      - Role
-  /role/get_role_by_id/{id}:
-    get:
-      consumes:
-      - application/json
-      description: API này trả về role theo ID
-      parameters:
-      - description: ID role cần lấy
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.ResponseData'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/response.ErrorResponseData'
-      security:
-      - BearerAuth: []
-      - ApiKeyAuth: []
-      summary: Lấy role theo ID
-      tags:
-      - Role
-  /roleaccount/create_roles_account:
-    post:
-      consumes:
-      - application/json
-      description: Api tạo role account cho hệ thống
-      parameters:
-      - description: Role account mapping details
-        in: body
-        name: payload
-        required: true
-        schema:
-          $ref: '#/definitions/model.RoleAccount'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.ResponseData'
-        "500":
-          description: Server error
-          schema:
-            $ref: '#/definitions/response.ErrorResponseData'
-      security:
-      - BearerAuth: []
-      - ApiKeyAuth: []
-      summary: Tạo role account
-      tags:
-      - RoleAccount
-  /roleaccount/delete_multiple_role_account:
-    delete:
-      consumes:
-      - application/json
-      description: API này xóa danh sách Role Account dựa trên danh sách ID
-      parameters:
-      - description: Danh sách ID cần xóa
-        in: body
-        name: ids
-        required: true
-        schema:
-          items:
-            type: string
-          type: array
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.ResponseData'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/response.ErrorResponseData'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/response.ErrorResponseData'
-      security:
-      - BearerAuth: []
-      - ApiKeyAuth: []
-      summary: Xóa nhiều Role Account
-      tags:
-      - RoleAccount
-  /roleaccount/get_role_account_by_account_id/{id}:
-    get:
-      consumes:
-      - application/json
-      description: API này trả về role account theo Account_Id
-      parameters:
-      - description: ID account
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.ResponseData'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/response.ErrorResponseData'
-      security:
-      - BearerAuth: []
-      - ApiKeyAuth: []
-      summary: Lấy role account theo Account_Id
-      tags:
-      - RoleAccount
-  /roleaccount/get_role_account_by_role_id/{id}:
-    get:
-      consumes:
-      - application/json
-      description: API này trả về role account theo role_Id
-      parameters:
-      - description: ID role
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.ResponseData'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/response.ErrorResponseData'
-      security:
-      - BearerAuth: []
-      - ApiKeyAuth: []
-      summary: Lấy role account theo Role_Id
-      tags:
-      - RoleAccount
-  /roleaccount/update_role_account/{id}:
-    put:
-      consumes:
-      - application/json
-      description: API này cập nhật thông tin role account dựa trên ID
-      parameters:
-      - description: ID role account cần cập nhật
-        in: path
-        name: id
-        required: true
-        type: string
-      - description: Dữ liệu cập nhật role account
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/model.RoleAccount'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.ResponseData'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/response.ErrorResponseData'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/response.ErrorResponseData'
-      security:
-      - BearerAuth: []
-      - ApiKeyAuth: []
-      summary: Cập nhật Role account
-      tags:
-      - RoleAccount
-  /rolesmenu/create_roles_menu:
-    post:
-      consumes:
-      - application/json
-      description: Api tạo role menu cho hệ thống
-      parameters:
-      - description: Role menu mapping details
-        in: body
-        name: payload
-        required: true
-        schema:
-          $ref: '#/definitions/model.RolesMenu'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.ResponseData'
-        "500":
-          description: Server error
-          schema:
-            $ref: '#/definitions/response.ErrorResponseData'
-      security:
-      - BearerAuth: []
-      - ApiKeyAuth: []
-      summary: Tạo role menu
-      tags:
-      - RolesMenu
-  /rolesmenu/create_roles_menu_multiple:
-    post:
-      consumes:
-      - application/json
-      description: Api tạo nhiều menu theo role cho hệ thống
-      parameters:
-      - description: Role menu mapping details
-        in: body
-        name: payload
-        required: true
-        schema:
-          items:
-            $ref: '#/definitions/model.RolesMenu'
-          type: array
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.ResponseData'
-        "500":
-          description: Server error
-          schema:
-            $ref: '#/definitions/response.ErrorResponseData'
-      security:
-      - BearerAuth: []
-      - ApiKeyAuth: []
-      summary: Tạo nhiều menu theo role
-      tags:
-      - RolesMenu
-  /rolesmenu/delete_roles_menu/{id}:
-    delete:
-      consumes:
-      - application/json
-      description: Api xóa role menu
-      parameters:
-      - description: ID của role menu
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.ResponseData'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/response.ErrorResponseData'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/response.ErrorResponseData'
-      security:
-      - BearerAuth: []
-      - ApiKeyAuth: []
-      summary: Xóa role menu
-      tags:
-      - RolesMenu
-  /rolesmenu/get_role_menu_by_role_id/{id}:
-    get:
-      consumes:
-      - application/json
-      description: API này trả về role menu theo ID
-      parameters:
-      - description: ID role
-        in: path
-        name: id
-        required: true
-        type: string
-      - description: Từ khóa tìm kiếm
-        in: query
-        name: search
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.ResponseData'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/response.ErrorResponseData'
-      security:
-      - BearerAuth: []
-      - ApiKeyAuth: []
-      summary: Lấy role menu theo ID
-      tags:
-      - RolesMenu
-  /rolesmenu/update_roles_menu/{id}:
-    put:
-      consumes:
-      - application/json
-      description: Api cập nhật phân quyền menu cho role
-      parameters:
-      - description: ID của role menu
-        in: path
-        name: id
-        required: true
-        type: string
-      - description: Thông tin cần cập nhật
-        in: body
-        name: payload
-        required: true
-        schema:
-          $ref: '#/definitions/model.RolesMenu'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.ResponseData'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/response.ErrorResponseData'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/response.ErrorResponseData'
-      security:
-      - BearerAuth: []
-      - ApiKeyAuth: []
-      summary: Cập nhật role menu
-      tags:
-      - RolesMenu
   /upload/upload_file:
     post:
       consumes:
