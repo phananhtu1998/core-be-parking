@@ -108,3 +108,9 @@ SELECT COUNT(*)
 FROM `role` 
 WHERE created_by = ? AND is_deleted = false;
 
+-- name: GetAllFuncPackageByCreatedBy :many
+SELECT id, code, role_name,role_max_number,create_at
+FROM `role`
+WHERE is_deleted = false AND created_by = ? 
+ORDER BY role_left_value DESC;
+

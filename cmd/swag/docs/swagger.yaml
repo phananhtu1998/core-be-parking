@@ -484,6 +484,28 @@ paths:
       summary: Tạo gói chức năng
       tags:
       - Func packages
+  /funcpackage/get_all_func_package:
+    get:
+      consumes:
+      - application/json
+      description: Api lấy gói chức năng trong hệ thống
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ResponseData'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponseData'
+      security:
+      - BearerAuth: []
+      - ApiKeyAuth: []
+      summary: Lấy gói chức năng
+      tags:
+      - Func packages
   /license/create_license:
     post:
       consumes:

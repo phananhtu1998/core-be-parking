@@ -8,6 +8,7 @@ import (
 type (
 	Ifuncpackage interface {
 		CreateFuncPackage(ctx context.Context, in *model.FuncpackageInput) (codeResult int, out model.FuncpackageOutput, err error)
+		GetAlFuncPackageByCreatedBy(ctx context.Context) (codeResult int, out []model.FuncpackageOutput, err error)
 	}
 )
 

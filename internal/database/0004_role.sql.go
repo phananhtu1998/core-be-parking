@@ -72,6 +72,50 @@ func (q *Queries) GetAccountCreated(ctx context.Context, createdBy string) (int6
 	return count, err
 }
 
+const getAllFuncPackageByCreatedBy = `-- name: GetAllFuncPackageByCreatedBy :many
+SELECT id, code, role_name,role_max_number,create_at
+FROM ` + "`" + `role` + "`" + `
+WHERE is_deleted = false AND created_by = ? 
+ORDER BY role_left_value DESC
+`
+
+type GetAllFuncPackageByCreatedByRow struct {
+	ID            string
+	Code          string
+	RoleName      string
+	RoleMaxNumber int32
+	CreateAt      time.Time
+}
+
+func (q *Queries) GetAllFuncPackageByCreatedBy(ctx context.Context, createdBy string) ([]GetAllFuncPackageByCreatedByRow, error) {
+	rows, err := q.db.QueryContext(ctx, getAllFuncPackageByCreatedBy, createdBy)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []GetAllFuncPackageByCreatedByRow
+	for rows.Next() {
+		var i GetAllFuncPackageByCreatedByRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.Code,
+			&i.RoleName,
+			&i.RoleMaxNumber,
+			&i.CreateAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getAllPermissions = `-- name: GetAllPermissions :many
 SELECT a.id,a.name, r.role_name, m.menu_group_name,rm.list_method as Method FROM account a
 JOIN role_account ra ON ra.account_id = a.id

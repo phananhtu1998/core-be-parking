@@ -123,3 +123,27 @@ func (s *sFuncpackage) CreateFuncPackage(ctx context.Context, in *model.Funcpack
 		},
 	}, nil
 }
+func (s *sFuncpackage) GetAlFuncPackageByCreatedBy(ctx context.Context) (codeResult int, out []model.FuncpackageOutput, err error) {
+	subjectUUID := ctx.Value("subjectUUID")
+	var infoUser model.GetCacheToken
+	// Lấy Id tài khoản đang đăng nhập từ context
+	if err := cache.GetCache(ctx, subjectUUID.(string), &infoUser); err != nil {
+		return 0, out, err
+	}
+	println("infoUser.ID: ", infoUser.ID)
+	lstFuncpackage, err := s.r.GetAllFuncPackageByCreatedBy(ctx, infoUser.ID)
+	if err != nil {
+		return response.ErrCodeRoleError, out, fmt.Errorf("Lỗi khi lấy danh sách gói chức năng")
+	}
+	for _, item := range lstFuncpackage {
+		out = append(out, model.FuncpackageOutput{
+			Id: item.ID,
+			FuncpackageInput: model.FuncpackageInput{
+				Code:            item.Code,
+				Role_name:       item.RoleName,
+				Role_max_number: int(item.RoleMaxNumber),
+			},
+		})
+	}
+	return response.ErrCodeSucces, out, nil
+}

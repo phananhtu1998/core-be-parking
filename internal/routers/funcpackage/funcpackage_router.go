@@ -16,5 +16,6 @@ func (ar *FuncpackageRouter) InitFuncpackageRouter(Router *gin.RouterGroup) {
 	funcpackageRouterPrivate.Use(middlewares.RateLimiterPrivateMiddlewareRedis())
 	{
 		funcpackageRouterPrivate.POST("/create_func_package", funcpackage.Funcpackages.CreateFuncPackage)
+		funcpackageRouterPrivate.GET("/get_all_func_package", funcpackage.Funcpackages.GetAllFuncPackage)
 	}
 }
