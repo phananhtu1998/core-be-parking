@@ -69,6 +69,7 @@ type Role struct {
 	RoleLeftValue  int32
 	RoleRightValue int32
 	RoleMaxNumber  int32
+	LicenseID      string
 	CreatedBy      string
 	IsDeleted      bool
 	CreateAt       time.Time
@@ -79,7 +80,6 @@ type RoleAccount struct {
 	ID        string
 	AccountID string
 	RoleID    string
-	LicenseID string
 	CreatedBy sql.NullString
 	IsDeleted bool
 	CreateAt  time.Time

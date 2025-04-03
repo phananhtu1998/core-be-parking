@@ -7,6 +7,7 @@ CREATE TABLE `role`(
     `role_left_value` INT NOT NULL,
     `role_right_value` INT NOT NULL,
     `role_max_number` INT NOT NULL,
+    `license_id` CHAR(36) NOT NULL,
     `created_by` VARCHAR(255) NOT NULL,
     `is_deleted` BOOLEAN NOT NULL DEFAULT '0',
     `create_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,

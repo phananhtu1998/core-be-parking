@@ -60,20 +60,6 @@ func (s *sAccount) CreateAccount(ctx context.Context, in *model.AccountInput) (c
 	if accountFound > 0 {
 		return response.ErrCodeUserHasExists, model.AccountOutput{}, fmt.Errorf("Username has already registered")
 	}
-	// Lấy số lượng tài khoản đã tạo theo role
-	// countRoleId, err := s.r.CheckCountRoleId(ctx, in.RoleId)
-	// if err != nil {
-	// 	return response.ErrCodeRoleNotFound, model.AccountOutput{}, err
-	// }
-	// //Lấy số lượng tài khoản theo role được phép tạo
-	// countmaxrole, err := s.r.GetRoleById(ctx, in.RoleId)
-	// if err != nil {
-	// 	return response.ErrCodeRoleNotFound, model.AccountOutput{}, err
-	// }
-	// Kiểm tra số lượng tài khoản đã tạo theo role có lớn hơn số lượng tài khoản được phép tạo hay không
-	// if countRoleId >= countmaxrole.RoleMaxNumber {
-	// 	return response.ErrCodeRoleAccountMaxNumber, model.AccountOutput{}, fmt.Errorf("Role đã đạt số lượng tài khoản tối đa")
-	// }
 	// TODO: hash Password
 	accountBase := database.Account{}
 	userSalt, err := crypto.GenerateSalt(16)
@@ -100,18 +86,11 @@ func (s *sAccount) CreateAccount(ctx context.Context, in *model.AccountInput) (c
 	}
 
 	// nếu license tồn tại thì thêm vào bảng role account
-	// lấy id của license bằng roleId
-	licenseID, err := s.r.GetLicenseByRoleId(ctx, in.RoleId)
-	if err != nil {
-		log.Printf("Lỗi khi lấy id license: %v", err)
-		return response.ErrCodeParamInvalid, model.AccountOutput{}, err
-	}
 	// thêm vào bảng role account
 	err = s.r.CreateRoleAccount(ctx, database.CreateRoleAccountParams{
 		ID:        newUUID,
 		AccountID: newUUID,
 		RoleID:    in.RoleId,
-		LicenseID: licenseID.ID,
 	})
 	if err != nil {
 		log.Printf("Lỗi khi chèn tài khoản vào bảng role account: %v", err)

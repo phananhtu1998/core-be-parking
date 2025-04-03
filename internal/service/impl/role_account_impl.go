@@ -32,7 +32,6 @@ func (s *sRoleAccount) CreateRoleAccount(ctx context.Context, roleAccount *model
 		ID:        Id,
 		RoleID:    roleAccount.Role_id,
 		AccountID: roleAccount.Account_id,
-		LicenseID: roleAccount.License_id,
 	})
 	roleaccount := model.RoleAccountOutput{
 		Id: Id,
@@ -60,7 +59,6 @@ func (s *sRoleAccount) GetAllRoleAccountByRoleId(ctx context.Context, role_Id st
 			RoleAccount: model.RoleAccount{
 				Role_id:    item.RoleID,
 				Account_id: item.AccountID,
-				License_id: item.LicenseID,
 			},
 			Create_at: item.CreateAt,
 			Update_at: item.UpdateAt.Format("02-01-2006 15:04:05"),
@@ -79,7 +77,6 @@ func (s *sRoleAccount) GetAllRoleAccountByAccountId(ctx context.Context, account
 			RoleAccount: model.RoleAccount{
 				Role_id:    item.RoleID,
 				Account_id: item.AccountID,
-				License_id: item.LicenseID,
 			},
 			Create_at: item.CreateAt,
 			Update_at: item.UpdateAt.Format("02-01-2006 15:04:05"),
@@ -123,7 +120,6 @@ func (s *sRoleAccount) UpdateRoleAccount(ctx context.Context, id string, roleAcc
 		ID:        id,
 		RoleID:    roleAccount.Role_id,
 		AccountID: roleAccount.Account_id,
-		LicenseID: roleAccount.License_id,
 	})
 	roleaccount := model.RoleAccountOutput{
 		Id: id,

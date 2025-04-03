@@ -25,15 +25,14 @@ func (q *Queries) CheckCountRoleId(ctx context.Context, roleID string) (int64, e
 }
 
 const createRoleAccount = `-- name: CreateRoleAccount :exec
-INSERT INTO ` + "`" + `role_account` + "`" + ` (id, account_id, role_id, license_id,created_by, is_deleted, create_at, update_at)
-VALUES (?, ?, ?, ?, ?, false, NOW(), NOW())
+INSERT INTO ` + "`" + `role_account` + "`" + ` (id, account_id, role_id,created_by, is_deleted, create_at, update_at)
+VALUES (?, ?, ?, ?, false, NOW(), NOW())
 `
 
 type CreateRoleAccountParams struct {
 	ID        string
 	AccountID string
 	RoleID    string
-	LicenseID string
 	CreatedBy sql.NullString
 }
 
@@ -42,7 +41,6 @@ func (q *Queries) CreateRoleAccount(ctx context.Context, arg CreateRoleAccountPa
 		arg.ID,
 		arg.AccountID,
 		arg.RoleID,
-		arg.LicenseID,
 		arg.CreatedBy,
 	)
 	return err
@@ -60,7 +58,7 @@ func (q *Queries) DeleteRoleAccount(ctx context.Context, id string) error {
 }
 
 const getAllRoleAccount = `-- name: GetAllRoleAccount :many
-SELECT id, account_id, role_id, license_id
+SELECT id, account_id, role_id
 FROM ` + "`" + `role_account` + "`" + `
 WHERE is_deleted = false
 `
@@ -69,7 +67,6 @@ type GetAllRoleAccountRow struct {
 	ID        string
 	AccountID string
 	RoleID    string
-	LicenseID string
 }
 
 func (q *Queries) GetAllRoleAccount(ctx context.Context) ([]GetAllRoleAccountRow, error) {
@@ -81,12 +78,7 @@ func (q *Queries) GetAllRoleAccount(ctx context.Context) ([]GetAllRoleAccountRow
 	var items []GetAllRoleAccountRow
 	for rows.Next() {
 		var i GetAllRoleAccountRow
-		if err := rows.Scan(
-			&i.ID,
-			&i.AccountID,
-			&i.RoleID,
-			&i.LicenseID,
-		); err != nil {
+		if err := rows.Scan(&i.ID, &i.AccountID, &i.RoleID); err != nil {
 			return nil, err
 		}
 		items = append(items, i)
@@ -101,7 +93,7 @@ func (q *Queries) GetAllRoleAccount(ctx context.Context) ([]GetAllRoleAccountRow
 }
 
 const getOneRoleAccountByAccountId = `-- name: GetOneRoleAccountByAccountId :one
-SELECT id, account_id, role_id, license_id, create_at, update_at
+SELECT id, account_id, role_id, create_at, update_at
 FROM ` + "`" + `role_account` + "`" + `
 WHERE is_deleted = false AND account_id = ?
 `
@@ -110,7 +102,6 @@ type GetOneRoleAccountByAccountIdRow struct {
 	ID        string
 	AccountID string
 	RoleID    string
-	LicenseID string
 	CreateAt  time.Time
 	UpdateAt  time.Time
 }
@@ -122,7 +113,6 @@ func (q *Queries) GetOneRoleAccountByAccountId(ctx context.Context, accountID st
 		&i.ID,
 		&i.AccountID,
 		&i.RoleID,
-		&i.LicenseID,
 		&i.CreateAt,
 		&i.UpdateAt,
 	)
@@ -130,7 +120,7 @@ func (q *Queries) GetOneRoleAccountByAccountId(ctx context.Context, accountID st
 }
 
 const getRoleAccountByAccountId = `-- name: GetRoleAccountByAccountId :many
-SELECT id, account_id, role_id, license_id, create_at, update_at
+SELECT id, account_id, role_id, create_at, update_at
 FROM ` + "`" + `role_account` + "`" + `
 WHERE is_deleted = false AND account_id = ?
 `
@@ -139,7 +129,6 @@ type GetRoleAccountByAccountIdRow struct {
 	ID        string
 	AccountID string
 	RoleID    string
-	LicenseID string
 	CreateAt  time.Time
 	UpdateAt  time.Time
 }
@@ -157,7 +146,6 @@ func (q *Queries) GetRoleAccountByAccountId(ctx context.Context, accountID strin
 			&i.ID,
 			&i.AccountID,
 			&i.RoleID,
-			&i.LicenseID,
 			&i.CreateAt,
 			&i.UpdateAt,
 		); err != nil {
@@ -175,7 +163,7 @@ func (q *Queries) GetRoleAccountByAccountId(ctx context.Context, accountID strin
 }
 
 const getRoleAccountById = `-- name: GetRoleAccountById :one
-SELECT id, account_id, role_id, license_id
+SELECT id, account_id, role_id
 FROM ` + "`" + `role_account` + "`" + `
 WHERE is_deleted = false AND id = ?
 `
@@ -184,23 +172,17 @@ type GetRoleAccountByIdRow struct {
 	ID        string
 	AccountID string
 	RoleID    string
-	LicenseID string
 }
 
 func (q *Queries) GetRoleAccountById(ctx context.Context, id string) (GetRoleAccountByIdRow, error) {
 	row := q.db.QueryRowContext(ctx, getRoleAccountById, id)
 	var i GetRoleAccountByIdRow
-	err := row.Scan(
-		&i.ID,
-		&i.AccountID,
-		&i.RoleID,
-		&i.LicenseID,
-	)
+	err := row.Scan(&i.ID, &i.AccountID, &i.RoleID)
 	return i, err
 }
 
 const getRoleAccountByRoleId = `-- name: GetRoleAccountByRoleId :many
-SELECT id, account_id, role_id, license_id, create_at, update_at
+SELECT id, account_id, role_id, create_at, update_at
 FROM ` + "`" + `role_account` + "`" + `
 WHERE is_deleted = false AND role_id = ?
 `
@@ -209,7 +191,6 @@ type GetRoleAccountByRoleIdRow struct {
 	ID        string
 	AccountID string
 	RoleID    string
-	LicenseID string
 	CreateAt  time.Time
 	UpdateAt  time.Time
 }
@@ -227,7 +208,6 @@ func (q *Queries) GetRoleAccountByRoleId(ctx context.Context, roleID string) ([]
 			&i.ID,
 			&i.AccountID,
 			&i.RoleID,
-			&i.LicenseID,
 			&i.CreateAt,
 			&i.UpdateAt,
 		); err != nil {
@@ -246,23 +226,17 @@ func (q *Queries) GetRoleAccountByRoleId(ctx context.Context, roleID string) ([]
 
 const updateRoleAccount = `-- name: UpdateRoleAccount :exec
 UPDATE ` + "`" + `role_account` + "`" + `
-SET account_id = ?, role_id = ?, license_id = ?
+SET account_id = ?, role_id = ?
 WHERE id = ? AND is_deleted = false
 `
 
 type UpdateRoleAccountParams struct {
 	AccountID string
 	RoleID    string
-	LicenseID string
 	ID        string
 }
 
 func (q *Queries) UpdateRoleAccount(ctx context.Context, arg UpdateRoleAccountParams) error {
-	_, err := q.db.ExecContext(ctx, updateRoleAccount,
-		arg.AccountID,
-		arg.RoleID,
-		arg.LicenseID,
-		arg.ID,
-	)
+	_, err := q.db.ExecContext(ctx, updateRoleAccount, arg.AccountID, arg.RoleID, arg.ID)
 	return err
 }

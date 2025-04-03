@@ -147,3 +147,21 @@ func (s *sFuncpackage) GetAlFuncPackageByCreatedBy(ctx context.Context) (codeRes
 	}
 	return response.ErrCodeSucces, out, nil
 }
+func (s *sFuncpackage) DeleteFuncPackage(ctx context.Context, id string) (codeResult int, err error) {
+	// Bắt đầu transaction
+	tx, err := s.db.BeginTx(ctx, nil)
+	if err != nil {
+		return response.ErrCodeRoleError, fmt.Errorf("failed to begin transaction: %w", err)
+	}
+	defer tx.Rollback()
+	// Kiểm tra có gói con hay không nếu có không được xóa
+	// Kiểm tra có tài khoản đang sử dụng hay không
+	
+
+	// Commit transaction
+	if err = tx.Commit(); err != nil {
+		return response.ErrCodeRoleError, fmt.Errorf("failed to commit transaction: %w", err)
+	}
+
+	return response.ErrCodeSucces, nil
+}

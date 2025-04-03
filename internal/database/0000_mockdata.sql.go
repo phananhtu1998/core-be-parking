@@ -20,8 +20,8 @@ func (q *Queries) CreateLicenseData(ctx context.Context) (sql.Result, error) {
 }
 
 const createRoleAccountData = `-- name: CreateRoleAccountData :exec
-INSERT INTO ` + "`" + `role_account` + "`" + ` (id, account_id, role_id, license_id, created_by, is_deleted, create_at, update_at)
-VALUES ('369f54a1-300a-4ded-9ab0-b37e71cdc3e9', '872ab326-b40b-4fb7-b28b-c5f8157fea7c', 'eb6d9850-2b77-47fc-ae2a-0a0ba9842280', '3375f96b-dcc5-492a-ab49-cb3b0af401a1','', false, NOW(), NOW())
+INSERT INTO ` + "`" + `role_account` + "`" + ` (id, account_id, role_id, created_by, is_deleted, create_at, update_at)
+VALUES ('369f54a1-300a-4ded-9ab0-b37e71cdc3e9', '872ab326-b40b-4fb7-b28b-c5f8157fea7c', 'eb6d9850-2b77-47fc-ae2a-0a0ba9842280','', false, NOW(), NOW())
 `
 
 func (q *Queries) CreateRoleAccountData(ctx context.Context) error {
@@ -32,9 +32,9 @@ func (q *Queries) CreateRoleAccountData(ctx context.Context) error {
 const createRoleData = `-- name: CreateRoleData :execresult
 INSERT INTO ` + "`" + `role` + "`" + ` (
   id, code, role_name, role_left_value, role_right_value, 
-  role_max_number, created_by, create_at, update_at
+  role_max_number,license_id, created_by, create_at, update_at
 ) VALUES (
-  'eb6d9850-2b77-47fc-ae2a-0a0ba9842280', 'ADMIN', 'ADMIN', 1, 2, 999999999, '', NOW(), NOW()
+  'eb6d9850-2b77-47fc-ae2a-0a0ba9842280', 'ADMIN', 'ADMIN', 1, 2, 999999999,'3375f96b-dcc5-492a-ab49-cb3b0af401a1', '', NOW(), NOW()
 )
 `
 
