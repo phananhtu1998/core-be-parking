@@ -108,3 +108,8 @@ SELECT * FROM products WHERE MATCH(productName) AGAINST ('suzuki')
 SELECT * FROM products WHERE MATCH(productName) AGAINST ('suzuki corsair') // tìm kiếm gần đúng
 SELECT * FROM products WHERE MATCH(productName) AGAINST ('+suzuki +corsair' IN BOOLEAN MODE) // đúng chính xác
 ```
+
+
+Nên dùng SAGA PATTERN trong mô hình mircoservice để đảm bảo tính nhất quán dữ liệu
+
+có create thì có revert data (có tạo sẽ có revert data) --> saga PATTERN 
