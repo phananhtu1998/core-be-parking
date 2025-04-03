@@ -10,6 +10,7 @@ type (
 		CreateMenu(ctx context.Context, in *model.MenuInput) (codeResult int, out model.MenuOutput, err error)
 		CreateMultipleMenus(ctx context.Context, inputs []model.MenuInput) (codeResult int, out []model.MenuOutput, err error)
 		GetAllMenu(ctx context.Context) (codeResult int, out []model.MenuOutput, err error)
+		GetAllMenuByRoleId(ctx context.Context) (codeResult int, out []model.MenuOutputFuncpackage, err error)
 		GetMenuById(ctx context.Context, id string) (codeResult int, out model.MenuOutput, err error)
 		EditMenuById(ctx context.Context, menuUpdates []model.MenuInput) (int, []model.MenuOutput, error)
 		DeleteMenu(ctx context.Context, id string) (codeResult int, err error)

@@ -24,6 +24,18 @@ type MenuOutput struct {
 	Children          []MenuOutput `json:"children"`
 }
 
+type MenuOutputFuncpackage struct {
+	Id                string `json:"id"`
+	STT               string `json:"stt"`
+	Menu_name         string `json:"menu_name"`
+	Menu_icon         string `json:"menu_icon"`
+	Menu_url          string `json:"menu_url"`
+	Menu_parent_id    string `json:"menu_parent_id"`
+	Menu_level        int    `json:"menu_level"`
+	Menu_Number_order int    `json:"menu_number_order"`
+	Menu_group_name   string `json:"menu_group_name"`
+}
+
 type MenuSwag struct {
 	ID              string         `json:"id"`
 	MenuName        string         `json:"menu_name"`

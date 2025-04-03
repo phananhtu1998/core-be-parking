@@ -6,7 +6,7 @@ WHERE id = ? AND is_deleted = false;
 -- name: GetLicenseByRoleId :one
 SELECT id, license, role_id, date_start, date_end, created_at, update_at
 FROM `license`
-WHERE role_id = ? AND is_deleted = false;;
+WHERE role_id = ? AND is_deleted = false;
 
 -- name: GetAllLicenses :many
 SELECT id, license, date_start, role_id, date_end, created_at, update_at

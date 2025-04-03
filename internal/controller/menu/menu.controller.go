@@ -179,3 +179,24 @@ func (c *cMenu) CreateMultipleMenus(ctx *gin.Context) {
 	}
 	response.SuccessResponse(ctx, codeMenu, dataMenu)
 }
+
+// Menu
+// @Summary      Lấy danh sách menu theo gói chức năng
+// @Description  API này trả về danh sách tất cả menu theo gói chức năng trong hệ thống
+// @Tags         Menu
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Security     ApiKeyAuth
+// @Success      200  {object}  response.ResponseData
+// @Failure      500  {object}  response.ErrorResponseData
+// @Router       /menu/get_all_menu_by_function_package [GET]
+func (ac *cMenu) GetAllMenuByRoleId(ctx *gin.Context) {
+	code, menus, err := service.MenuItem().GetAllMenuByRoleId(ctx.Request.Context())
+	if err != nil {
+		log.Printf("Error getting menu: %v", err)
+		response.ErrorResponse(ctx, code, err.Error())
+		return
+	}
+	response.SuccessResponse(ctx, code, menus)
+}

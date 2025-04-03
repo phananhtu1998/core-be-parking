@@ -72,6 +72,42 @@ UPDATE menu SET is_deleted = true WHERE id = ?;
 UPDATE menu SET is_deleted = true WHERE id = ?;
 
 
+-- name: GetMenuByRoleId :many
+SELECT 
+    m.id,
+    m.menu_name,
+    m.menu_icon,
+    m.menu_url,
+    m.menu_level,
+    m.menu_number_order,
+    m.menu_parent_Id,
+    m.menu_group_name,
+    CASE 
+        WHEN m.menu_parent_Id IS NULL 
+        THEN CAST(m.menu_number_order AS CHAR(20))
+        ELSE CONCAT(
+            (SELECT CAST(parent.menu_number_order AS CHAR(20))
+             FROM menu parent 
+             WHERE parent.id = m.menu_parent_Id),
+            '.',
+            CAST(m.menu_number_order AS CHAR(20))
+        )
+    END AS stt
+FROM `menu` m
+JOIN `roles_menu` rm ON rm.menu_id = m.id
+JOIN `role` r ON rm.role_id = r.id
+WHERE r.id = ? 
+  AND m.is_deleted = false 
+  AND rm.is_deleted = false 
+  AND r.is_deleted = false 
+ORDER BY 
+    CAST(
+        SUBSTRING_INDEX(stt, '.', 1) AS UNSIGNED
+    ) ASC,
+    LENGTH(stt) ASC,
+    stt ASC;
+
+
 
 
 

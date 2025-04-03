@@ -470,7 +470,7 @@ paths:
     post:
       consumes:
       - application/json
-      description: Api tạo gói chức năng menu cho hệ thống
+      description: Api tạo chức năng menu cho hệ thống
       parameters:
       - description: Funcpackage menu mapping details
         in: body
@@ -492,14 +492,14 @@ paths:
       security:
       - BearerAuth: []
       - ApiKeyAuth: []
-      summary: Tạo gói chức năng menu
+      summary: Tạo chức năng menu
       tags:
       - FuncPackageMenu
   /funcpackagesmenu/create_funcpackage_menu_multiple:
     post:
       consumes:
       - application/json
-      description: Api tạo nhiều menu theo gói chức năng cho hệ thống
+      description: Api tạo nhiều menu theo chức năng cho hệ thống
       parameters:
       - description: Funcpackage menu mapping details
         in: body
@@ -523,14 +523,14 @@ paths:
       security:
       - BearerAuth: []
       - ApiKeyAuth: []
-      summary: Tạo nhiều menu theo gói chức năng
+      summary: Tạo nhiều menu theo chức năng
       tags:
       - FuncPackageMenu
   /funcpackagesmenu/delete_funcpackage_menu/{id}:
     delete:
       consumes:
       - application/json
-      description: Api xóa gói chức năng menu
+      description: Api gói chức năng menu
       parameters:
       - description: ID của Funcpackage menu
         in: path
@@ -555,14 +555,14 @@ paths:
       security:
       - BearerAuth: []
       - ApiKeyAuth: []
-      summary: Xóa gói chức năng menu
+      summary: Xóa chức năng menu
       tags:
       - FuncPackageMenu
   /funcpackagesmenu/get_funcpackage_menu_by_funcpackage_id/{id}:
     get:
       consumes:
       - application/json
-      description: API này trả về gói chức năng menu theo ID
+      description: API này trả về chức năng menu theo ID
       parameters:
       - description: ID function package
         in: path
@@ -587,14 +587,14 @@ paths:
       security:
       - BearerAuth: []
       - ApiKeyAuth: []
-      summary: Lấy gói chức năng menu theo ID
+      summary: Lấy chức năng menu theo ID
       tags:
       - FuncPackageMenu
   /funcpackagesmenu/update_funcpackage_menu/{id}:
     put:
       consumes:
       - application/json
-      description: Api cập nhật phân quyền menu cho gói chức năng
+      description: Api cập nhật phân quyền menu cho chức năng
       parameters:
       - description: ID của role menu
         in: path
@@ -625,7 +625,7 @@ paths:
       security:
       - BearerAuth: []
       - ApiKeyAuth: []
-      summary: Cập nhật gói chức năng menu
+      summary: Cập nhật chức năng menu
       tags:
       - FuncPackageMenu
   /license/create_license:
@@ -773,6 +773,29 @@ paths:
       - BearerAuth: []
       - ApiKeyAuth: []
       summary: Lấy danh sách tất cả menu
+      tags:
+      - Menu
+  /menu/get_all_menu_by_function_package:
+    get:
+      consumes:
+      - application/json
+      description: API này trả về danh sách tất cả menu theo gói chức năng trong hệ
+        thống
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ResponseData'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponseData'
+      security:
+      - BearerAuth: []
+      - ApiKeyAuth: []
+      summary: Lấy danh sách menu theo gói chức năng
       tags:
       - Menu
   /menu/get_menu_by_id/{id}:

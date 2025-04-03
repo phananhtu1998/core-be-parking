@@ -534,7 +534,7 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "Api tạo gói chức năng menu cho hệ thống",
+                "description": "Api tạo chức năng menu cho hệ thống",
                 "consumes": [
                     "application/json"
                 ],
@@ -544,7 +544,7 @@ const docTemplate = `{
                 "tags": [
                     "FuncPackageMenu"
                 ],
-                "summary": "Tạo gói chức năng menu",
+                "summary": "Tạo chức năng menu",
                 "parameters": [
                     {
                         "description": "Funcpackage menu mapping details",
@@ -582,7 +582,7 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "Api tạo nhiều menu theo gói chức năng cho hệ thống",
+                "description": "Api tạo nhiều menu theo chức năng cho hệ thống",
                 "consumes": [
                     "application/json"
                 ],
@@ -592,7 +592,7 @@ const docTemplate = `{
                 "tags": [
                     "FuncPackageMenu"
                 ],
-                "summary": "Tạo nhiều menu theo gói chức năng",
+                "summary": "Tạo nhiều menu theo chức năng",
                 "parameters": [
                     {
                         "description": "Funcpackage menu mapping details",
@@ -633,7 +633,7 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "Api xóa gói chức năng menu",
+                "description": "Api gói chức năng menu",
                 "consumes": [
                     "application/json"
                 ],
@@ -643,7 +643,7 @@ const docTemplate = `{
                 "tags": [
                     "FuncPackageMenu"
                 ],
-                "summary": "Xóa gói chức năng menu",
+                "summary": "Xóa chức năng menu",
                 "parameters": [
                     {
                         "type": "string",
@@ -685,7 +685,7 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "API này trả về gói chức năng menu theo ID",
+                "description": "API này trả về chức năng menu theo ID",
                 "consumes": [
                     "application/json"
                 ],
@@ -695,7 +695,7 @@ const docTemplate = `{
                 "tags": [
                     "FuncPackageMenu"
                 ],
-                "summary": "Lấy gói chức năng menu theo ID",
+                "summary": "Lấy chức năng menu theo ID",
                 "parameters": [
                     {
                         "type": "string",
@@ -737,7 +737,7 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "Api cập nhật phân quyền menu cho gói chức năng",
+                "description": "Api cập nhật phân quyền menu cho chức năng",
                 "consumes": [
                     "application/json"
                 ],
@@ -747,7 +747,7 @@ const docTemplate = `{
                 "tags": [
                     "FuncPackageMenu"
                 ],
-                "summary": "Cập nhật gói chức năng menu",
+                "summary": "Cập nhật chức năng menu",
                 "parameters": [
                     {
                         "type": "string",
@@ -1014,6 +1014,43 @@ const docTemplate = `{
                     "Menu"
                 ],
                 "summary": "Lấy danh sách tất cả menu",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ResponseData"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponseData"
+                        }
+                    }
+                }
+            }
+        },
+        "/menu/get_all_menu_by_function_package": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "API này trả về danh sách tất cả menu theo gói chức năng trong hệ thống",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Menu"
+                ],
+                "summary": "Lấy danh sách menu theo gói chức năng",
                 "responses": {
                     "200": {
                         "description": "OK",

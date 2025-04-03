@@ -47,8 +47,6 @@ func (q *Queries) DeleteLicense(ctx context.Context, id string) error {
 }
 
 const getAllLicenses = `-- name: GetAllLicenses :many
-;
-
 SELECT id, license, date_start, role_id, date_end, created_at, update_at
 FROM ` + "`" + `license` + "`" + `
 WHERE is_deleted = false

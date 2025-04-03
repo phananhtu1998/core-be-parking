@@ -9,6 +9,7 @@ import (
 	"go-backend-api/internal/model"
 	"go-backend-api/internal/repo"
 	"go-backend-api/internal/utils"
+	"go-backend-api/internal/utils/cache"
 	"go-backend-api/pkg/response"
 	"log"
 
@@ -341,4 +342,51 @@ func (s *sMenu) DeleteMenu(ctx context.Context, id string) (int, error) {
 	committed = true
 
 	return response.ErrCodeSucces, nil
+}
+
+func (s *sMenu) GetAllMenuByRoleId(ctx context.Context) (codeResult int, out []model.MenuOutputFuncpackage, err error) {
+	// Lấy Id của account
+	// Bắt đầu transaction
+	tx, err := s.db.BeginTx(ctx, nil)
+	if err != nil {
+		return response.ErrCodeRoleError, out, fmt.Errorf("failed to begin transaction: %w", err)
+	}
+	defer tx.Rollback()
+	subjectUUID := ctx.Value("subjectUUID")
+	println("subjectUUID account: ", subjectUUID)
+	var infoUser model.GetCacheToken
+	// Lấy Id tài khoản đang đăng nhập từ context
+	if err := cache.GetCache(ctx, subjectUUID.(string), &infoUser); err != nil {
+		return 0, out, err
+	}
+	// Lấy RoleId
+	RoleId, err := s.r.GetOneRoleAccountByAccountId(ctx, infoUser.ID)
+	if err != nil {
+		return response.ErrCodeRoleError, out, fmt.Errorf("failed to get role: %w", err)
+	}
+	log.Println("roleId: ", RoleId.RoleID)
+	// Lấy danh sách menu theo roleId
+	lstmenus, err := s.r.GetMenuByRoleId(ctx, RoleId.RoleID)
+	if err != nil {
+		return response.ErrCodeRoleError, out, fmt.Errorf("failed to get menu: %w", err)
+	}
+
+	// Map lstmenus to []model.MenuOutput
+	for _, row := range lstmenus {
+		out = append(out, model.MenuOutputFuncpackage{
+			Id:                row.ID,
+			STT:               string(row.Stt.([]uint8)),
+			Menu_name:         row.MenuName,
+			Menu_icon:         row.MenuIcon,
+			Menu_url:          row.MenuUrl,
+			Menu_parent_id:    row.MenuParentID.String,
+			Menu_level:        int(row.MenuLevel),
+			Menu_Number_order: int(row.MenuNumberOrder),
+			Menu_group_name:   row.MenuGroupName,
+		})
+	}
+	if err != nil {
+		return response.ErrCodeRoleError, out, fmt.Errorf("failed to get menu: %w", err)
+	}
+	return codeResult, out, err
 }
