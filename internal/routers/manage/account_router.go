@@ -11,7 +11,7 @@ type AdminRouter struct{}
 
 func (ar *AdminRouter) InitAdminRouter(Router *gin.RouterGroup) {
 	// public router
-	adminRouterPublic := Router.Group("/admin")
+	adminRouterPublic := Router.Group("/account")
 	adminRouterPublic.Use(middlewares.AuthenMiddleware())
 	adminRouterPublic.Use(middlewares.LicenseMiddleware())
 	adminRouterPublic.Use(middlewares.RateLimiterPrivateMiddlewareRedis())

@@ -19,7 +19,7 @@ type cAccount struct {
 // GetAllAccount
 // @Summary      Lấy danh sách tất cả tài khoản
 // @Description  API này trả về danh sách tất cả tài khoản trong hệ thống
-// @Tags         Account management
+// @Tags         Account
 // @Accept       json
 // @Produce      json
 // @Security     BearerAuth
@@ -40,7 +40,7 @@ func (ac *cAccount) GetAllAccount(ctx *gin.Context) {
 // GetAccountById
 // @Summary      Lấy tài khoản theo ID
 // @Description  API này trả về tài khoản theo ID
-// @Tags         Account management
+// @Tags         Account
 // @Accept       json
 // @Produce      json
 // @Security     BearerAuth
@@ -64,7 +64,7 @@ func (ac *cAccount) GetAccountById(ctx *gin.Context) {
 // UpdateAccount
 // @Summary      Cập nhật tài khoản
 // @Description  API này cập nhật thông tin tài khoản dựa trên ID
-// @Tags         Account management
+// @Tags         Account
 // @Accept       json
 // @Produce      json
 // @Security     BearerAuth
@@ -94,7 +94,7 @@ func (ac *cAccount) UpdateAccount(ctx *gin.Context) {
 // DeleteAccount
 // @Summary      Xóa tài khoản
 // @Description  API này xóa tài khoản dựa trên ID
-// @Tags         Account management
+// @Tags         Account
 // @Accept       json
 // @Produce      json
 // @Security     BearerAuth
@@ -118,7 +118,7 @@ func (ac *cAccount) DeleteAccount(ctx *gin.Context) {
 // CreateAccount
 // @Summary      Tạo tài khoản mới
 // @Description  API này cho phép tạo tài khoản mới
-// @Tags         Account management
+// @Tags         Account
 // @Accept       json
 // @Produce      json
 // @Security     BearerAuth
@@ -149,5 +149,3 @@ func (ac *cAccount) CreateAccount(ctx *gin.Context) {
 	// respone data
 	response.SuccessResponse(ctx, code, account)
 }
-
-

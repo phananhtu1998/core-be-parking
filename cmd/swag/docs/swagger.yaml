@@ -191,7 +191,7 @@ paths:
       - ApiKeyAuth: []
       summary: Tạo tài khoản mới
       tags:
-      - Account management
+      - Account
   /admin/delete_account/{id}:
     delete:
       consumes:
@@ -223,7 +223,7 @@ paths:
       - ApiKeyAuth: []
       summary: Xóa tài khoản
       tags:
-      - Account management
+      - Account
   /admin/get_account_by_id/{id}:
     get:
       consumes:
@@ -251,7 +251,7 @@ paths:
       - ApiKeyAuth: []
       summary: Lấy tài khoản theo ID
       tags:
-      - Account management
+      - Account
   /admin/get_all_account:
     get:
       consumes:
@@ -273,7 +273,7 @@ paths:
       - ApiKeyAuth: []
       summary: Lấy danh sách tất cả tài khoản
       tags:
-      - Account management
+      - Account
   /admin/update_account/{id}:
     put:
       consumes:
@@ -311,7 +311,7 @@ paths:
       - ApiKeyAuth: []
       summary: Cập nhật tài khoản
       tags:
-      - Account management
+      - Account
   /auth/change_password:
     post:
       consumes:

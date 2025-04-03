@@ -42,7 +42,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Account management"
+                    "Account"
                 ],
                 "summary": "Tạo tài khoản mới",
                 "parameters": [
@@ -96,7 +96,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Account management"
+                    "Account"
                 ],
                 "summary": "Xóa tài khoản",
                 "parameters": [
@@ -148,7 +148,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Account management"
+                    "Account"
                 ],
                 "summary": "Lấy tài khoản theo ID",
                 "parameters": [
@@ -194,7 +194,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Account management"
+                    "Account"
                 ],
                 "summary": "Lấy danh sách tất cả tài khoản",
                 "responses": {
@@ -231,7 +231,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Account management"
+                    "Account"
                 ],
                 "summary": "Cập nhật tài khoản",
                 "parameters": [

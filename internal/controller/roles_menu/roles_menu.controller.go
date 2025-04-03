@@ -16,8 +16,8 @@ type cRolesMenu struct {
 }
 
 // CreateFuncPackageMenu
-// @Summary Tạo Funcpackage menu
-// @Description Api tạo Funcpackage menu cho hệ thống
+// @Summary Tạo gói chức năng menu
+// @Description Api tạo gói chức năng menu cho hệ thống
 // @Tags FuncPackageMenu
 // @Accept json
 // @Produce json
@@ -46,9 +46,9 @@ func (c *cRolesMenu) CreateRolesMenu(ctx *gin.Context) {
 	response.SuccessResponse(ctx, code, result)
 }
 
-// GetFuncpackageMenuByRoleId
-// @Summary      Lấy role menu theo ID
-// @Description  API này trả về role menu theo ID
+// GetFuncpackageMenuByFuncpackageId
+// @Summary      Lấy gói chức năng menu theo ID
+// @Description  API này trả về gói chức năng menu theo ID
 // @Tags         FuncPackageMenu
 // @Accept       json
 // @Produce      json
@@ -72,8 +72,8 @@ func (c *cRolesMenu) GetRoleMenuByRoleId(ctx *gin.Context) {
 }
 
 // UpdateFuncpackageMenu godoc
-// @Summary      Cập nhật Funcpackage menu
-// @Description  Api cập nhật phân quyền menu cho Funcpackage
+// @Summary      Cập nhật gói chức năng menu
+// @Description  Api cập nhật phân quyền menu cho gói chức năng
 // @Tags         FuncPackageMenu
 // @Accept       json
 // @Produce      json
@@ -108,8 +108,8 @@ func (c *cRolesMenu) UpdateRolesMenu(ctx *gin.Context) {
 }
 
 // DeleteFuncpackageMenu godoc
-// @Summary      Xóa Funcpackage menu
-// @Description  Api xóa Funcpackage menu
+// @Summary      Xóa gói chức năng menu
+// @Description  Api xóa gói chức năng menu
 // @Tags         FuncPackageMenu
 // @Accept       json
 // @Produce      json
@@ -131,8 +131,8 @@ func (c *cRolesMenu) DeleteRolesMenu(ctx *gin.Context) {
 }
 
 // CreateFuncpackageMenuMultiple
-// @Summary Tạo nhiều menu theo Funcpackage
-// @Description Api tạo nhiều menu theo Funcpackage cho hệ thống
+// @Summary Tạo nhiều menu theo gói chức năng
+// @Description Api tạo nhiều menu theo gói chức năng cho hệ thống
 // @Tags FuncPackageMenu
 // @Accept json
 // @Produce json
