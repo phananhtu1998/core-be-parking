@@ -15,6 +15,15 @@ type Role struct {
 	Created_at       time.Time `json:"created_at"`
 	Updated_by       string    `json:"updated_by"`
 }
+type FuncpackageInput struct {
+	Code            string `json:"code"`
+	Role_name       string `json:"role_name"`
+	Role_max_number int    `json:"role_max_number"`
+}
+type FuncpackageOutput struct {
+	Id string `json:"id"`
+	FuncpackageInput
+}
 
 type RoleHierarchyOutput struct {
 	Id        string                `json:"id"`

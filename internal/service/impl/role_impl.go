@@ -9,12 +9,8 @@ import (
 	"go-backend-api/internal/model"
 	"go-backend-api/internal/service"
 	"go-backend-api/internal/utils"
-	"go-backend-api/internal/utils/auth"
-	"go-backend-api/internal/utils/cache"
 	"go-backend-api/pkg/response"
 	"time"
-
-	"github.com/google/uuid"
 )
 
 type sRole struct {
@@ -32,106 +28,107 @@ func NewRoleImpl(r *database.Queries, qTx *sql.Tx, db *sql.DB) service.IRole {
 }
 
 func (s *sRole) CreateRole(ctx context.Context, in *model.Role) (codeResult int, out model.Role, err error) {
-	var leftValue, rightValue int32
-	newID := uuid.New().String()
+	// var leftValue, rightValue int32
+	// newID := uuid.New().String()
 
-	// Bắt đầu transaction
-	tx, err := s.db.BeginTx(ctx, nil)
-	if err != nil {
-		return response.ErrCodeRoleError, model.Role{}, fmt.Errorf("failed to begin transaction: %w", err)
-	}
-	defer tx.Rollback()
-	subjectUUID := ctx.Value("subjectUUID")
-	println("subjectUUID account: ", subjectUUID)
-	var infoUser model.GetCacheToken
-	// Lấy Id tài khoản đang đăng nhập từ context
-	if err := cache.GetCache(ctx, subjectUUID.(string), &infoUser); err != nil {
-		return 0, out, err
-	}
+	// // Bắt đầu transaction
+	// tx, err := s.db.BeginTx(ctx, nil)
+	// if err != nil {
+	// 	return response.ErrCodeRoleError, model.Role{}, fmt.Errorf("failed to begin transaction: %w", err)
+	// }
+	// defer tx.Rollback()
+	// subjectUUID := ctx.Value("subjectUUID")
+	// println("subjectUUID account: ", subjectUUID)
+	// var infoUser model.GetCacheToken
+	// // Lấy Id tài khoản đang đăng nhập từ context
+	// if err := cache.GetCache(ctx, subjectUUID.(string), &infoUser); err != nil {
+	// 	return 0, out, err
+	// }
 
-	// Nếu created_by trống, đây là node gốc
-	if in.Created_by == "" {
-		// Lấy giá trị right lớn nhất
-		maxRightValue, err := s.r.GetMaxRightValue(ctx)
-		if err != nil {
-			return response.ErrCodeRoleError, model.Role{}, fmt.Errorf("failed to get max right value: %w", err)
-		}
+	// // Nếu created_by trống, đây là node gốc
+	// if in.Created_by == "" {
+	// 	// Lấy giá trị right lớn nhất
+	// 	maxRightValue, err := s.r.GetMaxRightValue(ctx)
+	// 	if err != nil {
+	// 		return response.ErrCodeRoleError, model.Role{}, fmt.Errorf("failed to get max right value: %w", err)
+	// 	}
 
-		// Đặt node mới là root - Sửa phần này
-		maxRightValueInt64 := maxRightValue.(int64)
-		leftValue = int32(maxRightValueInt64) + 1
-		rightValue = int32(maxRightValueInt64) + 2
-	} else {
-		// Lấy thông tin của node cha
-		RoleId, err := s.r.GetOneRoleAccountByAccountId(ctx, infoUser.ID)
-		if err != nil {
-			return response.ErrCodeRoleError, model.Role{}, fmt.Errorf("role id not found: %w", err)
-		}
-		parentRole, err := s.r.GetParentRoleInfo(ctx, RoleId.RoleID)
-		if err != nil {
-			return response.ErrCodeRoleError, model.Role{}, fmt.Errorf("parent role not found: %w", err)
-		}
-		// Cập nhật right values
-		err = s.r.UpdateRightValuesForInsert(ctx, parentRole.RoleRightValue)
-		if err != nil {
-			return response.ErrCodeRoleError, model.Role{}, fmt.Errorf("failed to update right values: %w", err)
-		}
+	// 	// Đặt node mới là root - Sửa phần này
+	// 	maxRightValueInt64 := maxRightValue.(int64)
+	// 	leftValue = int32(maxRightValueInt64) + 1
+	// 	rightValue = int32(maxRightValueInt64) + 2
+	// } else {
+	// 	// Lấy thông tin của node cha
+	// 	RoleId, err := s.r.GetOneRoleAccountByAccountId(ctx, infoUser.ID)
+	// 	if err != nil {
+	// 		return response.ErrCodeRoleError, model.Role{}, fmt.Errorf("role id not found: %w", err)
+	// 	}
+	// 	parentRole, err := s.r.GetParentRoleInfo(ctx, RoleId.RoleID)
+	// 	if err != nil {
+	// 		return response.ErrCodeRoleError, model.Role{}, fmt.Errorf("parent role not found: %w", err)
+	// 	}
+	// 	// Cập nhật right values
+	// 	err = s.r.UpdateRightValuesForInsert(ctx, parentRole.RoleRightValue)
+	// 	if err != nil {
+	// 		return response.ErrCodeRoleError, model.Role{}, fmt.Errorf("failed to update right values: %w", err)
+	// 	}
 
-		// Cập nhật left values
-		err = s.r.UpdateLeftValuesForInsert(ctx, parentRole.RoleRightValue)
-		if err != nil {
-			return response.ErrCodeRoleError, model.Role{}, fmt.Errorf("failed to update left values: %w", err)
-		}
+	// 	// Cập nhật left values
+	// 	err = s.r.UpdateLeftValuesForInsert(ctx, parentRole.RoleRightValue)
+	// 	if err != nil {
+	// 		return response.ErrCodeRoleError, model.Role{}, fmt.Errorf("failed to update left values: %w", err)
+	// 	}
 
-		// Đặt giá trị cho node mới
-		leftValue = parentRole.RoleRightValue
-		rightValue = parentRole.RoleRightValue + 1
-	}
+	// 	// Đặt giá trị cho node mới
+	// 	leftValue = parentRole.RoleRightValue
+	// 	rightValue = parentRole.RoleRightValue + 1
+	// }
 
-	// Tạo role mới
-	_, err = s.r.CreateRole(ctx, database.CreateRoleParams{
-		ID:             newID,
-		Code:           in.Code,
-		RoleName:       in.Role_name,
-		RoleLeftValue:  leftValue,
-		RoleRightValue: rightValue,
-		RoleMaxNumber:  int32(in.Role_left_value),
-		CreatedBy:      in.Created_by,
-	})
-	if err != nil {
-		return response.ErrCodeRoleError, model.Role{}, fmt.Errorf("failed to create role: %w", err)
-	}
-	license, err := auth.CreateTokenNoExpiration(time.Now().Format("2006-01-02 15:04:05"), "NO_EXPIRATION")
-	if err != nil {
-		return response.ErrCodeLicenseValid, out, err
-	}
+	// // Tạo role mới
+	// _, err = s.r.CreateRole(ctx, database.CreateRoleParams{
+	// 	ID:             newID,
+	// 	Code:           in.Code,
+	// 	RoleName:       in.Role_name,
+	// 	RoleLeftValue:  leftValue,
+	// 	RoleRightValue: rightValue,
+	// 	RoleMaxNumber:  int32(in.Role_left_value),
+	// 	CreatedBy:      in.Created_by,
+	// })
+	// if err != nil {
+	// 	return response.ErrCodeRoleError, model.Role{}, fmt.Errorf("failed to create role: %w", err)
+	// }
+	// license, err := auth.CreateTokenNoExpiration(time.Now().Format("2006-01-02 15:04:05"), "NO_EXPIRATION")
+	// if err != nil {
+	// 	return response.ErrCodeLicenseValid, out, err
+	// }
 
-	// Tạo license vĩnh viễn
-	_, err = s.r.CreateLicense(ctx, database.CreateLicenseParams{
-		ID:        newID,
-		License:   license,
-		DateStart: time.Now(),
-		DateEnd:   "NO_EXPIRATION",
-	})
-	if err != nil {
-		return response.ErrCodeLicenseValid, out, err
-	}
-	// Commit transaction
-	if err = tx.Commit(); err != nil {
-		return response.ErrCodeRoleError, model.Role{}, fmt.Errorf("failed to commit transaction: %w", err)
-	}
+	// // Tạo license vĩnh viễn
+	// _, err = s.r.CreateLicense(ctx, database.CreateLicenseParams{
+	// 	ID:        newID,
+	// 	License:   license,
+	// 	DateStart: time.Now(),
+	// 	DateEnd:   "NO_EXPIRATION",
+	// })
+	// if err != nil {
+	// 	return response.ErrCodeLicenseValid, out, err
+	// }
+	// // Commit transaction
+	// if err = tx.Commit(); err != nil {
+	// 	return response.ErrCodeRoleError, model.Role{}, fmt.Errorf("failed to commit transaction: %w", err)
+	// }
 
-	return response.ErrCodeSucces, model.Role{
-		Id:               newID,
-		Code:             in.Code,
-		Role_name:        in.Role_name,
-		Role_left_value:  int(leftValue),
-		Role_right_value: int(rightValue),
-		Role_max_number:  in.Role_max_number,
-		Is_licensed:      in.Is_licensed,
-		Created_by:       in.Created_by,
-		Created_at:       time.Now(),
-	}, nil
+	// return response.ErrCodeSucces, model.Role{
+	// 	Id:               newID,
+	// 	Code:             in.Code,
+	// 	Role_name:        in.Role_name,
+	// 	Role_left_value:  int(leftValue),
+	// 	Role_right_value: int(rightValue),
+	// 	Role_max_number:  in.Role_max_number,
+	// 	Is_licensed:      in.Is_licensed,
+	// 	Created_by:       in.Created_by,
+	// 	Created_at:       time.Now(),
+	// }, nil
+	return response.ErrCodeSucces, out, nil
 }
 
 // GetAllRoles - Lấy danh sách vai trò phân trang + xây dựng cây hierarchy

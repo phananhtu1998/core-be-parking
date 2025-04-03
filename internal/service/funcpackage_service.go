@@ -7,7 +7,7 @@ import (
 
 type (
 	Ifuncpackage interface {
-		CreateFuncPackage(ctx context.Context, in *model.Role) (codeResult int, out model.Role, err error)
+		CreateFuncPackage(ctx context.Context, in *model.FuncpackageInput) (codeResult int, out model.FuncpackageOutput, err error)
 	}
 )
 

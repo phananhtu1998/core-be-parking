@@ -34,6 +34,15 @@ definitions:
       oldpassword:
         type: string
     type: object
+  model.FuncpackageInput:
+    properties:
+      code:
+        type: string
+      role_max_number:
+        type: integer
+      role_name:
+        type: string
+    type: object
   model.License:
     properties:
       dateend:
@@ -457,7 +466,7 @@ paths:
         name: payload
         required: true
         schema:
-          $ref: '#/definitions/model.Role'
+          $ref: '#/definitions/model.FuncpackageInput'
       produces:
       - application/json
       responses:

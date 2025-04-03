@@ -22,12 +22,12 @@ type cFuncpackage struct {
 // @Produce json
 // @Security     BearerAuth
 // @Security     ApiKeyAuth
-// @Param        payload body model.Role true "payload"
+// @Param        payload body model.FuncpackageInput true "payload"
 // @Success 200 {object} response.ResponseData
 // @Failure      500  {object}  response.ErrorResponseData
 // @Router /funcpackage/create_func_package [post]
 func (c *cFuncpackage) CreateFuncPackage(ctx *gin.Context) {
-	var params model.Role
+	var params model.FuncpackageInput
 	if err := ctx.ShouldBindJSON(&params); err != nil {
 		response.ErrorResponse(ctx, response.ErrCodeParamInvalid, err.Error())
 		return

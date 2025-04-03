@@ -467,7 +467,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.Role"
+                            "$ref": "#/definitions/model.FuncpackageInput"
                         }
                     }
                 ],
@@ -1691,6 +1691,20 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "oldpassword": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.FuncpackageInput": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "role_max_number": {
+                    "type": "integer"
+                },
+                "role_name": {
                     "type": "string"
                 }
             }
