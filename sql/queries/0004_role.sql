@@ -42,10 +42,10 @@ WHERE role_left_value > ? AND is_deleted = false;
 
 -- name: CreateRole :execresult
 INSERT INTO `role` (
-  id, code, role_name, role_left_value, role_right_value,
+  id, code, role_name, role_left_value, role_right_value,license_id,
   role_max_number, created_by, create_at, update_at
 ) VALUES (
-  ?, ?, ?, ?, ?, ?, ?, NOW(), NOW()
+  ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW()
 );
 
 -- name: GetMaxRightValue :one

@@ -66,6 +66,20 @@ func (s *sAccount) CreateAccount(ctx context.Context, in *model.AccountInput) (c
 	if err != nil {
 		return response.ErrCodeUserOtpNotExists, model.AccountOutput{}, err
 	}
+	// Kiểm tra role_max_number
+	countRoleMaxNumber, err := s.r.GetRoleById(ctx, in.RoleId)
+	if err != nil {
+		return response.ErrCodeRoleNotFound, model.AccountOutput{}, err
+	}
+	//Kiểm tra số lượng tài khoản theo role count(account_id) theo role_id
+	countAccountId, err := s.r.CheckCountRoleId(ctx, in.RoleId)
+	if err != nil {
+		return response.ErrCodeRoleNotFound, model.AccountOutput{}, err
+	}
+	if int64(countRoleMaxNumber.RoleMaxNumber) < (countAccountId + 1) {
+		return response.ErrCodeRoleAccountMaxNumber, model.AccountOutput{}, fmt.Errorf("Số lượng tài khoản tạo đã vượt quá số lượng quy định")
+	}
+	//
 	accountBase.Password = crypto.HashPassword(global.Config.JWT.PASSWORD, userSalt, global.Config.JWT.SECRET_KEY)
 	rand.Seed(time.Now().UnixNano())
 	newUUID := uuid.New().String()

@@ -14,10 +14,10 @@ import (
 
 const createRole = `-- name: CreateRole :execresult
 INSERT INTO ` + "`" + `role` + "`" + ` (
-  id, code, role_name, role_left_value, role_right_value,
+  id, code, role_name, role_left_value, role_right_value,license_id,
   role_max_number, created_by, create_at, update_at
 ) VALUES (
-  ?, ?, ?, ?, ?, ?, ?, NOW(), NOW()
+  ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW()
 )
 `
 
@@ -27,6 +27,7 @@ type CreateRoleParams struct {
 	RoleName       string
 	RoleLeftValue  int32
 	RoleRightValue int32
+	LicenseID      string
 	RoleMaxNumber  int32
 	CreatedBy      string
 }
@@ -38,6 +39,7 @@ func (q *Queries) CreateRole(ctx context.Context, arg CreateRoleParams) (sql.Res
 		arg.RoleName,
 		arg.RoleLeftValue,
 		arg.RoleRightValue,
+		arg.LicenseID,
 		arg.RoleMaxNumber,
 		arg.CreatedBy,
 	)

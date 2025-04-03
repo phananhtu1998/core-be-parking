@@ -78,7 +78,7 @@ func (s *sFuncpackage) CreateFuncPackage(ctx context.Context, in *model.Funcpack
 	accountCreated, err := s.r.GetAccountCreated(ctx, infoUser.ID)
 	log.Println("accountCreated: ", accountCreated)
 	if int64(rolemaxnumber.RoleMaxNumber) <= (summaxnumberInt64 + 1 + int64(in.Role_max_number) + accountCreated) {
-		return response.ErrCodeRoleError, model.FuncpackageOutput{}, fmt.Errorf("Số lượng tài khoản tạo đã vượt quá số lượng quy định")
+		return response.ErrCodeRoleError, model.FuncpackageOutput{}, fmt.Errorf("Số lượng tài khoản của gói này đã vượt quá số lượng cho phép")
 	}
 
 	// Cập nhật right values
@@ -104,6 +104,7 @@ func (s *sFuncpackage) CreateFuncPackage(ctx context.Context, in *model.Funcpack
 		RoleLeftValue:  leftValue,
 		RoleRightValue: rightValue,
 		RoleMaxNumber:  int32(in.Role_max_number),
+		LicenseID:      "",
 		CreatedBy:      infoUser.ID,
 	})
 	if err != nil {
@@ -156,7 +157,6 @@ func (s *sFuncpackage) DeleteFuncPackage(ctx context.Context, id string) (codeRe
 	defer tx.Rollback()
 	// Kiểm tra có gói con hay không nếu có không được xóa
 	// Kiểm tra có tài khoản đang sử dụng hay không
-	
 
 	// Commit transaction
 	if err = tx.Commit(); err != nil {
