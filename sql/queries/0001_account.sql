@@ -60,7 +60,7 @@ WHERE id = ?;
 -- name: CheckAccountBaseExists :one
 SELECT COUNT(*)
 FROM `account`
-WHERE email = ?;
+WHERE email = ? || username = ?;
 
 -- name: CheckAccountUserNameExists :one
 SELECT COUNT(*)
@@ -77,3 +77,9 @@ JOIN role_account ra ON a.id = ra.account_id
 JOIN role r ON ra.role_id = r.id
 JOIN license l ON l.id = r.license_id
 WHERE a.id = ? AND a.is_deleted = false AND ra.is_deleted = false AND r.is_deleted = false AND l.is_deleted = false;
+
+
+-- name: UpdateRoleAccountByAccountId :exec
+UPDATE `role_account`
+SET role_id = ?
+WHERE account_id = ? AND is_deleted = false;

@@ -44,21 +44,16 @@ func (s *sAccount) CreateAccount(ctx context.Context, in *model.AccountInput) (c
 			tx.Rollback()
 		}
 	}()
-	// TODO: check Email
-	accountFound, err := s.r.CheckAccountBaseExists(ctx, in.Email)
+	// TODO: check Email and username
+	accountFound, err := s.r.CheckAccountBaseExists(ctx, database.CheckAccountBaseExistsParams{
+		Email:    in.Email,
+		Username: in.UserName,
+	})
 	if err != nil {
 		return response.ErrCodeUserHasExists, model.AccountOutput{}, err
 	}
 	if accountFound > 0 {
 		return response.ErrCodeUserHasExists, model.AccountOutput{}, fmt.Errorf("Email has already registered")
-	}
-	// TODO: check Username
-	accountFound, err = s.r.CheckAccountBaseExists(ctx, in.UserName)
-	if err != nil {
-		return response.ErrCodeUserHasExists, model.AccountOutput{}, err
-	}
-	if accountFound > 0 {
-		return response.ErrCodeUserHasExists, model.AccountOutput{}, fmt.Errorf("Username has already registered")
 	}
 	// TODO: hash Password
 	accountBase := database.Account{}
@@ -76,6 +71,7 @@ func (s *sAccount) CreateAccount(ctx context.Context, in *model.AccountInput) (c
 	if err != nil {
 		return response.ErrCodeRoleNotFound, model.AccountOutput{}, err
 	}
+	// Kiểm tra tài khoản đã được
 	if int64(countRoleMaxNumber.RoleMaxNumber) < (countAccountId + 1) {
 		return response.ErrCodeRoleAccountMaxNumber, model.AccountOutput{}, fmt.Errorf("Số lượng tài khoản tạo đã vượt quá số lượng quy định")
 	}
@@ -150,6 +146,29 @@ func (s *sAccount) GetAccountById(ctx context.Context, id string) (codeResult in
 
 // Cập nhật tài khoản
 func (s *sAccount) UpdateAccount(ctx context.Context, in *model.AccountInput, id string) (codeResult int, out model.AccountOutput, err error) {
+	// Khởi tạo transaction
+	tx, err := s.db.BeginTx(ctx, nil)
+	if err != nil {
+		return response.ErrCodeMenuErrror, out, fmt.Errorf("failed to begin transaction: %w", err)
+	}
+
+	var committed bool
+	defer func() {
+		if !committed {
+			tx.Rollback()
+		}
+	}()
+	// Kiểm tra username and mail
+	accountFound, err := s.r.CheckAccountBaseExists(ctx, database.CheckAccountBaseExistsParams{
+		Email:    in.Email,
+		Username: in.UserName,
+	})
+	if err != nil {
+		return response.ErrCodeUserHasExists, model.AccountOutput{}, err
+	}
+	if accountFound > 0 {
+		return response.ErrCodeUserHasExists, model.AccountOutput{}, fmt.Errorf("Username or Email has already registered")
+	}
 	err = s.r.EditAccountById(ctx, database.EditAccountByIdParams{
 		Name:     in.Name,
 		Username: in.UserName,
@@ -166,6 +185,18 @@ func (s *sAccount) UpdateAccount(ctx context.Context, in *model.AccountInput, id
 	if err != nil {
 		return response.ErrCodeParamInvalid, model.AccountOutput{}, err
 	}
+	// Update account funcpackage
+	err = s.r.UpdateRoleAccountByAccountId(ctx, database.UpdateRoleAccountByAccountIdParams{
+		RoleID:    in.RoleId,
+		AccountID: id,
+	})
+
+	// Commit transaction
+	err = tx.Commit()
+	if err != nil {
+		return response.ErrCodeMenuErrror, out, err
+	}
+	committed = true
 	accountOutput := model.AccountOutput{
 		ID:       updatedAccount.ID,
 		Name:     updatedAccount.Name,

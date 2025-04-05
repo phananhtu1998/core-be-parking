@@ -32,11 +32,16 @@ func (q *Queries) ChangPasswordById(ctx context.Context, arg ChangPasswordByIdPa
 const checkAccountBaseExists = `-- name: CheckAccountBaseExists :one
 SELECT COUNT(*)
 FROM ` + "`" + `account` + "`" + `
-WHERE email = ?
+WHERE email = ? || username = ?
 `
 
-func (q *Queries) CheckAccountBaseExists(ctx context.Context, email string) (int64, error) {
-	row := q.db.QueryRowContext(ctx, checkAccountBaseExists, email)
+type CheckAccountBaseExistsParams struct {
+	Email    string
+	Username string
+}
+
+func (q *Queries) CheckAccountBaseExists(ctx context.Context, arg CheckAccountBaseExistsParams) (int64, error) {
+	row := q.db.QueryRowContext(ctx, checkAccountBaseExists, arg.Email, arg.Username)
 	var count int64
 	err := row.Scan(&count)
 	return count, err
@@ -297,4 +302,20 @@ func (q *Queries) InsertAccount(ctx context.Context, arg InsertAccountParams) (s
 		arg.Status,
 		arg.Images,
 	)
+}
+
+const updateRoleAccountByAccountId = `-- name: UpdateRoleAccountByAccountId :exec
+UPDATE ` + "`" + `role_account` + "`" + `
+SET role_id = ?
+WHERE account_id = ? AND is_deleted = false
+`
+
+type UpdateRoleAccountByAccountIdParams struct {
+	RoleID    string
+	AccountID string
+}
+
+func (q *Queries) UpdateRoleAccountByAccountId(ctx context.Context, arg UpdateRoleAccountByAccountIdParams) error {
+	_, err := q.db.ExecContext(ctx, updateRoleAccountByAccountId, arg.RoleID, arg.AccountID)
+	return err
 }
