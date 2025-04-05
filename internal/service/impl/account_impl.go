@@ -7,6 +7,7 @@ import (
 	"go-backend-api/global"
 	"go-backend-api/internal/database"
 	"go-backend-api/internal/model"
+	"go-backend-api/internal/utils/cache"
 	"go-backend-api/internal/utils/crypto"
 	"go-backend-api/pkg/response"
 	"log"
@@ -44,6 +45,13 @@ func (s *sAccount) CreateAccount(ctx context.Context, in *model.AccountInput) (c
 			tx.Rollback()
 		}
 	}()
+	subjectUUID := ctx.Value("subjectUUID")
+	println("subjectUUID account: ", subjectUUID)
+	var infoUser model.GetCacheToken
+	// Lấy Id tài khoản đang đăng nhập từ context
+	if err := cache.GetCache(ctx, subjectUUID.(string), &infoUser); err != nil {
+		return 0, out, err
+	}
 	// TODO: check Email and username
 	accountFound, err := s.r.CheckAccountBaseExists(ctx, database.CheckAccountBaseExistsParams{
 		Email:    in.Email,
@@ -80,15 +88,16 @@ func (s *sAccount) CreateAccount(ctx context.Context, in *model.AccountInput) (c
 	rand.Seed(time.Now().UnixNano())
 	newUUID := uuid.New().String()
 	_, err = s.r.InsertAccount(ctx, database.InsertAccountParams{
-		ID:       newUUID,
-		Number:   rand.Int31(),
-		Name:     in.Name,
-		Username: in.UserName,
-		Email:    in.Email,
-		Password: accountBase.Password,
-		Salt:     userSalt,
-		Status:   in.Status,
-		Images:   in.Images,
+		ID:        newUUID,
+		Number:    rand.Int31(),
+		Name:      in.Name,
+		Username:  in.UserName,
+		Email:     in.Email,
+		Password:  accountBase.Password,
+		Salt:      userSalt,
+		Status:    in.Status,
+		Images:    in.Images,
+		CreatedBy: infoUser.ID,
 	})
 	if err != nil {
 		log.Printf("Lỗi khi chèn tài khoản: %v", err)
@@ -101,6 +110,7 @@ func (s *sAccount) CreateAccount(ctx context.Context, in *model.AccountInput) (c
 		ID:        newUUID,
 		AccountID: newUUID,
 		RoleID:    in.RoleId,
+		CreatedBy: sql.NullString{infoUser.ID, true},
 	})
 	if err != nil {
 		log.Printf("Lỗi khi chèn tài khoản vào bảng role account: %v", err)
@@ -210,17 +220,48 @@ func (s *sAccount) UpdateAccount(ctx context.Context, in *model.AccountInput, id
 
 // Xóa tài khoản
 func (s *sAccount) DeleteAccount(ctx context.Context, id string) (codeResult int, err error) {
-	// TODO: Thêm logic xóa tài khoản
+	// Khởi tạo transaction
+	tx, err := s.db.BeginTx(ctx, nil)
+	if err != nil {
+		return response.ErrCodeMenuErrror, fmt.Errorf("failed to begin transaction: %w", err)
+	}
+
+	var committed bool
+	defer func() {
+		if !committed {
+			tx.Rollback()
+		}
+	}()
+	// Update is_deleted trong bảng account
 	err = s.r.DeleteAccountById(ctx, id)
 	if err != nil {
 		return response.ErrInvalidOTP, err
 	}
+	//Update is_deleted trong bảng role_account
+	err = s.r.DeleteRoleAccountByAccountId(ctx, id)
+	if err != nil {
+		return response.ErrInvalidOTP, err
+	}
+	// Commit transaction
+	err = tx.Commit()
+	if err != nil {
+		return response.ErrCodeMenuErrror, err
+	}
+	committed = true
 	return response.ErrCodeSucces, err
 }
 
 // Lấy danh sách tất cả tài khoản
 func (s *sAccount) GetAllAccount(ctx context.Context) (codeResult int, out []model.AccountOutput, err error) {
-	lst, err := s.r.GetAllAccounts(ctx)
+	subjectUUID := ctx.Value("subjectUUID")
+	println("subjectUUID account: ", subjectUUID)
+	var infoUser model.GetCacheToken
+	// Lấy Id tài khoản đang đăng nhập từ context
+	if err := cache.GetCache(ctx, subjectUUID.(string), &infoUser); err != nil {
+		return 0, out, err
+	}
+	// Lây
+	lst, err := s.r.GetAllAccountByCreatedBy(ctx, infoUser.ID)
 	if err != nil {
 		return response.ErrCodeAuthFailed, nil, err
 	}

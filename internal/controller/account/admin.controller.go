@@ -28,7 +28,7 @@ type cAccount struct {
 // @Failure      500  {object}  response.ErrorResponseData
 // @Router       /account/get_all_account [GET]
 func (ac *cAccount) GetAllAccount(ctx *gin.Context) {
-	code, accounts, err := service.AccountItem().GetAllAccount(ctx)
+	code, accounts, err := service.AccountItem().GetAllAccount(ctx.Request.Context())
 	if err != nil {
 		log.Printf("Error getting account: %v", err)
 		response.ErrorResponse(ctx, code, err.Error())

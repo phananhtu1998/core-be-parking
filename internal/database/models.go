@@ -22,6 +22,7 @@ type Account struct {
 	// [active,inactive]
 	Status    bool
 	Images    string
+	CreatedBy string
 	IsDeleted bool
 	CreateAt  time.Time
 	UpdateAt  time.Time

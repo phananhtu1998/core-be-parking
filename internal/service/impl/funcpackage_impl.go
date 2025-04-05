@@ -77,7 +77,7 @@ func (s *sFuncpackage) CreateFuncPackage(ctx context.Context, in *model.Funcpack
 	log.Println("Tổng:", summaxnumberInt64+1+int64(in.Role_max_number))
 	accountCreated, err := s.r.GetAccountCreated(ctx, infoUser.ID)
 	log.Println("accountCreated: ", accountCreated)
-	if int64(rolemaxnumber.RoleMaxNumber) <= (summaxnumberInt64 + 1 + int64(in.Role_max_number) + accountCreated) {
+	if int64(rolemaxnumber.RoleMaxNumber) <= (summaxnumberInt64 + int64(in.Role_max_number) + accountCreated) {
 		return response.ErrCodeRoleError, model.FuncpackageOutput{}, fmt.Errorf("Số lượng tài khoản của gói này đã vượt quá số lượng cho phép")
 	}
 

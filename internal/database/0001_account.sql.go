@@ -84,6 +84,17 @@ func (q *Queries) DeleteAccountById(ctx context.Context, id string) error {
 	return err
 }
 
+const deleteRoleAccountByAccountId = `-- name: DeleteRoleAccountByAccountId :exec
+UPDATE ` + "`" + `role_account` + "`" + `
+SET is_deleted = true, update_at = NOW()
+WHERE account_id = ?
+`
+
+func (q *Queries) DeleteRoleAccountByAccountId(ctx context.Context, accountID string) error {
+	_, err := q.db.ExecContext(ctx, deleteRoleAccountByAccountId, accountID)
+	return err
+}
+
 const editAccountById = `-- name: EditAccountById :exec
 UPDATE account 
 SET
@@ -118,21 +129,22 @@ func (q *Queries) EditAccountById(ctx context.Context, arg EditAccountByIdParams
 }
 
 const getAccountById = `-- name: GetAccountById :one
-SELECT id, number, name,username, email, status,images,salt, password
+SELECT id, number, name,username, email, status,images,salt,created_by, password
 FROM ` + "`" + `account` + "`" + `
 WHERE id = ? AND is_deleted = false
 `
 
 type GetAccountByIdRow struct {
-	ID       string
-	Number   int32
-	Name     string
-	Username string
-	Email    string
-	Status   bool
-	Images   string
-	Salt     string
-	Password string
+	ID        string
+	Number    int32
+	Name      string
+	Username  string
+	Email     string
+	Status    bool
+	Images    string
+	Salt      string
+	CreatedBy string
+	Password  string
 }
 
 func (q *Queries) GetAccountById(ctx context.Context, id string) (GetAccountByIdRow, error) {
@@ -147,25 +159,80 @@ func (q *Queries) GetAccountById(ctx context.Context, id string) (GetAccountById
 		&i.Status,
 		&i.Images,
 		&i.Salt,
+		&i.CreatedBy,
 		&i.Password,
 	)
 	return i, err
 }
 
+const getAllAccountByCreatedBy = `-- name: GetAllAccountByCreatedBy :many
+SELECT id, number, name,username, email, status,images,salt,created_by, password
+FROM ` + "`" + `account` + "`" + `
+WHERE created_by = ? AND is_deleted = false
+`
+
+type GetAllAccountByCreatedByRow struct {
+	ID        string
+	Number    int32
+	Name      string
+	Username  string
+	Email     string
+	Status    bool
+	Images    string
+	Salt      string
+	CreatedBy string
+	Password  string
+}
+
+func (q *Queries) GetAllAccountByCreatedBy(ctx context.Context, createdBy string) ([]GetAllAccountByCreatedByRow, error) {
+	rows, err := q.db.QueryContext(ctx, getAllAccountByCreatedBy, createdBy)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []GetAllAccountByCreatedByRow
+	for rows.Next() {
+		var i GetAllAccountByCreatedByRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.Number,
+			&i.Name,
+			&i.Username,
+			&i.Email,
+			&i.Status,
+			&i.Images,
+			&i.Salt,
+			&i.CreatedBy,
+			&i.Password,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getAllAccounts = `-- name: GetAllAccounts :many
-SELECT id, number, name, email,username, status, images
+SELECT id, number, name, email,username, status, images,created_by
 FROM ` + "`" + `account` + "`" + `
 WHERE is_deleted = false
 `
 
 type GetAllAccountsRow struct {
-	ID       string
-	Number   int32
-	Name     string
-	Email    string
-	Username string
-	Status   bool
-	Images   string
+	ID        string
+	Number    int32
+	Name      string
+	Email     string
+	Username  string
+	Status    bool
+	Images    string
+	CreatedBy string
 }
 
 func (q *Queries) GetAllAccounts(ctx context.Context) ([]GetAllAccountsRow, error) {
@@ -185,6 +252,7 @@ func (q *Queries) GetAllAccounts(ctx context.Context) ([]GetAllAccountsRow, erro
 			&i.Username,
 			&i.Status,
 			&i.Images,
+			&i.CreatedBy,
 		); err != nil {
 			return nil, err
 		}
@@ -222,23 +290,24 @@ func (q *Queries) GetLicenseByAccountId(ctx context.Context, id string) (GetLice
 }
 
 const getOneAccountInfoAdmin = `-- name: GetOneAccountInfoAdmin :one
-SELECT id, number, name, email,username, password,salt,status,create_at,update_at, images
+SELECT id, number, name, email,username, password,salt,status,created_by,create_at,update_at, images
 FROM ` + "`" + `account` + "`" + `
 WHERE username = ? AND is_deleted = false
 `
 
 type GetOneAccountInfoAdminRow struct {
-	ID       string
-	Number   int32
-	Name     string
-	Email    string
-	Username string
-	Password string
-	Salt     string
-	Status   bool
-	CreateAt time.Time
-	UpdateAt time.Time
-	Images   string
+	ID        string
+	Number    int32
+	Name      string
+	Email     string
+	Username  string
+	Password  string
+	Salt      string
+	Status    bool
+	CreatedBy string
+	CreateAt  time.Time
+	UpdateAt  time.Time
+	Images    string
 }
 
 func (q *Queries) GetOneAccountInfoAdmin(ctx context.Context, username string) (GetOneAccountInfoAdminRow, error) {
@@ -253,6 +322,7 @@ func (q *Queries) GetOneAccountInfoAdmin(ctx context.Context, username string) (
 		&i.Password,
 		&i.Salt,
 		&i.Status,
+		&i.CreatedBy,
 		&i.CreateAt,
 		&i.UpdateAt,
 		&i.Images,
@@ -271,23 +341,25 @@ INSERT INTO ` + "`" + `account` + "`" + ` (
     salt,
     status,
     images,
+    created_by,
     is_deleted,
     create_at,
     update_at
 )
-VALUES(?,?,?,?,?,?,?,?,?,false,NOW(),NOW())
+VALUES(?,?,?,?,?,?,?,?,?,?,false,NOW(),NOW())
 `
 
 type InsertAccountParams struct {
-	ID       string
-	Number   int32
-	Username string
-	Name     string
-	Email    string
-	Password string
-	Salt     string
-	Status   bool
-	Images   string
+	ID        string
+	Number    int32
+	Username  string
+	Name      string
+	Email     string
+	Password  string
+	Salt      string
+	Status    bool
+	Images    string
+	CreatedBy string
 }
 
 func (q *Queries) InsertAccount(ctx context.Context, arg InsertAccountParams) (sql.Result, error) {
@@ -301,6 +373,7 @@ func (q *Queries) InsertAccount(ctx context.Context, arg InsertAccountParams) (s
 		arg.Salt,
 		arg.Status,
 		arg.Images,
+		arg.CreatedBy,
 	)
 }
 

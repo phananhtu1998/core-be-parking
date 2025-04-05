@@ -9,11 +9,12 @@ INSERT INTO `account` (
     salt,
     status,
     images,
+    created_by,
     is_deleted,
     create_at,
     update_at
 )
-VALUES('872ab326-b40b-4fb7-b28b-c5f8157fea7c',457262737,'Admin','Admin','admin@gmail.com','61870d2110c706703b709c1348759522e051e8bd25f2a5092df72756967713b0','4c724d523767fd7b19a89b46d68d9c33',true,'/upload/images/phananhtu.jpg',false,NOW(),NOW());
+VALUES('872ab326-b40b-4fb7-b28b-c5f8157fea7c',457262737,'Admin','Admin','admin@gmail.com','61870d2110c706703b709c1348759522e051e8bd25f2a5092df72756967713b0','4c724d523767fd7b19a89b46d68d9c33',true,'/upload/images/phananhtu.jpg','',false,NOW(),NOW());
 
 -- name: CreateRoleData :execresult
 INSERT INTO `role` (

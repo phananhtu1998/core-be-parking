@@ -1,16 +1,16 @@
 -- name: GetAccountById :one
-SELECT id, number, name,username, email, status,images,salt, password
+SELECT id, number, name,username, email, status,images,salt,created_by, password
 FROM `account`
 WHERE id = ? AND is_deleted = false;
 
 -- name: GetOneAccountInfoAdmin :one
-SELECT id, number, name, email,username, password,salt,status,create_at,update_at, images
+SELECT id, number, name, email,username, password,salt,status,created_by,create_at,update_at, images
 FROM `account`
 WHERE username = ? AND is_deleted = false;
 
 
 -- name: GetAllAccounts :many
-SELECT id, number, name, email,username, status, images
+SELECT id, number, name, email,username, status, images,created_by
 FROM `account`
 WHERE is_deleted = false;
 
@@ -25,11 +25,12 @@ INSERT INTO `account` (
     salt,
     status,
     images,
+    created_by,
     is_deleted,
     create_at,
     update_at
 )
-VALUES(?,?,?,?,?,?,?,?,?,false,NOW(),NOW());
+VALUES(?,?,?,?,?,?,?,?,?,?,false,NOW(),NOW());
 
 -- name: EditAccountById :exec
 UPDATE account 
@@ -83,3 +84,14 @@ WHERE a.id = ? AND a.is_deleted = false AND ra.is_deleted = false AND r.is_delet
 UPDATE `role_account`
 SET role_id = ?
 WHERE account_id = ? AND is_deleted = false;
+
+
+-- name: DeleteRoleAccountByAccountId :exec
+UPDATE `role_account`
+SET is_deleted = true, update_at = NOW()
+WHERE account_id = ?;
+
+-- name: GetAllAccountByCreatedBy :many
+SELECT id, number, name,username, email, status,images,salt,created_by, password
+FROM `account`
+WHERE created_by = ? AND is_deleted = false;
