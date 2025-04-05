@@ -2,6 +2,9 @@ basePath: /v1/2025
 definitions:
   model.AccountInput:
     properties:
+      code:
+        example: TC_ADMIN
+        type: string
       email:
         example: admin@gmail.com
         type: string
@@ -20,6 +23,7 @@ definitions:
         example: admin
         type: string
     required:
+    - code
     - email
     - name
     - role_id

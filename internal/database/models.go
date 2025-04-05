@@ -14,6 +14,7 @@ import (
 type Account struct {
 	ID       string
 	Number   int32
+	Code     string
 	Name     string
 	Email    string
 	Username string

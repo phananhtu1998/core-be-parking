@@ -89,6 +89,7 @@ func (s *sAccount) CreateAccount(ctx context.Context, in *model.AccountInput) (c
 	newUUID := uuid.New().String()
 	_, err = s.r.InsertAccount(ctx, database.InsertAccountParams{
 		ID:        newUUID,
+		Code:      in.Code,
 		Number:    rand.Int31(),
 		Name:      in.Name,
 		Username:  in.UserName,
@@ -146,6 +147,7 @@ func (s *sAccount) GetAccountById(ctx context.Context, id string) (codeResult in
 	log.Println("checkpass: ", checkpass)
 	return response.ErrCodeSucces, model.AccountOutput{
 		ID:       accountItem.ID,
+		Code:     accountItem.Code,
 		UserName: accountItem.Username,
 		Name:     accountItem.Name,
 		Email:    accountItem.Email,
@@ -181,6 +183,7 @@ func (s *sAccount) UpdateAccount(ctx context.Context, in *model.AccountInput, id
 	}
 	err = s.r.EditAccountById(ctx, database.EditAccountByIdParams{
 		Name:     in.Name,
+		Code:     in.Code,
 		Username: in.UserName,
 		Email:    in.Email,
 		Status:   in.Status,
@@ -209,6 +212,7 @@ func (s *sAccount) UpdateAccount(ctx context.Context, in *model.AccountInput, id
 	committed = true
 	accountOutput := model.AccountOutput{
 		ID:       updatedAccount.ID,
+		Code:     updatedAccount.Code,
 		Name:     updatedAccount.Name,
 		UserName: updatedAccount.Username,
 		Email:    updatedAccount.Email,
@@ -268,6 +272,7 @@ func (s *sAccount) GetAllAccount(ctx context.Context) (codeResult int, out []mod
 	for _, item := range lst {
 		out = append(out, model.AccountOutput{
 			ID:       item.ID,
+			Code:     item.Code,
 			Name:     item.Name,
 			UserName: item.Username,
 			Email:    item.Email,

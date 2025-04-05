@@ -1221,12 +1221,17 @@ const docTemplate = `{
         "model.AccountInput": {
             "type": "object",
             "required": [
+                "code",
                 "email",
                 "name",
                 "role_id",
                 "username"
             ],
             "properties": {
+                "code": {
+                    "type": "string",
+                    "example": "TC_ADMIN"
+                },
                 "email": {
                     "type": "string",
                     "example": "admin@gmail.com"

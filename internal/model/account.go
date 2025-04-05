@@ -2,6 +2,7 @@ package model
 
 type AccountInput struct {
 	Name     string `json:"name" binding:"required" example:"Admin"`
+	Code     string `json:"code" binding:"required" example:"TC_ADMIN"`
 	Email    string `json:"email" binding:"required" example:"admin@gmail.com"`
 	UserName string `json:"username" binding:"required" example:"admin"`
 	Status   bool   `json:"status"`
@@ -10,6 +11,7 @@ type AccountInput struct {
 }
 type AccountOutput struct {
 	ID       string `json:"id"`
+	Code     string `json:"code"`
 	Name     string `json:"name"`
 	UserName string `json:"username"`
 	Email    string `json:"email"`

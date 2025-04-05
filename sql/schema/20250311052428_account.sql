@@ -3,6 +3,7 @@
 CREATE TABLE `account` (
     `id` CHAR(36) NOT NULL,
     `number` INT NOT NULL,
+    `code` VARCHAR(255) NOT NULL,
     `name` VARCHAR(255) NOT NULL,
     `email` VARCHAR(255) NOT NULL,
     `username` VARCHAR(255) NOT NULL,

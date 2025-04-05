@@ -100,6 +100,7 @@ UPDATE account
 SET
     name = ?,
     username = ?,
+    code = ?,
     email = ?,
     status = ?,
     images = ?,
@@ -110,6 +111,7 @@ WHERE id = ?
 type EditAccountByIdParams struct {
 	Name     string
 	Username string
+	Code     string
 	Email    string
 	Status   bool
 	Images   string
@@ -120,6 +122,7 @@ func (q *Queries) EditAccountById(ctx context.Context, arg EditAccountByIdParams
 	_, err := q.db.ExecContext(ctx, editAccountById,
 		arg.Name,
 		arg.Username,
+		arg.Code,
 		arg.Email,
 		arg.Status,
 		arg.Images,
@@ -129,13 +132,14 @@ func (q *Queries) EditAccountById(ctx context.Context, arg EditAccountByIdParams
 }
 
 const getAccountById = `-- name: GetAccountById :one
-SELECT id, number, name,username, email, status,images,salt,created_by, password
+SELECT id,code, number, name,username, email, status,images,salt,created_by, password
 FROM ` + "`" + `account` + "`" + `
 WHERE id = ? AND is_deleted = false
 `
 
 type GetAccountByIdRow struct {
 	ID        string
+	Code      string
 	Number    int32
 	Name      string
 	Username  string
@@ -152,6 +156,7 @@ func (q *Queries) GetAccountById(ctx context.Context, id string) (GetAccountById
 	var i GetAccountByIdRow
 	err := row.Scan(
 		&i.ID,
+		&i.Code,
 		&i.Number,
 		&i.Name,
 		&i.Username,
@@ -166,13 +171,14 @@ func (q *Queries) GetAccountById(ctx context.Context, id string) (GetAccountById
 }
 
 const getAllAccountByCreatedBy = `-- name: GetAllAccountByCreatedBy :many
-SELECT id, number, name,username, email, status,images,salt,created_by, password
+SELECT id,code, number, name,username, email, status,images,salt,created_by, password
 FROM ` + "`" + `account` + "`" + `
 WHERE created_by = ? AND is_deleted = false
 `
 
 type GetAllAccountByCreatedByRow struct {
 	ID        string
+	Code      string
 	Number    int32
 	Name      string
 	Username  string
@@ -195,6 +201,7 @@ func (q *Queries) GetAllAccountByCreatedBy(ctx context.Context, createdBy string
 		var i GetAllAccountByCreatedByRow
 		if err := rows.Scan(
 			&i.ID,
+			&i.Code,
 			&i.Number,
 			&i.Name,
 			&i.Username,
@@ -219,13 +226,14 @@ func (q *Queries) GetAllAccountByCreatedBy(ctx context.Context, createdBy string
 }
 
 const getAllAccounts = `-- name: GetAllAccounts :many
-SELECT id, number, name, email,username, status, images,created_by
+SELECT id,code, number, name, email,username, status, images,created_by
 FROM ` + "`" + `account` + "`" + `
 WHERE is_deleted = false
 `
 
 type GetAllAccountsRow struct {
 	ID        string
+	Code      string
 	Number    int32
 	Name      string
 	Email     string
@@ -246,6 +254,7 @@ func (q *Queries) GetAllAccounts(ctx context.Context) ([]GetAllAccountsRow, erro
 		var i GetAllAccountsRow
 		if err := rows.Scan(
 			&i.ID,
+			&i.Code,
 			&i.Number,
 			&i.Name,
 			&i.Email,
@@ -290,7 +299,7 @@ func (q *Queries) GetLicenseByAccountId(ctx context.Context, id string) (GetLice
 }
 
 const getOneAccountInfoAdmin = `-- name: GetOneAccountInfoAdmin :one
-SELECT id, number, name, email,username, password,salt,status,created_by,create_at,update_at, images
+SELECT id, number,code, name, email,username, password,salt,status,created_by,create_at,update_at, images
 FROM ` + "`" + `account` + "`" + `
 WHERE username = ? AND is_deleted = false
 `
@@ -298,6 +307,7 @@ WHERE username = ? AND is_deleted = false
 type GetOneAccountInfoAdminRow struct {
 	ID        string
 	Number    int32
+	Code      string
 	Name      string
 	Email     string
 	Username  string
@@ -316,6 +326,7 @@ func (q *Queries) GetOneAccountInfoAdmin(ctx context.Context, username string) (
 	err := row.Scan(
 		&i.ID,
 		&i.Number,
+		&i.Code,
 		&i.Name,
 		&i.Email,
 		&i.Username,
@@ -333,6 +344,7 @@ func (q *Queries) GetOneAccountInfoAdmin(ctx context.Context, username string) (
 const insertAccount = `-- name: InsertAccount :execresult
 INSERT INTO ` + "`" + `account` + "`" + ` (
     id,
+    code,
     number,
     username,
     name,
@@ -346,11 +358,12 @@ INSERT INTO ` + "`" + `account` + "`" + ` (
     create_at,
     update_at
 )
-VALUES(?,?,?,?,?,?,?,?,?,?,false,NOW(),NOW())
+VALUES(?,?,?,?,?,?,?,?,?,?,?,false,NOW(),NOW())
 `
 
 type InsertAccountParams struct {
 	ID        string
+	Code      string
 	Number    int32
 	Username  string
 	Name      string
@@ -365,6 +378,7 @@ type InsertAccountParams struct {
 func (q *Queries) InsertAccount(ctx context.Context, arg InsertAccountParams) (sql.Result, error) {
 	return q.db.ExecContext(ctx, insertAccount,
 		arg.ID,
+		arg.Code,
 		arg.Number,
 		arg.Username,
 		arg.Name,

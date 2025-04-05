@@ -1,22 +1,23 @@
 -- name: GetAccountById :one
-SELECT id, number, name,username, email, status,images,salt,created_by, password
+SELECT id,code, number, name,username, email, status,images,salt,created_by, password
 FROM `account`
 WHERE id = ? AND is_deleted = false;
 
 -- name: GetOneAccountInfoAdmin :one
-SELECT id, number, name, email,username, password,salt,status,created_by,create_at,update_at, images
+SELECT id, number,code, name, email,username, password,salt,status,created_by,create_at,update_at, images
 FROM `account`
 WHERE username = ? AND is_deleted = false;
 
 
 -- name: GetAllAccounts :many
-SELECT id, number, name, email,username, status, images,created_by
+SELECT id,code, number, name, email,username, status, images,created_by
 FROM `account`
 WHERE is_deleted = false;
 
 -- name: InsertAccount :execresult
 INSERT INTO `account` (
     id,
+    code,
     number,
     username,
     name,
@@ -30,13 +31,14 @@ INSERT INTO `account` (
     create_at,
     update_at
 )
-VALUES(?,?,?,?,?,?,?,?,?,?,false,NOW(),NOW());
+VALUES(?,?,?,?,?,?,?,?,?,?,?,false,NOW(),NOW());
 
 -- name: EditAccountById :exec
 UPDATE account 
 SET
     name = ?,
     username = ?,
+    code = ?,
     email = ?,
     status = ?,
     images = ?,
@@ -92,6 +94,6 @@ SET is_deleted = true, update_at = NOW()
 WHERE account_id = ?;
 
 -- name: GetAllAccountByCreatedBy :many
-SELECT id, number, name,username, email, status,images,salt,created_by, password
+SELECT id,code, number, name,username, email, status,images,salt,created_by, password
 FROM `account`
 WHERE created_by = ? AND is_deleted = false;
