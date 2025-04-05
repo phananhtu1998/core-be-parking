@@ -8,6 +8,7 @@ import (
 	"go-backend-api/internal/model"
 	"go-backend-api/internal/utils/auth"
 	"go-backend-api/pkg/response"
+	"log"
 	"time"
 
 	"github.com/google/uuid"
@@ -52,18 +53,34 @@ func (s *sLicense) CreateLicense(ctx context.Context, in *model.License) (codeRe
 		return response.ErrCodeLicenseValid, out, err
 	}
 
-	// Xử lý DateEnd
 	var dateEnd string
+
+	// Kiểm tra thời hạn của license cha
+	dateend := ctx.Value("dateend")
+	log.Println("dateend:::", dateend)
+	dateendStr, ok := dateend.(string)
+	if !ok {
+		return response.ErrCodeLicenseValid, out, fmt.Errorf("dateend is not a valid string")
+	}
+
 	if in.DateEnd == "NO_EXPIRATION" {
-		dateEnd = "NO_EXPIRATION"
+		if dateendStr == "NO_EXPIRATION" {
+			dateEnd = "NO_EXPIRATION"
+		} else {
+			return response.ErrCodeLicenseValid, out, fmt.Errorf("Lỗi đinh dạng cho ngày kết thúc")
+		}
 	} else {
 		// Kiểm tra DateEnd có đúng định dạng không
 		_, err = time.Parse("2006-01-02 15:04:05", in.DateEnd)
 		if err != nil {
-			return response.ErrCodeLicenseValid, out, err
+			return response.ErrCodeLicenseValid, out, fmt.Errorf("Không đúng định dạng cho ngày kết thúc, YYYY-MM-DD HH:mm:ss hoặc NO_EXPIRATION, %s", in.DateEnd)
+		}
+		if dateendStr != "NO_EXPIRATION" && in.DateEnd > dateendStr {
+			return response.ErrCodeLicenseValid, out, fmt.Errorf("Vui lòng chọn ngày kết thúc cho gói này sớm hơn gói cha")
 		}
 		dateEnd = in.DateEnd // Lưu dưới dạng string vì DB là VARCHAR(255)
 	}
+
 	//  Tạo Id cho license
 	var licenseId = uuid.New().String()
 	// Tạo license trong database

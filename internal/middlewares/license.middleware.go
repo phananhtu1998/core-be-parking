@@ -1,6 +1,7 @@
 package middlewares
 
 import (
+	"context"
 	"go-backend-api/internal/utils/auth"
 	"go-backend-api/pkg/response"
 	"log"
@@ -60,6 +61,10 @@ func LicenseMiddleware() gin.HandlerFunc {
 			return
 		}
 
+		// Store dateend as string in context
+		ctx := context.WithValue(c.Request.Context(), "dateend", dateendStr)
+		c.Request = c.Request.WithContext(ctx)
+
 		// Nếu giá trị là "NO_EXPIRATION", bỏ qua kiểm tra hết hạn
 		if dateendStr == "NO_EXPIRATION" {
 			log.Println("License is set to NO_EXPIRATION, skipping expiration check")
@@ -87,7 +92,6 @@ func LicenseMiddleware() gin.HandlerFunc {
 			})
 			return
 		}
-
 		// Nếu hợp lệ, tiếp tục request
 		c.Next()
 	}
